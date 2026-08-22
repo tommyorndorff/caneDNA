@@ -5,5 +5,9 @@ Cargo.lock.orig
 # Trunk web build output
 **/dist/
 
+# Local Claude Code settings (do not commit), but keep the shared delegation stub
+.claude/settings.local.json
+!.claude/CLAUDE.md
+
 # keep the source jar out of git; it's a large binary redistributable
 RodDNA_v20.jar
