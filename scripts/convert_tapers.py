@@ -1,24 +1,49 @@
 #!/usr/bin/env python3
-"""Convert RodDNA XML taper libraries to a single typed JSON file.
+"""Import the RodDNA XML taper libraries into a per-source JSON file.
 
 Source: RodDNA v2.0 (Larry Tusoni, highsierrarods.com), Models module XML.
-Output: data/tapers.json — a lossless-ish, typed representation of every rod
-model, with the taper `dimensions` (flat-to-flat cross-section in inches at
-each station) parsed into a float array plus derived station positions.
+Output: data/sources/roddna.json — a typed list of rod models, each with the
+taper `dimensions` (flat-to-flat cross-section in inches at each station) parsed
+into a float array, derived station positions, and a `provenance` block.
+
+This is one importer in a multi-source pipeline; run `build_library.py` after to
+merge all data/sources/*.json into data/tapers.json.
 """
 import json
-import re
 import sys
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
-OUT = ROOT / "data" / "tapers.json"
+OUT = ROOT / "data" / "sources" / "roddna.json"
 
+# Snapshot date of this import (kept constant for reproducible output).
+IMPORT_DATE = "2026-08-22"
+
+# Each source file carries a provenance block that is attached to every taper
+# imported from it, so attribution survives merges with other libraries.
 SOURCES = [
-    ("RodDNAModels.xml", "models-v2.0"),
-    ("RodDNAModelsv1.4Update.xml", "v1.4-update"),
+    (
+        "RodDNAModels.xml",
+        {
+            "source": "RodDNA v2.0",
+            "author": "Larry Tusoni",
+            "source_url": "http://www.highsierrarods.com/roddna.html",
+            "collection": "RodDNAModels.xml",
+            "license": "Free (RodDNA v2.0, released without registration)",
+        },
+    ),
+    (
+        "RodDNAModelsv1.4Update.xml",
+        {
+            "source": "RodDNA v1.4 update",
+            "author": "Larry Tusoni",
+            "source_url": "http://www.highsierrarods.com/roddna.html",
+            "collection": "RodDNAModelsv1.4Update.xml",
+            "license": "Free (RodDNA v2.0, released without registration)",
+        },
+    ),
 ]
 
 # Fields parsed as floats; everything else stays a string (or None if empty).
@@ -76,7 +101,7 @@ def parse_model(el):
 
 def main():
     models = []
-    for fname, source in SOURCES:
+    for fname, prov in SOURCES:
         path = RAW / fname
         if not path.exists():
             print(f"skip (missing): {fname}", file=sys.stderr)
@@ -87,25 +112,19 @@ def main():
         count = 0
         for el in root.findall("model"):
             m = parse_model(el)
-            m["_source"] = source
+            # Attribution + informational metadata, per taper.
+            provenance = dict(prov)
+            provenance["imported"] = IMPORT_DATE
+            # Preserve the source's own record id, if any.
+            if m.get("db_number") is not None:
+                provenance["source_id"] = m["db_number"]
+            m["provenance"] = provenance
             models.append(m)
             count += 1
         print(f"{fname}: {count} models", file=sys.stderr)
 
-    payload = {
-        "meta": {
-            "source": "RodDNA v2.0 (highsierrarods.com), Models module",
-            "author": "Larry Tusoni",
-            "units": {
-                "length": "inches",
-                "dimensions": "inches (flat-to-flat cross-section)",
-                "stations": "inches from tip",
-            },
-            "count": len(models),
-        },
-        "models": models,
-    }
-    OUT.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(json.dumps(models, indent=2), encoding="utf-8")
     print(f"wrote {OUT} ({len(models)} models)", file=sys.stderr)
 
 

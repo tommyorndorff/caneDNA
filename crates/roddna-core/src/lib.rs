@@ -58,8 +58,29 @@ pub struct Taper {
     #[serde(default)]
     pub guide_sizes: Vec<f64>,
 
-    #[serde(rename = "_source", default)]
+    /// Attribution + informational metadata about where this taper came from.
+    #[serde(default)]
+    pub provenance: Option<Provenance>,
+}
+
+/// Where a taper was sourced from, carried per-record so attribution survives
+/// merging multiple libraries. Extra keys from future sources are preserved.
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct Provenance {
+    /// Human-readable library name, e.g. "RodDNA v2.0".
     pub source: Option<String>,
+    pub author: Option<String>,
+    pub source_url: Option<String>,
+    /// File/collection within the source library.
+    pub collection: Option<String>,
+    pub license: Option<String>,
+    /// ISO date this record was imported into caneDNA.
+    pub imported: Option<String>,
+    /// The source's own record id, if any.
+    pub source_id: Option<f64>,
+    /// Any additional source-specific metadata, preserved verbatim.
+    #[serde(flatten, default)]
+    pub extra: std::collections::BTreeMap<String, serde_json::Value>,
 }
 
 impl Taper {
@@ -128,5 +149,10 @@ mod tests {
             assert_eq!(m.stations.len(), m.dimensions.len(), "{:?}", m.name);
         }
         assert!(lib.rod_types().iter().any(|t| t == "Spey-Rod"));
+        // Every taper must carry attribution.
+        for m in &lib.models {
+            let p = m.provenance.as_ref().expect("provenance present");
+            assert!(p.source.is_some(), "{:?}", m.name);
+        }
     }
 }

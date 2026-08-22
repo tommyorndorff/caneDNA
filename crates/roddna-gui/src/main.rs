@@ -1,7 +1,7 @@
-//! RodDNA GUI — browse and plot bamboo rod tapers.
+//! RodDNA GUI — browse and compare bamboo rod tapers.
 //!
-//! v0: searchable/filterable list of the ~619 tapers from the RodDNA library,
-//! with a taper-profile plot for the selected rod. Foundation for the taper
+//! Multi-select the ~619 tapers from the library, overlay their profiles on a
+//! single plot to compare patterns, and inspect specs. Foundation for the taper
 //! explorer (travel rods, spey rods, etc.).
 
 use eframe::egui;
@@ -15,11 +15,11 @@ fn main() -> eframe::Result<()> {
     let native_options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([1100.0, 720.0])
-            .with_title("RodDNA — Taper Explorer"),
+            .with_title("caneDNA — Taper Explorer"),
         ..Default::default()
     };
     eframe::run_native(
-        "roddna",
+        "canedna",
         native_options,
         Box::new(|_cc| Ok(Box::new(App::new()))),
     )
@@ -32,7 +32,8 @@ struct App {
     type_filter: String,
     line_weight_filter: Option<f64>,
     pieces_filter: Option<f64>,
-    selected: Option<usize>,
+    /// Selected rods, in click order (drives legend/color stability).
+    selected: Vec<usize>,
     rod_types: Vec<String>,
     line_weights: Vec<f64>,
     piece_counts: Vec<f64>,
@@ -50,7 +51,7 @@ impl App {
             type_filter: String::new(),
             line_weight_filter: None,
             pieces_filter: None,
-            selected: None,
+            selected: Vec::new(),
             rod_types,
             line_weights,
             piece_counts,
@@ -79,6 +80,15 @@ impl App {
             }
         }
         true
+    }
+
+    /// Toggle a rod in/out of the selection, preserving click order.
+    fn toggle(&mut self, i: usize) {
+        if let Some(pos) = self.selected.iter().position(|&x| x == i) {
+            self.selected.remove(pos);
+        } else {
+            self.selected.push(i);
+        }
     }
 }
 
@@ -109,7 +119,15 @@ impl eframe::App for App {
             .default_width(360.0)
             .show(ctx, |ui| {
                 ui.add_space(4.0);
-                ui.heading("Tapers");
+                ui.horizontal(|ui| {
+                    ui.heading("Tapers");
+                    ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                        if ui.button("Clear").clicked() {
+                            self.selected.clear();
+                        }
+                        ui.label(format!("{} selected", self.selected.len()));
+                    });
+                });
                 ui.horizontal(|ui| {
                     ui.label("Search:");
                     ui.text_edit_singleline(&mut self.search);
@@ -152,45 +170,71 @@ impl eframe::App for App {
                             .name
                             .clone()
                             .unwrap_or_else(|| format!("model {i}"));
-                        let selected = self.selected == Some(i);
+                        let selected = self.selected.contains(&i);
                         if ui.selectable_label(selected, name).clicked() {
-                            self.selected = Some(i);
+                            self.toggle(i);
                         }
                     }
                 });
             });
 
-        // Central panel: details + taper plot.
-        egui::CentralPanel::default().show(ctx, |ui| match self.selected {
-            None => {
+        // Central panel: comparison table + overlaid taper plot.
+        egui::CentralPanel::default().show(ctx, |ui| {
+            if self.selected.is_empty() {
                 ui.centered_and_justified(|ui| {
-                    ui.label("Select a rod to view its taper.");
+                    ui.label("Select one or more rods to overlay their tapers.");
                 });
+                return;
             }
-            Some(i) => {
-                let t = &self.lib.models[i];
-                ui.heading(t.name.as_deref().unwrap_or("(unnamed)"));
-                ui.horizontal_wrapped(|ui| {
-                    chip(ui, "Type", t.rod_type.as_deref().unwrap_or("—"));
-                    chip(ui, "Const", t.const_type.as_deref().unwrap_or("—"));
-                    chip(ui, "Length", &fmt_len(t.length));
-                    chip(ui, "Line wt", &opt_num(t.line_weight));
-                    chip(ui, "Pieces", &opt_num(t.pieces));
-                    chip(ui, "Points", &t.point_count().to_string());
+
+            ui.heading(if self.selected.len() == 1 {
+                "Taper".to_string()
+            } else {
+                format!("Comparing {} tapers", self.selected.len())
+            });
+
+            // Compact spec table for the current selection.
+            egui::Grid::new("specs")
+                .striped(true)
+                .num_columns(6)
+                .show(ui, |ui| {
+                    for h in ["Rod", "Type", "Const", "Length", "Line", "Pieces"] {
+                        ui.label(egui::RichText::new(h).strong());
+                    }
+                    ui.end_row();
+                    for &i in &self.selected {
+                        let t = &self.lib.models[i];
+                        ui.label(t.name.as_deref().unwrap_or("(unnamed)"));
+                        ui.label(t.rod_type.as_deref().unwrap_or("—"));
+                        ui.label(t.const_type.as_deref().unwrap_or("—"));
+                        ui.label(fmt_len(t.length));
+                        ui.label(opt_num(t.line_weight));
+                        ui.label(opt_num(t.pieces));
+                        ui.end_row();
+                    }
                 });
-                ui.separator();
 
-                let points: PlotPoints = t.profile().into_iter().collect();
-                Plot::new("taper")
-                    .legend(Legend::default())
-                    .x_axis_label("Station (in from tip)")
-                    .y_axis_label("Flat-to-flat (in)")
-                    .height(ui.available_height() * 0.62)
-                    .show(ui, |plot_ui| {
-                        plot_ui.line(Line::new(points).name("taper"));
-                    });
+            ui.separator();
 
-                if let Some(notes) = t.notes.as_deref() {
+            // Overlaid taper profiles. egui_plot auto-assigns a stable color per
+            // named line, and the legend lets you toggle individual rods.
+            Plot::new("taper")
+                .legend(Legend::default())
+                .x_axis_label("Station (in from tip)")
+                .y_axis_label("Flat-to-flat (in)")
+                .height(ui.available_height() * 0.7)
+                .show(ui, |plot_ui| {
+                    for &i in &self.selected {
+                        let t = &self.lib.models[i];
+                        let name = t.name.clone().unwrap_or_else(|| format!("model {i}"));
+                        let points: PlotPoints = t.profile().into_iter().collect();
+                        plot_ui.line(Line::new(points).name(name));
+                    }
+                });
+
+            // Notes only make sense for a single rod.
+            if self.selected.len() == 1 {
+                if let Some(notes) = self.lib.models[self.selected[0]].notes.as_deref() {
                     if !notes.is_empty() {
                         ui.separator();
                         ui.label(egui::RichText::new("Notes").strong());
@@ -210,12 +254,6 @@ fn opt_num(v: Option<f64>) -> String {
         Some(x) => format!("{x}"),
         None => "—".into(),
     }
-}
-
-fn chip(ui: &mut egui::Ui, k: &str, v: &str) {
-    ui.label(egui::RichText::new(format!("{k}: ")).weak());
-    ui.label(egui::RichText::new(v).strong());
-    ui.add_space(8.0);
 }
 
 /// A combo box over an Option<f64> filter with an "Any" entry.
