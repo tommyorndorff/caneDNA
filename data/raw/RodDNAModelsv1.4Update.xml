@@ -1,0 +1,3042 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<models module="Models" version="1.4">
+<!--RodDNA v1.0-->
+<!--Copyright (c) 2003-2004 by Larry Tusoni. All Rights Reserved.-->
+<!--RodDNA Model's Module-->
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Heddon #50 President 7642  Adam's rod][2]</name>
+	<length>90</length>
+	<action_length>81</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>4</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>45.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.058</lwv>
+	<rav>0.288</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes></notes>
+	<dimensions>0.06402890462214848, 0.07469837232394745, 0.08600810777105686, 0.10218182103562058, 0.11958082391539035, 0.13519549843968626, 0.14935557597180726, 0.1616569621267347, 0.172059067196059, 0.18482469366556636, 0.19860904291550363, 0.2187371506843018, 0.22583749473841458, 0.23708421260150017, 0.2495373845742566, 0.26406323436277657, 0.2754502511228628, 0.2825471568148286, 0.280767643697375</dimensions>
+	<stresses>38122.0, 151612.0, 192803.0, 177622.0, 155159.0, 142439.0, 135495.0, 133875.0, 136673.0, 133860.0, 134322.0, 122621.0, 133801.0, 137158.0, 138105.0, 135705.0, 138259.0, 147221.0, 134417.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Maurer George 7652 7.5'  from book</name>
+	<length>90</length>
+	<action_length>80</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>4</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>45.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4.5</tiptop_size>
+	<lwv>0.073</lwv>
+	<rav>0.262</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>Submitted by Dave Kemp</notes>
+	<dimensions>0.06800048, 0.0840008, 0.1, 0.1180002, 0.1320003, 0.145, 0.16, 0.1710008, 0.1790006, 0.201, 0.211, 0.2170006, 0.234, 0.2510007, 0.2690004, 0.2790006, 0.3060006, 0.3120001, 0.315</dimensions>
+	<stresses></stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Maurer George 79 5 wt from book</name>
+	<length>93</length>
+	<action_length>83</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>46.5</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4.5</tiptop_size>
+	<lwv>0.07</lwv>
+	<rav>0.27</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>Submitted by Dave Kemp</notes>
+	<dimensions>0.0640008, 0.078, 0.1, 0.117, 0.13095, 0.144, 0.156, 0.168, 0.181, 0.194, 0.206, 0.22, 0.233, 0.247, 0.26, 0.275, 0.289, 0.303, 0.318</dimensions>
+	<stresses></stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Dickerson Lyle  Mystery 7942[2]</name>
+	<length>93</length>
+	<action_length>83</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>4</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>46.5</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.06</lwv>
+	<rav>0.272</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>Submitted by Dave Kemp</notes>
+	<dimensions>0.048621, 0.06600079345, 0.090000265, 0.102000474, 0.116000218, 0.130000815, 0.14520750000000002, 0.163457, 0.18059499999999998, 0.1888125, 0.1975145, 0.209456, 0.22617600000000002, 0.246905, 0.263606, 0.279205, 0.30333499999999997, 0.3202925, 0.320093</dimensions>
+	<stresses>74238.0, 171461.0, 134147.0, 146545.0, 138252.0, 129976.0, 127903.0, 112740.0, 103425.0, 110559.0, 120177.0, 124165.0, 119284.0, 109439.0, 106269.0, 104845.0, 95251.0, 93789.0, 108382.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Wright &amp; McGill Granger TR's Rod-3p </name>
+	<length>96</length>
+	<action_length>86</action_length>
+	<type>Dry-Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>16/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>32.0</ferrule1_loc>
+	<ferrule2_loc>64.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4.5</tiptop_size>
+	<lwv>0.077</lwv>
+	<rav>0.258</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>Submitted by Dave Kemp</notes>
+	<dimensions>0.07300055608079764, 0.08700000946920432, 0.1045008382695407, 0.12100067590549421, 0.1350082149728, 0.15600213146456363, 0.16800885587561498, 0.16900198643344141, 0.1940064095325399, 0.208, 0.21700939829449048, 0.22500104235905408, 0.2295, 0.2573014020524737, 0.26810082521552164, 0.28001067758217985, 0.2920083056697305, 0.32600779209759234, 0.3290137497655547, 0.329003702613782</dimensions>
+	<stresses>39873.0, 141805.0, 148481.0, 142936.0, 137499.0, 140839.0, 138265.0, 130960.0, 116935.0, 110689.0, 109158.0, 116533.0, 126558.0, 127542.0, 123383.0, 126432.0, 127412.0, 132290.0, 102328.0, 114734.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>wright &amp; McGill Granger TR's-short tip</name>
+	<length>92</length>
+	<action_length>82</action_length>
+	<type>Dry-Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>15/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>30.67</ferrule1_loc>
+	<ferrule2_loc>61.33</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.072</lwv>
+	<rav>0.276</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>Submitted by Dave Kemp</notes>
+	<dimensions>0.062007999999999994, 0.08180099999999998, 0.10099999999999999, 0.1130022, 0.1315008, 0.14300279999999999, 0.1680099, 0.169001, 0.194005, 0.2080036, 0.217006, 0.225, 0.229506, 0.257, 0.268009, 0.280007, 0.292002, 0.32604, 0.32906</dimensions>
+	<stresses>30668.0, 122288.0, 137993.0, 140273.0, 140017.0, 120264.0, 126788.0, 154345.0, 132300.0, 132296.0, 140165.0, 150207.0, 165693.0, 140664.0, 146709.0, 150027.0, 150418.0, 129905.0, 141801.0, 160934.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5867/8-2 Bass Bug</name>
+	<length>102</length>
+	<action_length>102</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>18/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>51.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.095</lwv>
+	<rav>0.354</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1903, Penta construction accurate fast action rod for big flies in rivers and lakes.  No varnish</notes>
+	<dimensions>0.08, 0.106, 0.131, 0.15, 0.17, 0.188, 0.205, 0.222, 0.239, 0.256, 0.274, 0.292, 0.31, 0.327, 0.345, 0.362, 0.379, 0.396, 0.412, 0.425, 0.425</dimensions>
+	<stresses>75559.0, 199189.0, 199124.0, 199493.0, 186783.0, 178286.0, 171584.0, 164751.0, 158379.0, 152706.0, 146194.0, 146453.0, 146973.0, 148003.0, 147158.0, 147332.0, 147342.0, 147300.0, 148348.0, 152555.0, 171432.0</stresses>
+	<guide_spacings>4.5, 9.875, 16.125, 23.25, 31.25, 40.125, 49.875, 9.5, 19.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1/0, 1, 1, 1, 2, 2, , 12mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5805/6-2 Trout</name>
+	<length>96</length>
+	<action_length>96</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>50</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>16/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>48.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.082</lwv>
+	<rav>0.36</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1905, Penta construction accurate yet soft presentation for lake and river.  No varnish</notes>
+	<dimensions>0.076, 0.097, 0.12, 0.14, 0.16, 0.179, 0.197, 0.213, 0.23, 0.247, 0.264, 0.283, 0.301, 0.319, 0.338, 0.357, 0.375, 0.394, 0.394, 0.394</dimensions>
+	<stresses>55882.0, 166254.0, 167406.0, 160405.0, 148366.0, 138732.0, 131850.0, 129232.0, 125118.0, 121647.0, 122686.0, 125139.0, 127226.0, 128267.0, 127567.0, 126678.0, 126773.0, 125874.0, 144032.0, 163690.0</stresses>
+	<guide_spacings>4.5, 9.6875, 15.625, 22.25, 29.5625, 37.625, 46.375, 6.8125, 18.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1, 1, 1, 2, , 3, 10mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5763/4-2 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>14/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>45.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.058</lwv>
+	<rav>0.368</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1907, Penta construction very delicate yet fast accurate rod for small streams.  No varnish</notes>
+	<dimensions>0.054, 0.075, 0.096, 0.117, 0.138, 0.157, 0.174, 0.191, 0.209, 0.226, 0.244, 0.263, 0.282, 0.302, 0.322, 0.342, 0.36, 0.36, 0.36</dimensions>
+	<stresses>83566.0, 194968.0, 179367.0, 152864.0, 130734.0, 118412.0, 112418.0, 107504.0, 102175.0, 99432.0, 108515.0, 112491.0, 114323.0, 113827.0, 112856.0, 111733.0, 112482.0, 130910.0, 112877.0</stresses>
+	<guide_spacings>4.5, 9.5, 15.0625, 21.25, 27.875, 35.125, 42.875, 6.125, 15.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 1, 2, 3, 10mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4867/8-2 Bass Bug</name>
+	<length>102</length>
+	<action_length>102</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>15/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>51.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.088</lwv>
+	<rav>0.28</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1919, Quad construction accurate presentation of big flies in both river and lake .  No varnish</notes>
+	<dimensions>0.076, 0.097, 0.117, 0.136, 0.153, 0.168, 0.181, 0.194, 0.206, 0.218, 0.231, 0.244, 0.258, 0.273, 0.288, 0.303, 0.318, 0.333, 0.348, 0.363, 0.363</dimensions>
+	<stresses>50496.0, 148658.0, 159296.0, 151881.0, 144661.0, 140251.0, 139028.0, 136670.0, 135801.0, 134543.0, 131426.0, 130925.0, 129043.0, 125652.0, 122494.0, 119624.0, 117066.0, 114820.0, 112877.0, 111221.0, 123985.0</stresses>
+	<guide_spacings>4.5, 9.875, 16.125, 23.25, 31.25, 40.125, 49.875, 9.5, 19.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1/0, 1, 1, 1, 2, 2, 3, , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4805/6-2 Trout</name>
+	<length>96</length>
+	<action_length>96</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>50</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>15/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>48.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4.5</tiptop_size>
+	<lwv>0.078</lwv>
+	<rav>0.325</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1911, Quad construction accurate but soft presentation for both lake and river.  No varnish</notes>
+	<dimensions>0.068, 0.09, 0.113, 0.134, 0.151, 0.167, 0.183, 0.198, 0.213, 0.229, 0.244, 0.26, 0.276, 0.292, 0.308, 0.324, 0.34, 0.356, 0.372, 0.372</dimensions>
+	<stresses>44638.0, 118804.0, 114077.0, 103765.0, 99790.0, 96195.0, 92172.0, 89673.0, 87304.0, 84099.0, 85227.0, 88247.0, 89923.0, 90765.0, 91102.0, 91148.0, 91041.0, 90873.0, 90703.0, 102674.0</stresses>
+	<guide_spacings>4.5, 9.6875, 15.625, 22.25, 29.5625, 37.625, 46.38, 7.8125, 18.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1, 1, 1, 2, 3, , 10mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4763/4-2 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>50</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>45.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.059</lwv>
+	<rav>0.312</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1912, Quad construction very delicate presentation small stream rod.  No varnish</notes>
+	<dimensions>0.056, 0.072, 0.091, 0.11, 0.129, 0.146, 0.16, 0.174, 0.187, 0.201, 0.216, 0.232, 0.247, 0.263, 0.279, 0.294, 0.31, 0.326, 0.326</dimensions>
+	<stresses>42999.0, 126336.0, 120436.0, 104815.0, 90759.0, 83005.0, 80944.0, 78978.0, 78522.0, 77030.0, 84949.0, 88538.0, 91346.0, 91883.0, 91788.0, 92291.0, 91648.0, 90970.0, 84985.0</stresses>
+	<guide_spacings>4.5, 9.5, 15.0625, 21.25, 27.875, 35.125, 42.875, 6.125, 15.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 1, 2, , 10mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 683-3 Hvy Salmon Cast</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Casting-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>15/64</ferrule1_size>
+	<ferrule2_size>24/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>6.5</tiptop_size>
+	<lwv>0.09</lwv>
+	<rav>0.438</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1916, Hex construction heavy Cast rod for big fish and 30# line and baits to 2 oz</notes>
+	<dimensions>0.098, 0.116, 0.136, 0.158, 0.181, 0.204, 0.226, 0.249, 0.27, 0.291, 0.313, 0.334, 0.355, 0.375, 0.396, 0.416, 0.434, 0.448, 0.448, 0.448</dimensions>
+	<stresses>32875.0, 121919.0, 143142.0, 137627.0, 125131.0, 113253.0, 104451.0, 95832.0, 90843.0, 86718.0, 83034.0, 84151.0, 84582.0, 85318.0, 85155.0, 85544.0, 87075.0, 90903.0, 103750.0, 117704.0</stresses>
+	<guide_spacings>4.5, 9.75, 15.8125, 22.75, 2.375, 10.875, 20.125, 2.125, 13.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>8mm, 8mm, 8mm, 9mm, 10mm, 10mm, 12mm, 12mm, , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 659-M Cast</name>
+	<length>69</length>
+	<action_length>69</action_length>
+	<type>Casting-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>50</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>16/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>23.0</ferrule1_loc>
+	<ferrule2_loc>46.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5.5</tiptop_size>
+	<lwv>0.085</lwv>
+	<rav>0.361</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1905 , Hex construction medium action bass casting rod for #6 - #15 mono and lures to 1/2 oz</notes>
+	<dimensions>0.082, 0.104, 0.127, 0.15, 0.168, 0.184, 0.199, 0.214, 0.231, 0.25, 0.271, 0.291, 0.311, 0.328</dimensions>
+	<stresses>35513.0, 107936.0, 113373.0, 105104.0, 103729.0, 103754.0, 104173.0, 105373.0, 113417.0, 114786.0, 111744.0, 109352.0, 106754.0, 107094.0</stresses>
+	<guide_spacings>4.5, 9.3125, 14.5625, 20.125, 26.0625, 31.3125, 6.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>8mm, 8mm, 9mm, 9mm, 10mm, 12mm, 16mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 670-3 ML Spin</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Spinning-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>4</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.067</lwv>
+	<rav>0.366</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1920, Hex construction long medium light spin rod for #4 - #10 mono and lures to 3/8 oz</notes>
+	<dimensions>0.06003503198107915, 0.084, 0.107, 0.128, 0.147, 0.164, 0.181, 0.197, 0.215, 0.233, 0.252, 0.271, 0.291, 0.31, 0.328, 0.328, 0.328</dimensions>
+	<stresses>46183.0, 106869.0, 101348.0, 92804.0, 87260.0, 84873.0, 84026.0, 85854.0, 84306.0, 82722.0, 80362.0, 78453.0, 77870.0, 78310.0, 79310.0, 94065.0, 110381.0</stresses>
+	<guide_spacings>4.5, 9.625, 15.375, 21.8125, 1.875, 9.625, 14.0, 27.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>8mm, 8mm, 9mm, 10mm, 10mm, 12mm, 16mm, , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 659-3 M Spin </name>
+	<length>69</length>
+	<action_length>69</action_length>
+	<type>Spinning-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>16/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>23.0</ferrule1_loc>
+	<ferrule2_loc>46.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.077</lwv>
+	<rav>0.361</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1925, Hex construction medium spin rod for #6 - #12 mono and lures to 1/2 oz</notes>
+	<dimensions>0.073, 0.096, 0.118, 0.138, 0.156, 0.172, 0.189, 0.206, 0.223, 0.241, 0.261, 0.281, 0.301, 0.301</dimensions>
+	<stresses>31113.0, 86741.0, 91534.0, 89553.0, 88010.0, 88289.0, 86421.0, 86245.0, 97141.0, 102146.0, 102133.0, 100978.0, 99338.0, 118249.0</stresses>
+	<guide_spacings>4.5, 9.3125, 14.5625, 20.125, 26.125, 31.3125, 6.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>8mm, 8mm, 9mm, 10mm, 12mm, 16mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 659-3 UL Spin</name>
+	<length>69</length>
+	<action_length>69</action_length>
+	<type>Spinning-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>17/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>23.0</ferrule1_loc>
+	<ferrule2_loc>46.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.052</lwv>
+	<rav>0.44</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1925, Hex construction ultra light spin rod for #2 - #6 mono and lures to 1/4 oz</notes>
+	<dimensions>0.058, 0.078, 0.097, 0.12, 0.143, 0.167, 0.188, 0.208, 0.23, 0.254, 0.277, 0.304, 0.304, 0.304</dimensions>
+	<stresses>41477.0, 108563.0, 111052.0, 92296.0, 78148.0, 66911.0, 62068.0, 60976.0, 68865.0, 70640.0, 71212.0, 68066.0, 83938.0, 101497.0</stresses>
+	<guide_spacings>4.5, 9.3125, 14.5625, 20.125, 26.0825, 31.3125, 6.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>8mm, 8mm, 9mm, 10mm, 12mm, 16mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6663/4-2 Nymph</name>
+	<length>78</length>
+	<action_length>78</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Standard)</ferrule_type>
+	<ferrule1_loc>39.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.061</lwv>
+	<rav>0.292</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes></notes>
+	<dimensions>0.07, 0.078, 0.091, 0.105, 0.119, 0.133, 0.148, 0.163, 0.178, 0.193, 0.208, 0.223, 0.239, 0.256, 0.272, 0.272</dimensions>
+	<stresses>46031.0, 206345.0, 247506.0, 244183.0, 230124.0, 214002.0, 194809.0, 178743.0, 166666.0, 160115.0, 153836.0, 148138.0, 141347.0, 134035.0, 129402.0, 148978.0</stresses>
+	<guide_spacings>4.5, 9.75, 15.8125, 22.688, 30.3125, 37.75, 9.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 2, 8mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6662/3-2 Midge</name>
+	<length>78</length>
+	<action_length>78</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>2</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>39.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.054</lwv>
+	<rav>0.294</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1922, Hex construction two piece midge very light small stream rod</notes>
+	<dimensions>0.064, 0.072, 0.083, 0.097, 0.112, 0.127, 0.142, 0.157, 0.172, 0.187, 0.202, 0.218, 0.233, 0.25, 0.268, 0.268</dimensions>
+	<stresses>31333.0, 138614.0, 175417.0, 169655.0, 154229.0, 140316.0, 128829.0, 119661.0, 112465.0, 106883.0, 102607.0, 98034.0, 95812.0, 92044.0, 88238.0, 103666.0</stresses>
+	<guide_spacings>4.5, 9.75, 15.8125, 22.688, 30.3125, 37.75, 9.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 2, 8mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6660/1-2 Whisper</name>
+	<length>78</length>
+	<action_length>78</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>39.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.043</lwv>
+	<rav>0.294</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1922, Hex construction two piece ultra light small stream rod</notes>
+	<dimensions>0.054, 0.061, 0.071, 0.084, 0.1, 0.116, 0.13, 0.144, 0.159, 0.175, 0.191, 0.207, 0.224, 0.241, 0.259, 0.259</dimensions>
+	<stresses>31955.0, 142437.0, 178523.0, 169504.0, 143187.0, 124012.0, 115284.0, 108525.0, 101472.0, 94621.0, 89612.0, 85988.0, 82320.0, 79704.0, 77010.0, 91787.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6602/3-2 Midge</name>
+	<length>70</length>
+	<action_length>70</action_length>
+	<type>Banty-Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>2</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.054</lwv>
+	<rav>0.283</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1925, Hex construction two piece version of ultra light banty rod for small streams</notes>
+	<dimensions>0.06, 0.069, 0.081, 0.094, 0.108, 0.123, 0.138, 0.153, 0.168, 0.183, 0.198, 0.214, 0.229, 0.244, 0.244</dimensions>
+	<stresses>29451.0, 123874.0, 150837.0, 151319.0, 141669.0, 128963.0, 118718.0, 110701.0, 119396.0, 122844.0, 123578.0, 121250.0, 120171.0, 118887.0, 51177.0</stresses>
+	<guide_spacings>4.5, 9.75, 15.8125, 22.6875, 30.3125, 37.75, 9.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 2, 8mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6603/4-1 Nymph</name>
+	<length>70</length>
+	<action_length>70</action_length>
+	<type>Banty-Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>4</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>1</pieces>
+	<ferrule1_size>None</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>0.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4.5</tiptop_size>
+	<lwv>0.058</lwv>
+	<rav>0.274</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes></notes>
+	<dimensions>0.066, 0.073, 0.085, 0.099, 0.114, 0.129, 0.142, 0.156, 0.169, 0.183, 0.197, 0.211, 0.226, 0.246, 0.246</dimensions>
+	<stresses>45387.0, 208540.0, 252257.0, 242625.0, 218683.0, 196698.0, 185777.0, 172498.0, 164308.0, 154809.0, 147056.0, 140771.0, 133927.0, 120821.0, 135822.0</stresses>
+	<guide_spacings>4.5, 9.375, 14.875, 20.375, 26.5, 33.0, 39.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 2, 8mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6602/3-1 Midge</name>
+	<length>70</length>
+	<action_length>70</action_length>
+	<type>Banty-Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>2</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>1</pieces>
+	<ferrule1_size>None</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>0.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.054</lwv>
+	<rav>0.271</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes></notes>
+	<dimensions>0.06, 0.068, 0.08, 0.094, 0.109, 0.123, 0.136, 0.15, 0.163, 0.177, 0.191, 0.205, 0.22, 0.236, 0.236</dimensions>
+	<stresses>29449.0, 129334.0, 156325.0, 151000.0, 137522.0, 128742.0, 123810.0, 117170.0, 113961.0, 109608.0, 106290.0, 103833.0, 100714.0, 97185.0, 111143.0</stresses>
+	<guide_spacings>4.5, 9.375, 14.875, 20.375, 26.5, 33.0, 39.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 2, 8mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6600/1-1 Whisper</name>
+	<length>70</length>
+	<action_length>70</action_length>
+	<type>Banty-Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>1</pieces>
+	<ferrule1_size>None</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.046</lwv>
+	<rav>0.274</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1925, Hex construction ultra light extremely sensitive banty rod for small streams</notes>
+	<dimensions>0.054, 0.061, 0.073, 0.087, 0.102, 0.117, 0.13, 0.144, 0.157, 0.171, 0.185, 0.199, 0.214, 0.23, 0.23</dimensions>
+	<stresses>31955.0, 142439.0, 164394.0, 153009.0, 135635.0, 121716.0, 116223.0, 109448.0, 106259.0, 102107.0, 99049.0, 96877.0, 94100.0, 90950.0, 104582.0</stresses>
+	<guide_spacings>4.5, 9.375, 14.875, 20.375, 26.5, 33.0, 39.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 2, 8mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6795/6-4 Backpacker</name>
+	<length>92</length>
+	<action_length>92</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>50</line_cast>
+	<pieces>4</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>15/64</ferrule2_size>
+	<ferrule3_size>20/64</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>23.0</ferrule1_loc>
+	<ferrule2_loc>46.0</ferrule2_loc>
+	<ferrule3_loc>69.0</ferrule3_loc>
+	<tiptop_size>4.5</tiptop_size>
+	<lwv>0.079</lwv>
+	<rav>0.34</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1920, Hex construction very fast action multi piece backpacking trout and bass rod</notes>
+	<dimensions>0.068, 0.091, 0.115, 0.137, 0.157, 0.174, 0.189, 0.205, 0.219, 0.234, 0.25, 0.267, 0.284, 0.301, 0.319, 0.337, 0.356, 0.375, 0.375</dimensions>
+	<stresses>62012.0, 159703.0, 150482.0, 135143.0, 123774.0, 118855.0, 117253.0, 113545.0, 113191.0, 111350.0, 108489.0, 104973.0, 102149.0, 99929.0, 97313.0, 95284.0, 92970.0, 91190.0, 104172.0</stresses>
+	<guide_spacings>4.5, 9.625, 15.375, 21.75, 5.75, 13.375, 44.625, 7.5, 17.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1, 1, 1, 2, 2, 3, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6963/4-3 Chironomid</name>
+	<length>114</length>
+	<action_length>114</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>4</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>21/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>38.0</ferrule1_loc>
+	<ferrule2_loc>76.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.065</lwv>
+	<rav>0.335</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1914, Hex construction long version very sensitive nymph rod for lake conditions</notes>
+	<dimensions>0.06, 0.078, 0.099, 0.12, 0.14, 0.158, 0.175, 0.191, 0.207, 0.222, 0.238, 0.254, 0.27, 0.286, 0.303, 0.32, 0.338, 0.355, 0.372, 0.388, 0.404, 0.404, 0.404</dimensions>
+	<stresses>46252.0, 133088.0, 126974.0, 111139.0, 99134.0, 92708.0, 88749.0, 86783.0, 85206.0, 85176.0, 84299.0, 83787.0, 83600.0, 83700.0, 83224.0, 83061.0, 82435.0, 82818.0, 83403.0, 84814.0, 86334.0, 98778.0, 112463.0</stresses>
+	<guide_spacings>4.5, 9.25, 15.0625, 21.3125, 27.0, 34.0, 7.8125, 16.625, 25.875, 1.8125, 11.0825, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 1, 2, 2, 3, 4, 10, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6893/4-3 Chironomid</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>4</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>19/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.064</lwv>
+	<rav>0.329</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1912, Hex construction very sensitive nymph rod for lakeconditions</notes>
+	<dimensions>0.058, 0.078, 0.099, 0.12, 0.14, 0.156, 0.172, 0.187, 0.203, 0.218, 0.233, 0.248, 0.264, 0.28, 0.296, 0.314, 0.332, 0.35, 0.367, 0.385, 0.385, 0.385</dimensions>
+	<stresses>66705.0, 170696.0, 160148.0, 137791.0, 120798.0, 115348.0, 110017.0, 107007.0, 106106.0, 106108.0, 105771.0, 105346.0, 103790.0, 102523.0, 101555.0, 100735.0, 99908.0, 99165.0, 99360.0, 98857.0, 112947.0, 125079.0</stresses>
+	<guide_spacings>4.5, 9.0, 16.375, 23.75, 32.0625, 6.375, 16.625, 25.8125, 5.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 1, 2, 3, 10mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 61109/10-4 Switch Spey</name>
+	<length>132</length>
+	<action_length>132</action_length>
+	<type>Spey-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>9</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>4</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>19/64</ferrule2_size>
+	<ferrule3_size>24/64</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>99.0</ferrule3_loc>
+	<tiptop_size>6</tiptop_size>
+	<lwv>0.101</lwv>
+	<rav>0.282</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1916, Hex construction Hvy Switch Spey two handed rod for big water big flies - 4 pc</notes>
+	<dimensions>0.09, 0.108, 0.127, 0.146, 0.163, 0.18, 0.196, 0.211, 0.226, 0.24, 0.253, 0.266, 0.279, 0.291, 0.303, 0.316, 0.329, 0.34, 0.352, 0.366, 0.378, 0.392, 0.406, 0.406, 0.406, 0.406, 0.406</dimensions>
+	<stresses>55770.0, 197263.0, 227620.0, 223685.0, 217207.0, 206187.0, 197148.0, 191887.0, 187687.0, 185161.0, 184336.0, 183105.0, 181702.0, 182136.0, 184039.0, 184162.0, 184092.0, 187190.0, 188462.0, 186566.0, 188076.0, 187592.0, 187098.0, 206584.0, 227309.0, 249271.0, 272471.0</stresses>
+	<guide_spacings>4.5, 9.6875, 15.625, 22.3125, 29.75, 4.875, 13.75, 23.3125, 1.625, 12.6875, 24.5, 1.5, 7.5, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1/0, 1, 1, , 2, 2, 3, 3, 4, 8mm, 10mm, 12mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 61107/8-4 Switch Spey</name>
+	<length>132</length>
+	<action_length>132</action_length>
+	<type>Spey-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>4</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>24/64</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>99.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.092</lwv>
+	<rav>0.285</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1918, Hex construction Medium Switch Spey two handed rod for big water big flies - 4 pc</notes>
+	<dimensions>0.08, 0.099, 0.12, 0.137, 0.155, 0.171, 0.186, 0.202, 0.217, 0.231, 0.246, 0.259, 0.273, 0.285, 0.298, 0.31, 0.323, 0.335, 0.347, 0.36, 0.372, 0.385, 0.397, 0.397, 0.397, 0.397, 0.397</dimensions>
+	<stresses>60188.0, 194501.0, 205526.0, 206973.0, 193927.0, 185503.0, 178858.0, 170843.0, 167232.0, 165195.0, 160788.0, 160258.0, 157847.0, 158926.0, 159886.0, 162491.0, 163246.0, 165343.0, 167290.0, 167738.0, 169843.0, 171529.0, 174361.0, 193541.0, 213980.0, 235680.0, 258640.0</stresses>
+	<guide_spacings>4.5, 9.6875, 15.625, 22.3125, 29.75, 4.875, 13.75, 10.3125, 1.625, 11.6875, 23.5, 1.5, 7.5, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1/0, 1, 1, 1, 2, 2, 3, 3, 4, 8mm, 10mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 61105/6-4 Switch Spey</name>
+	<length>132</length>
+	<action_length>132</action_length>
+	<type>Spey-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>4</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>24/64</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>99.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.08</lwv>
+	<rav>0.296</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1900, Hex construction Light Switch Spey two handed rod for big water, big flies - 4 pc</notes>
+	<dimensions>0.071, 0.089, 0.109, 0.127, 0.146, 0.164, 0.181, 0.197, 0.213, 0.227, 0.242, 0.255, 0.268, 0.282, 0.294, 0.307, 0.32, 0.332, 0.345, 0.358, 0.37, 0.383, 0.396, 0.396, 0.396, 0.396, 0.396</dimensions>
+	<stresses>64900.0, 202208.0, 207685.0, 197407.0, 177050.0, 161291.0, 149827.0, 143317.0, 138842.0, 137918.0, 135009.0, 135425.0, 135736.0, 134603.0, 138038.0, 140078.0, 141840.0, 144718.0, 146144.0, 147510.0, 150340.0, 152877.0, 155199.0, 173345.0, 192747.0, 213407.0, 235324.0</stresses>
+	<guide_spacings>4.5, 9.6875, 15.625, 22.3125, 29.75, 4.875, 13.75, 23.3125, 1.625, 11.6875, 23.5, 1.5, 7.5, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1/0, 1, 1, 1, 2, 2, 2, 3, 4, 8mm, 10mm, 12mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 61107/8-3 Switch Spey</name>
+	<length>132</length>
+	<action_length>132</action_length>
+	<type>Spey-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>14/64</ferrule1_size>
+	<ferrule2_size>21/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>44.0</ferrule1_loc>
+	<ferrule2_loc>88.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5.5</tiptop_size>
+	<lwv>0.086</lwv>
+	<rav>0.276</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1900, Hex construction Medium Switch Spey two handed rod for big water big flies - 3 pc</notes>
+	<dimensions>0.082, 0.097, 0.113, 0.13, 0.148, 0.163, 0.178, 0.191, 0.204, 0.217, 0.23, 0.243, 0.256, 0.27, 0.283, 0.296, 0.31, 0.323, 0.337, 0.351, 0.365, 0.38, 0.394, 0.398, 0.398, 0.398, 0.398</dimensions>
+	<stresses>55910.0, 206792.0, 245856.0, 241493.0, 221586.0, 212530.0, 201984.0, 197609.0, 192719.0, 188606.0, 187125.0, 185089.0, 182835.0, 178579.0, 176565.0, 174737.0, 171469.0, 170203.0, 168319.0, 167526.0, 166799.0, 164870.0, 164431.0, 176789.0, 195311.0, 215091.0, 236126.0</stresses>
+	<guide_spacings>4.5, 9.6875, 15.625, 22.3125, 29.75, 37.875, 2.75, 10.312, 22.625, 33.688, 1.5, 9.5, 18.5, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1/0, 1, 1, 1, 2, 2, 3, 3, 4, 8mm, 10mm, 12, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 61109/10-3 Switch Spey</name>
+	<length>132</length>
+	<action_length>132</action_length>
+	<type>Spey-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>9</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>14/64</ferrule1_size>
+	<ferrule2_size>21/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>44.0</ferrule1_loc>
+	<ferrule2_loc>88.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5.5</tiptop_size>
+	<lwv>0.096</lwv>
+	<rav>0.271</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1902, Hex construction medium action Switch Spey two handed rod for big flies, big fis, big water</notes>
+	<dimensions>0.092, 0.107, 0.123, 0.139, 0.156, 0.171, 0.186, 0.199, 0.212, 0.225, 0.238, 0.251, 0.263, 0.276, 0.288, 0.303, 0.316, 0.329, 0.342, 0.355, 0.368, 0.381, 0.394, 0.399, 0.399, 0.399, 0.399</dimensions>
+	<stresses>52227.0, 202890.0, 250476.0, 258830.0, 247017.0, 239283.0, 229010.0, 224834.0, 219717.0, 215020.0, 212562.0, 209564.0, 208730.0, 205396.0, 204331.0, 197309.0, 194764.0, 192514.0, 191172.0, 190809.0, 190463.0, 190174.0, 189967.0, 201491.0, 221329.0, 242428.0, 264788.0</stresses>
+	<guide_spacings>4.5, 9.6875, 15.625, 22.3125, 29.75, 37.875, 2.75, 10.312, 22.625, 33.688, 1.5, 9.5, 18.5, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1/0, 1, 1, 1, 2, 2, 3, 3, , 8mm, 10mm, 12mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 61105/6-3 Switch Spey</name>
+	<length>132</length>
+	<action_length>132</action_length>
+	<type>Spey-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>14/64</ferrule1_size>
+	<ferrule2_size>22/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>44.0</ferrule1_loc>
+	<ferrule2_loc>88.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.081</lwv>
+	<rav>0.291</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1924, Hex construction Light Switch Spey two handed rod for big water big flies - 3 pc</notes>
+	<dimensions>0.07, 0.088, 0.108, 0.127, 0.145, 0.162, 0.179, 0.195, 0.21, 0.225, 0.239, 0.253, 0.267, 0.279, 0.291, 0.304, 0.316, 0.329, 0.341, 0.353, 0.366, 0.378, 0.391, 0.391, 0.391, 0.391, 0.391</dimensions>
+	<stresses>67706.0, 209073.0, 213322.0, 197183.0, 180495.0, 167048.0, 154548.0, 145872.0, 140245.0, 135981.0, 136161.0, 135859.0, 135343.0, 137687.0, 139826.0, 140448.0, 142434.0, 143080.0, 145715.0, 149109.0, 151020.0, 154014.0, 155674.0, 173464.0, 192529.0, 212867.0, 234480.0</stresses>
+	<guide_spacings>4.5, 9.6875, 15.625, 22.3125, 29.75, 37.875, 2.75, 10.3125, 22.625, 33.6875, 1.5, 9.5, 18.5, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1/0, 1, 1, 1, 2, 2, 2, 3, 4, 8mm, 10mm, 12mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6899/10-3 Salmon/Steelhead</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>9</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>14/64</ferrule1_size>
+	<ferrule2_size>22/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>6</tiptop_size>
+	<lwv>0.1</lwv>
+	<rav>0.341</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1920, Hex construction Heavy single handed rod for salmon/steelhead in big water</notes>
+	<dimensions>0.088, 0.112, 0.136, 0.158, 0.178, 0.194, 0.21, 0.225, 0.24, 0.256, 0.272, 0.289, 0.306, 0.324, 0.342, 0.36, 0.376, 0.392, 0.407, 0.42, 0.42, 0.42</dimensions>
+	<stresses>30640.0, 93395.0, 101064.0, 99586.0, 97542.0, 99879.0, 100768.0, 102286.0, 106180.0, 107604.0, 108400.0, 107734.0, 107045.0, 105449.0, 104104.0, 104384.0, 106216.0, 107877.0, 110233.0, 114092.0, 129094.0, 141905.0</stresses>
+	<guide_spacings>4.5, 9.0, 16.375, 23.75, 31.0625, 8.375, 18.625, 30.8125, 9.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1, 1, 2, 2, 2, 3, 3, 4, , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6897/8-3 Bass Bug</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>21/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.087</lwv>
+	<rav>0.329</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1902, Hex construction fast accurate presentation big flies for lake and river conditions.  No varnish</notes>
+	<dimensions>0.078, 0.099, 0.122, 0.143, 0.163, 0.179, 0.195, 0.21, 0.224, 0.238, 0.254, 0.271, 0.287, 0.303, 0.32, 0.337, 0.354, 0.37, 0.384, 0.385, 0.385, 0.385</dimensions>
+	<stresses>64914.0, 194412.0, 195543.0, 182134.0, 167176.0, 162518.0, 156394.0, 152202.0, 152815.0, 152349.0, 147791.0, 141969.0, 138290.0, 135063.0, 131054.0, 129246.0, 127557.0, 127065.0, 128651.0, 143815.0, 161281.0, 176116.0</stresses>
+	<guide_spacings>4.5, 9.0, 16.375, 23.75, 32.0625, 6.375, 16.625, 25.8125, 3.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, 1/0, 1, 1, 1, 2, 22, 3, 12mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6835/6-3 Trout</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>19/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.08</lwv>
+	<rav>0.334</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1901, hex construction fast accurate yet delicate presentation for lake and river conditions.  No varnish</notes>
+	<dimensions>0.07, 0.093, 0.117, 0.139, 0.158, 0.174, 0.189, 0.204, 0.219, 0.234, 0.25, 0.267, 0.283, 0.3, 0.318, 0.336, 0.354, 0.372, 0.388, 0.388</dimensions>
+	<stresses>67712.0, 177348.0, 168399.0, 151509.0, 141197.0, 137141.0, 134212.0, 130813.0, 127459.0, 124395.0, 120569.0, 118171.0, 117061.0, 114819.0, 111795.0, 109230.0, 107098.0, 105366.0, 105607.0, 119635.0</stresses>
+	<guide_spacings>4.5, 9.75, 15.8125, 22.75, 30.375, 5.875, 15.125, 25.125, 3.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1, 1, 1, 2, 2, 3, , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6763/4-3 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>17/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>30.0</ferrule1_loc>
+	<ferrule2_loc>60.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.059</lwv>
+	<rav>0.34</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1908, hex construction fast very delicate presentation for small strem conditions.  No varnish</notes>
+	<dimensions>0.056, 0.073, 0.094, 0.115, 0.136, 0.152, 0.168, 0.182, 0.197, 0.213, 0.23, 0.248, 0.265, 0.283, 0.302, 0.321, 0.336, 0.336, 0.336</dimensions>
+	<stresses>59734.0, 168461.0, 152037.0, 127920.0, 108381.0, 103344.0, 98653.0, 101700.0, 101752.0, 99877.0, 96832.0, 93145.0, 91193.0, 90900.0, 89554.0, 88332.0, 90440.0, 105355.0, 86922.0</stresses>
+	<guide_spacings>4.5, 9.5, 15.0625, 21.25, 27.875, 5.125, 12.875, 21.125, 1.5, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 1, 2, 3, 10mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6701/2-3 Whisper</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>14/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.042</lwv>
+	<rav>0.304</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1910, hex construction fast ultra delicate presentation for small streams.  No varnish</notes>
+	<dimensions>0.052, 0.061, 0.073, 0.087, 0.102, 0.118, 0.134, 0.15, 0.165, 0.18, 0.196, 0.213, 0.23, 0.248, 0.266, 0.284, 0.302</dimensions>
+	<stresses>35732.0, 142189.0, 164110.0, 152760.0, 135430.0, 118512.0, 110656.0, 108382.0, 106689.0, 104430.0, 100640.0, 96086.0, 95056.0, 93216.0, 91424.0, 89834.0, 88511.0</stresses>
+	<guide_spacings>4.5, 9.375, 14.325, 20.25, 26.25, 4.625, 11.375, 18.5, 26.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, 1/0, 1/0, 1, 1, 2, 2, 3, 8mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5897/8-3 Bass Bug</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>14/64</ferrule1_size>
+	<ferrule2_size>22/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.087</lwv>
+	<rav>0.366</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1902, penta construction fast accurate presentation big flies for lake and river conditions.  No varnish</notes>
+	<dimensions>0.08, 0.106, 0.131, 0.15, 0.17, 0.188, 0.205, 0.222, 0.239, 0.256, 0.274, 0.292, 0.31, 0.327, 0.345, 0.362, 0.379, 0.396, 0.412, 0.425, 0.425, 0.425</dimensions>
+	<stresses>75559.0, 199189.0, 199124.0, 199493.0, 186783.0, 178286.0, 171584.0, 164751.0, 162026.0, 158641.0, 153455.0, 148745.0, 144598.0, 142324.0, 139209.0, 139446.0, 139594.0, 139740.0, 140953.0, 145197.0, 163452.0, 179030.0</stresses>
+	<guide_spacings>4.5, 9.0, 16.375, 23.75, 32.0625, 6.375, 16.625, 25.8125, 3.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1/0, 1, 1, 1, 2, , 3, 12mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5835/6-3 Trout</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>21/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.081</lwv>
+	<rav>0.363</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1903, penta construction fast accurate presentation for lake and river conditions.  No varnish</notes>
+	<dimensions>0.076, 0.097, 0.12, 0.14, 0.16, 0.179, 0.197, 0.213, 0.23, 0.247, 0.264, 0.283, 0.301, 0.319, 0.338, 0.357, 0.375, 0.394, 0.394, 0.394</dimensions>
+	<stresses>66508.0, 196727.0, 196727.0, 187092.0, 171682.0, 159216.0, 150053.0, 147554.0, 144792.0, 141648.0, 138560.0, 132900.0, 129406.0, 126501.0, 124629.0, 123280.0, 123054.0, 121984.0, 139455.0, 158512.0</stresses>
+	<guide_spacings>4.5, 9.75, 15.8125, 22.75, 30.375, 5.875, 15.125, 25.125, 3.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1, 1, 1, 2, 2, , 10mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4835/6-3 Trout</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>19/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4.5</tiptop_size>
+	<lwv>0.078</lwv>
+	<rav>0.326</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1904, quad construction, fast accurate presentation for lake and river conditions.  No varnish</notes>
+	<dimensions>0.068, 0.09, 0.113, 0.134, 0.151, 0.167, 0.183, 0.198, 0.213, 0.229, 0.244, 0.26, 0.276, 0.292, 0.308, 0.324, 0.34, 0.356, 0.372, 0.372</dimensions>
+	<stresses>53146.0, 140683.0, 134214.0, 121219.0, 115697.0, 110661.0, 105195.0, 102543.0, 100918.0, 97676.0, 95802.0, 92966.0, 90496.0, 88396.0, 87724.0, 87304.0, 86896.0, 86546.0, 86278.0, 97670.0</stresses>
+	<guide_spacings>4.5, 9.75, 15.8125, 22.75, 30.375, 5.875, 15.125, 25.125, 3.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1, 1, 1, 2, 2, 3, 3, , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5763/4-3 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>30.0</ferrule1_loc>
+	<ferrule2_loc>60.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.058</lwv>
+	<rav>0.368</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1906, penta construction very fast very delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.054, 0.075, 0.096, 0.117, 0.138, 0.157, 0.174, 0.191, 0.209, 0.226, 0.244, 0.263, 0.282, 0.302, 0.322, 0.342, 0.36, 0.36, 0.36</dimensions>
+	<stresses>74986.0, 195154.0, 179540.0, 153006.0, 130849.0, 118509.0, 112504.0, 111812.0, 108703.0, 107157.0, 104462.0, 101117.0, 98495.0, 97919.0, 97241.0, 96620.0, 97742.0, 114387.0, 106277.0</stresses>
+	<guide_spacings>4.5, 9.5, 15.0625, 21.25, 27.875, 5.125, 12.875, 21.125, 1.5, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 1, 2, 3, 10mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5701/2-3 Whisper</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>17/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.053</lwv>
+	<rav>0.366</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1905, penta construction very fast ultra delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.052, 0.072, 0.092, 0.113, 0.134, 0.152, 0.169, 0.186, 0.202, 0.22, 0.238, 0.256, 0.274, 0.293, 0.312, 0.331, 0.331</dimensions>
+	<stresses>44886.0, 200846.0, 193026.0, 162544.0, 137342.0, 125636.0, 118088.0, 111928.0, 108664.0, 103338.0, 99325.0, 96374.0, 94280.0, 91944.0, 90332.0, 89310.0, 104868.0</stresses>
+	<guide_spacings>4.5, 9.375, 14.625, 20.25, 26.25, 4.625, 11.375, 18.5, 26.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, , 1, 1, 2, 2, 3, 8mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4763/4-3 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>16/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>30.0</ferrule1_loc>
+	<ferrule2_loc>60.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.059</lwv>
+	<rav>0.312</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1914, quad construction, fast very delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.056, 0.072, 0.091, 0.11, 0.129, 0.146, 0.16, 0.174, 0.187, 0.201, 0.216, 0.232, 0.247, 0.263, 0.279, 0.294, 0.31, 0.326, 0.326</dimensions>
+	<stresses>42999.0, 126336.0, 124462.0, 104750.0, 90690.0, 82937.0, 80877.0, 78914.0, 78461.0, 76973.0, 74790.0, 72177.0, 71024.0, 69447.0, 68302.0, 68208.0, 67684.0, 67422.0, 61077.0</stresses>
+	<guide_spacings>4.5, 9.5, 15.0625, 21.25, 27.875, 5.125, 12.875, 21.125, 1.5, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 1, 2, , 10mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4897/8-3 Bass Bug</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.087</lwv>
+	<rav>0.283</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1900, quad construction, med fast accurate presentation big flies for lake and river conditions.  No varnish</notes>
+	<dimensions>0.076, 0.097, 0.117, 0.136, 0.153, 0.168, 0.181, 0.194, 0.206, 0.218, 0.231, 0.244, 0.258, 0.273, 0.288, 0.303, 0.318, 0.333, 0.348, 0.363, 0.363, 0.363</dimensions>
+	<stresses>50496.0, 148658.0, 159296.0, 151881.0, 144661.0, 140251.0, 139028.0, 136670.0, 135801.0, 134543.0, 131426.0, 128560.0, 124541.0, 119741.0, 115661.0, 112213.0, 109319.0, 106911.0, 104928.0, 103319.0, 115185.0, 125339.0</stresses>
+	<guide_spacings>4.5, 9.0, 16.375, 23.75, 32.0625, 6.375, 16.625, 25.8125, 3.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1/0, 1, 1, 1, 2, 2, , 12mm, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4701/2-3 Whisper</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>9/64</ferrule1_size>
+	<ferrule2_size>14/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.043</lwv>
+	<rav>0.305</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1915, quad construction, fast ultra delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.052, 0.061, 0.074, 0.09, 0.106, 0.123, 0.139, 0.154, 0.167, 0.182, 0.197, 0.213, 0.23, 0.247, 0.264, 0.281, 0.281</dimensions>
+	<stresses>25722.0, 102357.0, 113463.0, 99529.0, 87278.0, 75958.0, 69310.0, 65662.0, 65243.0, 63015.0, 61445.0, 59564.0, 57515.0, 56076.0, 55120.0, 54552.0, 64697.0</stresses>
+	<guide_spacings>4.5, 9.375, 14.625, 20.25, 26.25, 4.625, 11.375, 15.5, 26.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>2/0, 1/0, 1/0, 1, 1, 1, 2, , 8mm, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6600/1-1 Whisper</name>
+	<length>70</length>
+	<action_length>70</action_length>
+	<type>Banty-Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>1</pieces>
+	<ferrule1_size>None</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.046</lwv>
+	<rav>0.274</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1925, Hex construction ultra light extremely sensitive banty rod for small streams</notes>
+	<dimensions>0.054, 0.061, 0.073, 0.087, 0.102, 0.117, 0.13, 0.144, 0.157, 0.171, 0.185, 0.199, 0.214, 0.23, 0.23</dimensions>
+	<stresses>31955.0, 142439.0, 164394.0, 153009.0, 135635.0, 121716.0, 116223.0, 109448.0, 106259.0, 102107.0, 99049.0, 96877.0, 94100.0, 90950.0, 104582.0</stresses>
+	<guide_spacings>5.5, 11.0, 17.75, 24.75, 32.5, 42.125, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1/0, 1, 1, 2, 2, 8, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 670-3 ML Spin</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Spinning-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>4</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.067</lwv>
+	<rav>0.367</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1920, Hex construction long medium light spin rod for #4 - #10 mono and lures to 3/8 oz</notes>
+	<dimensions>0.06003503198107915, 0.08410113072342235, 0.10714391992408372, 0.1281778075839122, 0.1472045757964702, 0.16422575424398256, 0.18124448119704611, 0.19726030910758363, 0.2152760122061957, 0.23328938493496373, 0.25230236187963473, 0.2713123820901597, 0.29132195239845726, 0.31032899315198076, 0.32833315449269534, 0.32831672972273007, 0.32830050389868637</dimensions>
+	<stresses>46263.0, 170136.0, 162569.0, 146446.0, 134480.0, 127380.0, 120384.0, 115884.0, 108816.0, 103086.0, 97333.0, 92803.0, 88351.0, 85714.0, 84493.0, 98181.0, 113430.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6662/3-2 Midge</name>
+	<length>78</length>
+	<action_length>78</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>2</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>39.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.054</lwv>
+	<rav>0.294</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1922, Hex construction two piece midge very light small stream rod</notes>
+	<dimensions>0.064, 0.072, 0.083, 0.097, 0.112, 0.127, 0.142, 0.157, 0.172, 0.187, 0.202, 0.218, 0.233, 0.25, 0.268, 0.268</dimensions>
+	<stresses>31333.0, 138614.0, 175417.0, 169655.0, 154229.0, 140316.0, 128829.0, 119661.0, 112465.0, 106883.0, 102607.0, 98034.0, 95812.0, 92044.0, 88238.0, 103666.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6897/8-3 Bass Bug</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>21/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.087</lwv>
+	<rav>0.329</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1902, Hex construction fast accurate presentation big flies for lake and river conditions.  No varnish</notes>
+	<dimensions>0.078, 0.099, 0.122, 0.143, 0.163, 0.179, 0.195, 0.21, 0.224, 0.238, 0.254, 0.271, 0.287, 0.303, 0.32, 0.337, 0.354, 0.37, 0.384, 0.385, 0.387, 0.387</dimensions>
+	<stresses>64914.0, 194412.0, 195543.0, 182134.0, 167176.0, 162518.0, 156394.0, 152202.0, 153423.0, 153363.0, 149042.0, 143342.0, 139736.0, 136537.0, 132514.0, 130674.0, 128943.0, 128414.0, 129979.0, 145252.0, 160331.0, 175045.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 61107/8-4 Switch Spey</name>
+	<length>132</length>
+	<action_length>132</action_length>
+	<type>Spey-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>4</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>24/64</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>99.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.087</lwv>
+	<rav>0.291</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1918, Hex construction Medium Switch Spey two handed rod for big water big flies - 4 pc</notes>
+	<dimensions>0.078, 0.97, 0.116, 0.133, 0.151, 0.169, 0.186, 0.202, 0.217, 0.231, 0.246, 0.259, 0.273, 0.285, 0.298, 0.31, 0.323, 0.335, 0.347, 0.36, 0.372, 0.385, 0.397, 0.397, 0.397, 0.397, 0.397</dimensions>
+	<stresses>35095.0, 252.0, 415577.0, 459464.0, 443558.0, 412250.0, 384140.0, 361083.0, 343089.0, 329675.0, 312564.0, 303753.0, 291936.0, 287005.0, 281497.0, 279200.0, 274145.0, 271709.0, 269300.0, 264768.0, 262684.0, 258740.0, 257081.0, 279466.0, 303136.0, 328091.0, 354331.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6835/6-3 Trout</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>19/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.08</lwv>
+	<rav>0.334</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1901, hex construction fast accurate yet delicate presentation for lake and river conditions.  No varnish</notes>
+	<dimensions>0.07, 0.093, 0.117, 0.139, 0.158, 0.174, 0.189, 0.204, 0.219, 0.234, 0.25, 0.267, 0.283, 0.3, 0.318, 0.336, 0.354, 0.372, 0.388, 0.388</dimensions>
+	<stresses>67712.0, 177348.0, 168399.0, 151509.0, 141197.0, 137141.0, 134212.0, 130813.0, 127459.0, 124395.0, 120569.0, 118171.0, 117061.0, 114819.0, 111795.0, 109230.0, 107098.0, 105366.0, 105607.0, 119635.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6763/4-3 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>17/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>30.0</ferrule1_loc>
+	<ferrule2_loc>60.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.059</lwv>
+	<rav>0.34</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1908, hex construction fast very delicate presentation for small strem conditions.  No varnish</notes>
+	<dimensions>0.056, 0.073, 0.094, 0.115, 0.136, 0.152, 0.168, 0.182, 0.197, 0.213, 0.23, 0.248, 0.265, 0.283, 0.302, 0.321, 0.336, 0.336, 0.336</dimensions>
+	<stresses>59734.0, 168461.0, 152037.0, 127920.0, 108381.0, 103344.0, 98653.0, 97802.0, 95604.0, 92581.0, 92367.0, 90643.0, 90011.0, 88495.0, 86395.0, 84719.0, 86433.0, 100491.0, 105607.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4897/8-3 Bass Bug</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.087</lwv>
+	<rav>0.283</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1900, quad construction, med fast accurate presentation big flies for lake and river conditions.  No varnish</notes>
+	<dimensions>0.076, 0.097, 0.117, 0.136, 0.153, 0.168, 0.181, 0.194, 0.206, 0.218, 0.231, 0.244, 0.258, 0.273, 0.288, 0.303, 0.318, 0.333, 0.348, 0.363, 0.363, 0.363</dimensions>
+	<stresses>50496.0, 148658.0, 159296.0, 151881.0, 144661.0, 140251.0, 139028.0, 136670.0, 135801.0, 134543.0, 131426.0, 128560.0, 124541.0, 119741.0, 115661.0, 112213.0, 109319.0, 106911.0, 104928.0, 103319.0, 115185.0, 125339.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5763/4-3 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>30.0</ferrule1_loc>
+	<ferrule2_loc>60.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.058</lwv>
+	<rav>0.368</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1906, penta construction very fast very delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.054, 0.075, 0.096, 0.117, 0.138, 0.157, 0.174, 0.191, 0.209, 0.226, 0.244, 0.263, 0.282, 0.302, 0.322, 0.342, 0.36, 0.36, 0.36</dimensions>
+	<stresses>74986.0, 195154.0, 179540.0, 153006.0, 130849.0, 118509.0, 112504.0, 111812.0, 108703.0, 107157.0, 104462.0, 101117.0, 98495.0, 97919.0, 97241.0, 96620.0, 97742.0, 114387.0, 106277.0</stresses>
+	<guide_spacings>4.375, 8.8125, 14.1875, 20.75, 28.3125, 36.25, 45.0, 52.9375, 60.125, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 683-3 Hvy Salmon Cast</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Casting-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>15/64</ferrule1_size>
+	<ferrule2_size>24/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>6.5</tiptop_size>
+	<lwv>0.09</lwv>
+	<rav>0.438</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1916, Hexconstruction heavy Cast rod for big fish and 30# line and baits to 2 oz</notes>
+	<dimensions>0.098, 0.116, 0.136, 0.158, 0.181, 0.204, 0.226, 0.249, 0.27, 0.291, 0.313, 0.334, 0.355, 0.375, 0.396, 0.416, 0.434, 0.448, 0.448, 0.448</dimensions>
+	<stresses>32875.0, 121919.0, 143142.0, 137627.0, 125131.0, 113253.0, 104451.0, 95832.0, 90843.0, 86718.0, 83034.0, 84151.0, 84582.0, 85318.0, 85155.0, 85544.0, 87075.0, 90903.0, 103750.0, 117704.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 659-M Cast</name>
+	<length>69</length>
+	<action_length>69</action_length>
+	<type>Casting-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>50</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>16/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>23.0</ferrule1_loc>
+	<ferrule2_loc>46.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5.5</tiptop_size>
+	<lwv>0.085</lwv>
+	<rav>0.361</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1905 , Hex construction medium action bass casting rod for #6 - #15 mono and lures to 1/2 oz</notes>
+	<dimensions>0.082, 0.104, 0.127, 0.15, 0.168, 0.184, 0.199, 0.214, 0.231, 0.25, 0.271, 0.291, 0.311, 0.328</dimensions>
+	<stresses>35513.0, 107936.0, 113373.0, 105104.0, 103729.0, 103754.0, 104173.0, 105373.0, 113417.0, 114786.0, 111744.0, 109352.0, 106754.0, 107094.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 659-3 M Spin </name>
+	<length>69</length>
+	<action_length>69</action_length>
+	<type>Spinning-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>16/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>23.0</ferrule1_loc>
+	<ferrule2_loc>46.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.077</lwv>
+	<rav>0.361</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1925, Hex construction medium spin rod for #6 - #12 mono and lures to 1/2 oz</notes>
+	<dimensions>0.073, 0.096, 0.118, 0.138, 0.156, 0.172, 0.189, 0.206, 0.223, 0.241, 0.261, 0.281, 0.301, 0.301</dimensions>
+	<stresses>31113.0, 86741.0, 91534.0, 89553.0, 88010.0, 88289.0, 86421.0, 86245.0, 97141.0, 102146.0, 102133.0, 100978.0, 99338.0, 118249.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 659-3 UL Spin</name>
+	<length>69</length>
+	<action_length>69</action_length>
+	<type>Spinning-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>17/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>23.0</ferrule1_loc>
+	<ferrule2_loc>46.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.052</lwv>
+	<rav>0.44</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1925, Hex construction ultra light spin rod for #2 - #6 mono and lures to 1/4 oz</notes>
+	<dimensions>0.058, 0.078, 0.097, 0.12, 0.143, 0.167, 0.188, 0.208, 0.23, 0.254, 0.277, 0.304, 0.304, 0.304</dimensions>
+	<stresses>41477.0, 108563.0, 111052.0, 92296.0, 78148.0, 66911.0, 62068.0, 60976.0, 68865.0, 70640.0, 71212.0, 68066.0, 83938.0, 101497.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6660/1-2 Whisper</name>
+	<length>78</length>
+	<action_length>78</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>39.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.043</lwv>
+	<rav>0.294</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1922, Hex construction two piece ultra light small stream rod</notes>
+	<dimensions>0.054, 0.061, 0.071, 0.084, 0.1, 0.116, 0.13, 0.144, 0.159, 0.175, 0.191, 0.207, 0.224, 0.241, 0.259, 0.259</dimensions>
+	<stresses>31955.0, 142437.0, 178523.0, 169504.0, 143187.0, 124012.0, 115284.0, 108525.0, 101472.0, 94621.0, 89612.0, 85988.0, 82320.0, 79704.0, 77010.0, 91787.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6602/3-2 Midge</name>
+	<length>70</length>
+	<action_length>70</action_length>
+	<type>Banty-Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>2</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>2</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>None</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>0.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.054</lwv>
+	<rav>0.283</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1925, Hex construction two piece version of ultra light banty rod for small streams</notes>
+	<dimensions>0.06, 0.069, 0.081, 0.094, 0.108, 0.123, 0.138, 0.153, 0.168, 0.183, 0.198, 0.214, 0.229, 0.244, 0.244</dimensions>
+	<stresses>29451.0, 123874.0, 150837.0, 151319.0, 141669.0, 128963.0, 118718.0, 110701.0, 119396.0, 122844.0, 123578.0, 121250.0, 120171.0, 118887.0, 51177.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6795/6-4 Backpacker</name>
+	<length>92</length>
+	<action_length>92</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>50</line_cast>
+	<pieces>4</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>15/64</ferrule2_size>
+	<ferrule3_size>20/64</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>23.0</ferrule1_loc>
+	<ferrule2_loc>46.0</ferrule2_loc>
+	<ferrule3_loc>69.0</ferrule3_loc>
+	<tiptop_size>4.5</tiptop_size>
+	<lwv>0.079</lwv>
+	<rav>0.34</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1920, Hex construction very fast action multi piece backpacking trout and bass rod</notes>
+	<dimensions>0.068, 0.091, 0.115, 0.137, 0.157, 0.174, 0.189, 0.205, 0.219, 0.234, 0.25, 0.267, 0.284, 0.301, 0.319, 0.337, 0.356, 0.375, 0.375</dimensions>
+	<stresses>62012.0, 159703.0, 150482.0, 135143.0, 123774.0, 118855.0, 117253.0, 113545.0, 113191.0, 111350.0, 108489.0, 104973.0, 102149.0, 99929.0, 97313.0, 95284.0, 92970.0, 91190.0, 104172.0</stresses>
+	<guide_spacings>4.55, 9.77, 16.1, 23.1, 30.8, 39.3, 48.6, 59.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1, 1, 1, 1, 2, 2, 3, 10, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6963/4-3 Chironomid</name>
+	<length>114</length>
+	<action_length>114</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>4</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>21/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>38.0</ferrule1_loc>
+	<ferrule2_loc>76.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.065</lwv>
+	<rav>0.335</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1914, Hex construction long version very sensitive nymph rod for lake conditions</notes>
+	<dimensions>0.06, 0.078, 0.099, 0.12, 0.14, 0.158, 0.175, 0.191, 0.207, 0.222, 0.238, 0.254, 0.27, 0.286, 0.303, 0.32, 0.338, 0.355, 0.372, 0.388, 0.404, 0.404, 0.404</dimensions>
+	<stresses>46252.0, 133088.0, 126974.0, 111139.0, 99134.0, 92708.0, 88749.0, 86783.0, 85206.0, 85176.0, 84299.0, 83787.0, 83600.0, 83700.0, 83224.0, 83061.0, 82435.0, 82818.0, 83403.0, 84814.0, 86334.0, 98778.0, 112463.0</stresses>
+	<guide_spacings>4.5, 9.25, 15.0625, 21.3125, 28.0, 35.0, 42.6875, 51.5625, 60.875, 70.6875, 81.0625, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 10, , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6893/4-3 Chironomid</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>4</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>19/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.064</lwv>
+	<rav>0.329</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1912, Hex construction very sensitive nymph rod for lakeconditions</notes>
+	<dimensions>0.058, 0.078, 0.099, 0.12, 0.14, 0.156, 0.172, 0.187, 0.203, 0.218, 0.233, 0.248, 0.264, 0.28, 0.296, 0.314, 0.332, 0.35, 0.367, 0.382, 0.382, 0.382</dimensions>
+	<stresses></stresses>
+	<guide_spacings>4.5, 10.75, 17.3125, 25.5625, 33.875, 42.4375, 51.6875, 61.125, 71.5, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>1, 1, 1, 2, 2, 2, 3, 4, 10, , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 61109/10-4 Switch Spey</name>
+	<length>132</length>
+	<action_length>132</action_length>
+	<type>Spey-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>9</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>4</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>19/64</ferrule2_size>
+	<ferrule3_size>24/64</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>99.0</ferrule3_loc>
+	<tiptop_size>6</tiptop_size>
+	<lwv>0.101</lwv>
+	<rav>0.282</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1916, Hex construction Hvy Switch Spey two handed rod for big water big flies - 4 pc</notes>
+	<dimensions>0.09, 0.108, 0.127, 0.146, 0.163, 0.18, 0.196, 0.211, 0.226, 0.24, 0.253, 0.266, 0.279, 0.291, 0.303, 0.316, 0.329, 0.34, 0.352, 0.366, 0.378, 0.392, 0.406, 0.406, 0.406, 0.406, 0.406</dimensions>
+	<stresses>28657.0, 104102.0, 123693.0, 125250.0, 125364.0, 122668.0, 120868.0, 120277.0, 119363.0, 119869.0, 121694.0, 123372.0, 124975.0, 127854.0, 132685.0, 136173.0, 139221.0, 144459.0, 148131.0, 149109.0, 152417.0, 153231.0, 154052.0, 171451.0, 190119.0, 210055.0, 231260.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 61105/6-4 Switch Spey</name>
+	<length>132</length>
+	<action_length>132</action_length>
+	<type>Spey-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>4</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>24/64</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>99.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.08</lwv>
+	<rav>0.296</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1900, Hex construction Light Switch Spey two handed rod for big water, big flies - 4 pc</notes>
+	<dimensions>0.071, 0.089, 0.109, 0.127, 0.146, 0.164, 0.181, 0.197, 0.213, 0.227, 0.242, 0.255, 0.268, 0.282, 0.294, 0.307, 0.32, 0.332, 0.345, 0.358, 0.37, 0.383, 0.396, 0.396, 0.396, 0.396, 0.396</dimensions>
+	<stresses>33779.0, 108396.0, 115048.0, 113127.0, 105027.0, 99061.0, 95243.0, 93279.0, 91595.0, 92655.0, 92593.0, 94917.0, 97238.0, 98517.0, 104147.0, 108687.0, 112721.0, 117421.0, 120758.0, 123866.0, 127830.0, 130614.0, 133296.0, 149698.0, 167376.0, 186330.0, 206560.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 61107/8-3 Switch Spey</name>
+	<length>132</length>
+	<action_length>132</action_length>
+	<type>Spey-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>14/64</ferrule1_size>
+	<ferrule2_size>21/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>44.0</ferrule1_loc>
+	<ferrule2_loc>88.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5.5</tiptop_size>
+	<lwv>0.086</lwv>
+	<rav>0.276</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1900, Hex construction Medium Switch Spey two handed rod for big water big flies - 3 pc</notes>
+	<dimensions>0.082, 0.097, 0.113, 0.13, 0.148, 0.163, 0.178, 0.191, 0.204, 0.217, 0.23, 0.243, 0.256, 0.27, 0.283, 0.296, 0.31, 0.323, 0.337, 0.351, 0.365, 0.38, 0.394, 0.394, 0.394, 0.394, 0.394</dimensions>
+	<stresses>28897.0, 109900.0, 134682.0, 136422.0, 129133.0, 127780.0, 125244.0, 126281.0, 126797.0, 127722.0, 130538.0, 132588.0, 134162.0, 133957.0, 135159.0, 136291.0, 136085.0, 137275.0, 137918.0, 139408.0, 140749.0, 140886.0, 142134.0, 159166.0, 177494.0, 197117.0, 218037.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 61105/6-3 Switch Spey</name>
+	<length>132</length>
+	<action_length>132</action_length>
+	<type>Spey-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>14/64</ferrule1_size>
+	<ferrule2_size>22/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>44.0</ferrule1_loc>
+	<ferrule2_loc>88.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.081</lwv>
+	<rav>0.291</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1924, Hex construction Light Switch Spey two handed rod for big water big flies - 3 pc</notes>
+	<dimensions>0.07, 0.088, 0.108, 0.127, 0.145, 0.162, 0.179, 0.195, 0.21, 0.225, 0.239, 0.253, 0.267, 0.279, 0.291, 0.304, 0.316, 0.329, 0.341, 0.353, 0.366, 0.378, 0.391, 0.391, 0.391, 0.391, 0.391</dimensions>
+	<stresses>35231.0, 112026.0, 118088.0, 112903.0, 106971.0, 102485.0, 98114.0, 95744.0, 95050.0, 94528.0, 95407.0, 96375.0, 97449.0, 100758.0, 106341.0, 110797.0, 115821.0, 119343.0, 123641.0, 127687.0, 130456.0, 134148.0, 136661.0, 153407.0, 171447.0, 190780.0, 211407.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6899/10-3 Salmon/Steelhead</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>9</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>14/64</ferrule1_size>
+	<ferrule2_size>22/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>6</tiptop_size>
+	<lwv>0.1</lwv>
+	<rav>0.341</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1920, Hex construction Heavy single handed rod for salmon/steelhead in big water</notes>
+	<dimensions>0.088, 0.112, 0.136, 0.158, 0.178, 0.194, 0.21, 0.225, 0.24, 0.256, 0.272, 0.289, 0.306, 0.324, 0.342, 0.36, 0.376, 0.392, 0.407, 0.422, 0.422, 0.422</dimensions>
+	<stresses>30640.0, 93395.0, 101064.0, 99586.0, 97542.0, 99879.0, 100768.0, 102286.0, 103311.0, 102876.0, 102487.0, 101161.0, 100123.0, 98452.0, 97162.0, 96215.0, 97098.0, 98112.0, 99974.0, 101902.0, 115328.0, 126876.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6701/2-3 Whisper</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>14/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.042</lwv>
+	<rav>0.304</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1910, hex construction fast ultra delicate presentation for small streams.  No varnish</notes>
+	<dimensions>0.052, 0.061, 0.073, 0.087, 0.102, 0.118, 0.134, 0.15, 0.165, 0.18, 0.196, 0.213, 0.23, 0.248, 0.266, 0.284, 0.302</dimensions>
+	<stresses>35732.0, 142189.0, 164110.0, 152760.0, 135430.0, 118512.0, 110656.0, 108382.0, 106689.0, 104430.0, 100640.0, 96086.0, 95056.0, 93216.0, 91424.0, 89834.0, 88511.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5897/8-3 Bass Bug</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>14/64</ferrule1_size>
+	<ferrule2_size>22/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.087</lwv>
+	<rav>0.366</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1902, penta construction fast accurate presentation big flies for lake and river conditions.  No varnish</notes>
+	<dimensions>0.076, 0.1, 0.126, 0.149, 0.17, 0.188, 0.205, 0.222, 0.239, 0.256, 0.274, 0.292, 0.31, 0.327, 0.345, 0.362, 0.379, 0.396, 0.412, 0.425, 0.425, 0.425</dimensions>
+	<stresses>88055.0, 236726.0, 222907.0, 202468.0, 185675.0, 177180.0, 170509.0, 163729.0, 157420.0, 151812.0, 145372.0, 141767.0, 140001.0, 139459.0, 137666.0, 137196.0, 136839.0, 136626.0, 137568.0, 141549.0, 159240.0, 174366.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5835/6-3 Trout</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>21/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.081</lwv>
+	<rav>0.363</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1903, penta construction fast accurate presentation for lake and river conditions.  No varnish</notes>
+	<dimensions>0.076, 0.097, 0.12, 0.14, 0.16, 0.179, 0.197, 0.213, 0.23, 0.247, 0.264, 0.283, 0.301, 0.319, 0.338, 0.357, 0.375, 0.394, 0.394, 0.394</dimensions>
+	<stresses>66508.0, 196727.0, 196727.0, 187092.0, 171682.0, 159216.0, 150053.0, 147554.0, 144792.0, 141648.0, 138560.0, 132900.0, 129406.0, 126501.0, 124629.0, 123280.0, 123054.0, 121984.0, 139455.0, 158512.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5701/2-3 Whisper</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>17/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.053</lwv>
+	<rav>0.366</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1905, penta construction very fast ultra delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.052, 0.072, 0.092, 0.113, 0.134, 0.152, 0.169, 0.186, 0.202, 0.22, 0.238, 0.256, 0.274, 0.293, 0.312, 0.331, 0.331</dimensions>
+	<stresses>44886.0, 200846.0, 193026.0, 162544.0, 137342.0, 125636.0, 118088.0, 111928.0, 108664.0, 103338.0, 99325.0, 96374.0, 94280.0, 91944.0, 90332.0, 89310.0, 104868.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4835/6-3 Trout</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>19/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4.5</tiptop_size>
+	<lwv>0.078</lwv>
+	<rav>0.326</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1904, quad construction, fast accurate presentation for lake and river conditions.  No varnish</notes>
+	<dimensions>0.068, 0.09, 0.114, 0.134, 0.151, 0.167, 0.183, 0.198, 0.213, 0.229, 0.244, 0.26, 0.276, 0.292, 0.308, 0.324, 0.34, 0.356, 0.372, 0.372</dimensions>
+	<stresses>53146.0, 140683.0, 130734.0, 121264.0, 115751.0, 110718.0, 105251.0, 101589.0, 98137.0, 93816.0, 91271.0, 88112.0, 85512.0, 83405.0, 81727.0, 80423.0, 79444.0, 78750.0, 78303.0, 88553.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4763/4-3 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>16/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>30.0</ferrule1_loc>
+	<ferrule2_loc>60.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.058</lwv>
+	<rav>0.313</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1914, quad construction, fast very delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.056, 0.072, 0.09, 0.11, 0.129, 0.146, 0.16, 0.174, 0.187, 0.201, 0.216, 0.232, 0.247, 0.263, 0.279, 0.294, 0.31, 0.326, 0.326</dimensions>
+	<stresses>42999.0, 126336.0, 124462.0, 104750.0, 90690.0, 82937.0, 80877.0, 78914.0, 78461.0, 76973.0, 74790.0, 72177.0, 71024.0, 69447.0, 68302.0, 68208.0, 67684.0, 67422.0, 61077.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4701/2-3 Whisper</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>9/64</ferrule1_size>
+	<ferrule2_size>14/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.043</lwv>
+	<rav>0.305</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1915, quad construction, fast ultra delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.052, 0.061, 0.074, 0.09, 0.106, 0.123, 0.139, 0.154, 0.167, 0.182, 0.197, 0.213, 0.23, 0.247, 0.264, 0.281, 0.281</dimensions>
+	<stresses>25722.0, 102357.0, 113463.0, 99529.0, 87278.0, 75958.0, 69310.0, 65662.0, 65243.0, 63015.0, 61445.0, 59564.0, 57515.0, 56076.0, 55120.0, 54552.0, 64697.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6897/8-3 Bass Bug</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>21/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.087</lwv>
+	<rav>0.329</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1902, Hex construction fast accurate presentation big flies for lake and river conditions.  No varnish</notes>
+	<dimensions>0.078, 0.099, 0.122, 0.143, 0.163, 0.179, 0.195, 0.21, 0.224, 0.238, 0.254, 0.271, 0.287, 0.303, 0.32, 0.337, 0.354, 0.37, 0.384, 0.385, 0.387, 0.387</dimensions>
+	<stresses>64914.0, 194412.0, 195543.0, 182134.0, 167176.0, 162518.0, 156394.0, 152202.0, 153423.0, 153363.0, 149042.0, 143342.0, 139736.0, 136537.0, 132514.0, 130674.0, 128943.0, 128414.0, 129979.0, 145252.0, 160331.0, 175045.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6835/6-3 Trout</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>19/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.08</lwv>
+	<rav>0.334</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1901, hex construction fast accurate yet delicate presentation for lake and river conditions.  No varnish</notes>
+	<dimensions>0.07, 0.093, 0.117, 0.139, 0.158, 0.174, 0.189, 0.204, 0.219, 0.234, 0.25, 0.267, 0.283, 0.3, 0.318, 0.336, 0.354, 0.372, 0.388, 0.388</dimensions>
+	<stresses>67712.0, 177348.0, 168399.0, 151509.0, 141197.0, 137141.0, 134212.0, 130813.0, 127459.0, 124395.0, 120569.0, 118171.0, 117061.0, 114819.0, 111795.0, 109230.0, 107098.0, 105366.0, 105607.0, 119635.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6763/4-3 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>17/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>30.0</ferrule1_loc>
+	<ferrule2_loc>60.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.059</lwv>
+	<rav>0.34</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1908, hex construction fast very delicate presentation for small strem conditions.  No varnish</notes>
+	<dimensions>0.056, 0.073, 0.094, 0.115, 0.136, 0.152, 0.168, 0.182, 0.197, 0.213, 0.23, 0.248, 0.265, 0.283, 0.302, 0.321, 0.336, 0.336, 0.336</dimensions>
+	<stresses>59734.0, 168461.0, 152037.0, 127920.0, 108381.0, 103344.0, 98653.0, 97802.0, 95604.0, 92581.0, 92367.0, 90643.0, 90011.0, 88495.0, 86395.0, 84719.0, 86433.0, 100491.0, 105607.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5897/8-3 Bass Bug</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>14/64</ferrule1_size>
+	<ferrule2_size>22/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.087</lwv>
+	<rav>0.366</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1902, penta construction fast accurate presentation big flies for lake and river conditions.  No varnish</notes>
+	<dimensions>0.076, 0.1, 0.126, 0.149, 0.17, 0.188, 0.205, 0.222, 0.239, 0.256, 0.274, 0.292, 0.31, 0.327, 0.345, 0.362, 0.379, 0.396, 0.412, 0.425, 0.425, 0.425</dimensions>
+	<stresses>88055.0, 236726.0, 222907.0, 202468.0, 185675.0, 177180.0, 170509.0, 163729.0, 157420.0, 151812.0, 145372.0, 141767.0, 140001.0, 139459.0, 137666.0, 137196.0, 136839.0, 136626.0, 137568.0, 141549.0, 159240.0, 174366.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 6701/2-3 Whisper</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Hex</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>14/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.042</lwv>
+	<rav>0.304</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1910, hex construction fast ultra delicate presentation for small streams.  No varnish</notes>
+	<dimensions>0.052, 0.061, 0.073, 0.087, 0.102, 0.118, 0.134, 0.15, 0.165, 0.18, 0.196, 0.213, 0.23, 0.248, 0.266, 0.284, 0.302</dimensions>
+	<stresses>35732.0, 142189.0, 164110.0, 152760.0, 135430.0, 118512.0, 110656.0, 108382.0, 106689.0, 104430.0, 100640.0, 96086.0, 95056.0, 93216.0, 91424.0, 89834.0, 88511.0</stresses>
+	<guide_spacings></guide_spacings>
+	<guide_sizes></guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5835/6-3 Trout</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>13/64</ferrule1_size>
+	<ferrule2_size>21/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.081</lwv>
+	<rav>0.363</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1903, penta construction fast accurate presentation for lake and river conditions.  No varnish</notes>
+	<dimensions>0.076, 0.097, 0.12, 0.14, 0.16, 0.179, 0.197, 0.213, 0.23, 0.247, 0.264, 0.283, 0.301, 0.319, 0.338, 0.357, 0.375, 0.394, 0.394, 0.394</dimensions>
+	<stresses>66508.0, 196727.0, 196727.0, 187092.0, 171682.0, 159216.0, 150053.0, 147554.0, 144792.0, 141648.0, 138560.0, 132900.0, 129406.0, 126501.0, 124629.0, 123280.0, 123054.0, 121984.0, 139455.0, 158512.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5763/4-3 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>11/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>30.0</ferrule1_loc>
+	<ferrule2_loc>60.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.058</lwv>
+	<rav>0.368</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1906, penta construction very fast very delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.054, 0.075, 0.096, 0.117, 0.138, 0.157, 0.174, 0.191, 0.209, 0.226, 0.244, 0.263, 0.282, 0.302, 0.322, 0.342, 0.36, 0.36, 0.36</dimensions>
+	<stresses>74986.0, 195154.0, 179540.0, 153006.0, 130849.0, 118509.0, 112504.0, 111812.0, 108703.0, 107157.0, 104462.0, 101117.0, 98495.0, 97919.0, 97241.0, 96620.0, 97742.0, 114387.0, 106277.0</stresses>
+	<guide_spacings>4.375, 8.8125, 14.1875, 20.75, 28.3125, 36.25, 45.0, 52.9375, 60.125, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 5701/2-3 Whisper</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Penta</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>17/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.053</lwv>
+	<rav>0.366</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1905, penta construction very fast ultra delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.052, 0.072, 0.092, 0.113, 0.134, 0.152, 0.169, 0.186, 0.202, 0.22, 0.238, 0.256, 0.274, 0.293, 0.312, 0.331, 0.331</dimensions>
+	<stresses>44886.0, 200846.0, 193026.0, 162544.0, 137342.0, 125636.0, 118088.0, 111928.0, 108664.0, 103338.0, 99325.0, 96374.0, 94280.0, 91944.0, 90332.0, 89310.0, 104868.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4835/6-3 Trout</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>19/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4.5</tiptop_size>
+	<lwv>0.078</lwv>
+	<rav>0.326</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1904, quad construction, fast accurate presentation for lake and river conditions.  No varnish</notes>
+	<dimensions>0.068, 0.09, 0.114, 0.134, 0.151, 0.167, 0.183, 0.198, 0.213, 0.229, 0.244, 0.26, 0.276, 0.292, 0.308, 0.324, 0.34, 0.356, 0.372, 0.372</dimensions>
+	<stresses>53146.0, 140683.0, 130734.0, 121264.0, 115751.0, 110718.0, 105251.0, 101589.0, 98137.0, 93816.0, 91271.0, 88112.0, 85512.0, 83405.0, 81727.0, 80423.0, 79444.0, 78750.0, 78303.0, 88553.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4701/2-3 Whisper</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>9/64</ferrule1_size>
+	<ferrule2_size>14/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.043</lwv>
+	<rav>0.305</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1915, quad construction, fast ultra delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.052, 0.061, 0.074, 0.09, 0.106, 0.123, 0.139, 0.154, 0.167, 0.182, 0.197, 0.213, 0.23, 0.247, 0.264, 0.281, 0.281</dimensions>
+	<stresses>25722.0, 102357.0, 113463.0, 99529.0, 87278.0, 75958.0, 69310.0, 65662.0, 65243.0, 63015.0, 61445.0, 59564.0, 57515.0, 56076.0, 55120.0, 54552.0, 64697.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4763/4-3 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>16/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>30.0</ferrule1_loc>
+	<ferrule2_loc>60.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.058</lwv>
+	<rav>0.313</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1914, quad construction, fast very delicate presentation for small stream conditions.  No varnish</notes>
+	<dimensions>0.056, 0.072, 0.09, 0.11, 0.129, 0.146, 0.16, 0.174, 0.187, 0.201, 0.216, 0.232, 0.247, 0.263, 0.279, 0.294, 0.31, 0.326, 0.326</dimensions>
+	<stresses>42999.0, 126336.0, 124462.0, 104750.0, 90690.0, 82937.0, 80877.0, 78914.0, 78461.0, 76973.0, 74790.0, 72177.0, 71024.0, 69447.0, 68302.0, 68208.0, 67684.0, 67422.0, 61077.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4897/8-3 Bass Bug</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.087</lwv>
+	<rav>0.283</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1900, quad construction, med fast accurate presentation big flies for lake and river conditions.  No varnish</notes>
+	<dimensions>0.076, 0.097, 0.117, 0.136, 0.153, 0.168, 0.181, 0.194, 0.206, 0.218, 0.231, 0.244, 0.258, 0.273, 0.288, 0.303, 0.318, 0.333, 0.348, 0.363, 0.363, 0.363</dimensions>
+	<stresses>50496.0, 148658.0, 159296.0, 151881.0, 144661.0, 140251.0, 139028.0, 136670.0, 135801.0, 134543.0, 131426.0, 128560.0, 124541.0, 119741.0, 115661.0, 112213.0, 109319.0, 106911.0, 104928.0, 103319.0, 115185.0, 125339.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4897/8-3 Bass Bug</name>
+	<length>105</length>
+	<action_length>105</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>7</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>18/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>35.0</ferrule1_loc>
+	<ferrule2_loc>70.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>5</tiptop_size>
+	<lwv>0.087</lwv>
+	<rav>0.283</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1900, quad construction, med fast accurate presentation for lake and river conditions</notes>
+	<dimensions>0.076, 0.097, 0.117, 0.136, 0.153, 0.168, 0.181, 0.194, 0.206, 0.218, 0.231, 0.244, 0.258, 0.273, 0.288, 0.303, 0.318, 0.333, 0.348, 0.363, 0.363, 0.363</dimensions>
+	<stresses>50496.0, 148658.0, 159296.0, 151881.0, 144661.0, 140251.0, 139028.0, 136670.0, 135801.0, 134543.0, 131426.0, 128560.0, 124541.0, 119741.0, 115661.0, 112213.0, 109319.0, 106911.0, 104928.0, 103319.0, 115185.0, 125339.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4835/6-3 Trout</name>
+	<length>99</length>
+	<action_length>99</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>5</line_weight>
+	<line_length>90</line_length>
+	<line_cast>60</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>12/64</ferrule1_size>
+	<ferrule2_size>19/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>33.0</ferrule1_loc>
+	<ferrule2_loc>66.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4.5</tiptop_size>
+	<lwv>0.078</lwv>
+	<rav>0.326</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1904, quad construction, fast accurate presentation for lake and river conditions</notes>
+	<dimensions>0.068, 0.09, 0.114, 0.134, 0.151, 0.167, 0.183, 0.198, 0.213, 0.229, 0.244, 0.26, 0.276, 0.292, 0.308, 0.324, 0.34, 0.356, 0.372, 0.372</dimensions>
+	<stresses>53146.0, 140683.0, 130734.0, 121264.0, 115751.0, 110718.0, 105251.0, 101589.0, 98137.0, 93816.0, 91271.0, 88112.0, 85512.0, 83405.0, 81727.0, 80423.0, 79444.0, 78750.0, 78303.0, 88553.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4763/4-3 Midge</name>
+	<length>90</length>
+	<action_length>90</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>3</line_weight>
+	<line_length>90</line_length>
+	<line_cast>40</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>10/64</ferrule1_size>
+	<ferrule2_size>16/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>30.0</ferrule1_loc>
+	<ferrule2_loc>60.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>4</tiptop_size>
+	<lwv>0.058</lwv>
+	<rav>0.313</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1914, quad construction, fast very delicate presentation for small stream conditions</notes>
+	<dimensions>0.056, 0.072, 0.09, 0.11, 0.129, 0.146, 0.16, 0.174, 0.187, 0.201, 0.216, 0.232, 0.247, 0.263, 0.279, 0.294, 0.31, 0.326, 0.326</dimensions>
+	<stresses>42999.0, 126336.0, 124462.0, 104750.0, 90690.0, 82937.0, 80877.0, 78914.0, 78461.0, 76973.0, 74790.0, 72177.0, 71024.0, 69447.0, 68302.0, 68208.0, 67684.0, 67422.0, 61077.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+<model id="model-9999">
+	<db_number>99999</db_number>
+	<name>Zeitner T.M. 4700/1-3 Whisper</name>
+	<length>84</length>
+	<action_length>84</action_length>
+	<type>Fly-Rod</type>
+	<const_type>Quad</const_type>
+	<line_weight>1</line_weight>
+	<line_length>90</line_length>
+	<line_cast>30</line_cast>
+	<pieces>3</pieces>
+	<ferrule1_size>9/64</ferrule1_size>
+	<ferrule2_size>14/64</ferrule2_size>
+	<ferrule3_size>None</ferrule3_size>
+	<ferrule_type>NS-(Truncated)</ferrule_type>
+	<ferrule1_loc>28.0</ferrule1_loc>
+	<ferrule2_loc>56.0</ferrule2_loc>
+	<ferrule3_loc>0.0</ferrule3_loc>
+	<tiptop_size>3.5</tiptop_size>
+	<lwv>0.043</lwv>
+	<rav>0.305</rav>
+	<tip_impact_factor>4.0</tip_impact_factor>
+	<bamboo_density>0.668</bamboo_density>
+	<tip_weight>0.018</tip_weight>
+	<station_multiplier>1.0</station_multiplier>
+	<station_bias>0.0</station_bias>
+	<station_increment>5</station_increment>
+	<notes>A.O. Zeitner design 1915, quad construction, fast ultra delicate presentation for small stream conditions</notes>
+	<dimensions>0.052, 0.061, 0.074, 0.09, 0.106, 0.123, 0.139, 0.154, 0.167, 0.182, 0.197, 0.213, 0.23, 0.247, 0.264, 0.281, 0.281</dimensions>
+	<stresses>25722.0, 102357.0, 113463.0, 99529.0, 87278.0, 75958.0, 69310.0, 65662.0, 65243.0, 63015.0, 61445.0, 59564.0, 57515.0, 56076.0, 55120.0, 54552.0, 64697.0</stresses>
+	<guide_spacings>0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0</guide_spacings>
+	<guide_sizes>, , , , , , , , , , </guide_sizes>
+</model>
+</models>

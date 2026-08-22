@@ -1,0 +1,6 @@
+/target
+**/*.rs.bk
+Cargo.lock.orig
+
+# keep the source jar out of git; it's a large binary redistributable
+RodDNA_v20.jar
