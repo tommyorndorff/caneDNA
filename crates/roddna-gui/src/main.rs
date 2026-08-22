@@ -11,6 +11,8 @@ use roddna_core::{Library, Taper};
 // Bundle the data into the binary so the app is a single self-contained file.
 const TAPERS_JSON: &str = include_str!("../../../data/tapers.json");
 
+/// Native desktop entry point.
+#[cfg(not(target_arch = "wasm32"))]
 fn main() -> eframe::Result<()> {
     let native_options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
@@ -23,6 +25,45 @@ fn main() -> eframe::Result<()> {
         native_options,
         Box::new(|_cc| Ok(Box::new(App::new()))),
     )
+}
+
+/// Web (WASM) entry point — mounts the same App onto a browser canvas.
+#[cfg(target_arch = "wasm32")]
+fn main() {
+    use eframe::wasm_bindgen::JsCast as _;
+
+    eframe::WebLogger::init(log::LevelFilter::Debug).ok();
+    let web_options = eframe::WebOptions::default();
+
+    wasm_bindgen_futures::spawn_local(async {
+        let document = web_sys::window()
+            .expect("no window")
+            .document()
+            .expect("no document");
+        let canvas = document
+            .get_element_by_id("canedna_canvas")
+            .expect("missing canvas element")
+            .dyn_into::<web_sys::HtmlCanvasElement>()
+            .expect("element is not a canvas");
+
+        let result = eframe::WebRunner::new()
+            .start(
+                canvas,
+                web_options,
+                Box::new(|_cc| Ok(Box::new(App::new()))),
+            )
+            .await;
+
+        // Remove the loading text once running (or show an error).
+        if let Some(el) = document.get_element_by_id("loading_text") {
+            match result {
+                Ok(_) => el.remove(),
+                Err(e) => el.set_inner_html(&format!(
+                    "<p style='color:#b00'>Failed to start: {e:?}</p>"
+                )),
+            }
+        }
+    });
 }
 
 struct App {

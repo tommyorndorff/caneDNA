@@ -1,0 +1,8 @@
+# Cloudflare Pages headers. Trunk copies this to dist/ root.
+/*.wasm
+  Content-Type: application/wasm
+  Cache-Control: public, max-age=31536000, immutable
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+/index.html
+  Cache-Control: no-cache

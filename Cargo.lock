@@ -2528,7 +2528,10 @@ dependencies = [
  "eframe",
  "egui",
  "egui_plot",
+ "log",
  "roddna-core",
+ "wasm-bindgen-futures",
+ "web-sys",
 ]
 
 [[package]]

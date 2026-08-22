@@ -1,0 +1,42 @@
+name: Deploy web to Cloudflare Pages
+
+# Builds the WASM web app with Trunk and deploys the static output to
+# Cloudflare Pages. Requires two repo secrets:
+#   CLOUDFLARE_API_TOKEN  — token with "Cloudflare Pages: Edit" permission
+#   CLOUDFLARE_ACCOUNT_ID — your Cloudflare account id
+# The Pages project name is "canedna" (change below + in --project-name).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "crates/**"
+      - "data/tapers.json"
+      - ".github/workflows/deploy-web.yml"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+
+      - uses: jetli/trunk-action@v0.5.0
+        with:
+          version: latest
+
+      - name: Build web bundle
+        run: cd crates/roddna-gui && trunk build --release
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy crates/roddna-gui/dist --project-name=canedna

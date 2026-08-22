@@ -9,3 +9,9 @@ roddna-core = { path = "../roddna-core" }
 eframe = "0.29"
 egui = "0.29"
 egui_plot = "0.29"
+
+# Web (WASM) build only — the same App runs in a browser canvas via eframe.
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+log = "0.4"
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = ["HtmlCanvasElement", "Window", "Document"] }

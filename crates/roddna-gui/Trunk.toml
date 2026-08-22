@@ -1,0 +1,14 @@
+# Trunk build config for the caneDNA web (WASM) build.
+# Build:  cd crates/roddna-gui && trunk build --release
+# Serve:  trunk serve   (http://localhost:8080)
+# Output: crates/roddna-gui/dist/  (static files — deploy this to Cloudflare)
+
+[build]
+target = "index.html"
+dist = "dist"
+# Emit hashed filenames so Cloudflare can cache aggressively.
+filehash = true
+
+[serve]
+address = "127.0.0.1"
+port = 8080

@@ -7,9 +7,10 @@ spey rods with split joints, single-handed spey trout rods, and more.
 
 ## Status: v0 — browse, filter & compare
 
-A native GUI (Rust + [egui](https://github.com/emilk/egui)) that loads the full
-taper library, lets you search/filter rods (by type, line weight, pieces), and
-overlay any number of tapers on one plot to compare their profiles.
+A GUI (Rust + [egui](https://github.com/emilk/egui)) that loads the full taper
+library, lets you search/filter rods (by type, line weight, pieces), and overlay
+any number of tapers on one plot to compare their profiles. Runs both as a **native
+desktop app** and as a **static web app** (WASM) deployable to Cloudflare Pages.
 
 ## Layout
 
@@ -25,7 +26,12 @@ scripts/
   build_library.py       merge + dedup    -> data/tapers.json
 crates/
   roddna-core/         data model + JSON loading (no GUI deps; unit-tested)
-  roddna-gui/          eframe/egui desktop app (browse + overlay/compare)
+  roddna-gui/          eframe/egui app — native desktop AND web (WASM)
+    index.html         web entry (Trunk)
+    Trunk.toml         web build config
+    _headers           Cloudflare Pages caching / MIME
+.github/workflows/
+  deploy-web.yml       build WASM + deploy to Cloudflare Pages on push to main
 ```
 
 ## Data
@@ -57,12 +63,36 @@ import date). Please preserve attribution if you reuse this data.
 > Note: the Hexrod library has no stated license. It is included here with
 > attribution while permission/licensing is confirmed with the source.
 
-## Build & run
+## Build & run (native)
 
 ```sh
 cargo test -p roddna-core     # parse + validate the merged library
-cargo run  -p roddna-gui      # launch the taper explorer
+cargo run  -p roddna-gui      # launch the desktop taper explorer
 ```
+
+## Web build & deploy (Cloudflare Pages)
+
+The **same GUI crate** compiles to WebAssembly and runs in the browser — the data
+is embedded in the binary, so the site is fully static (no backend).
+
+```sh
+rustup target add wasm32-unknown-unknown
+cargo install --locked trunk
+cd crates/roddna-gui
+trunk serve                   # dev: http://localhost:8080
+trunk build --release         # prod: writes static files to dist/
+```
+
+Deploy `crates/roddna-gui/dist/` to Cloudflare Pages, either way:
+
+- **Automatic (CI):** `.github/workflows/deploy-web.yml` builds and deploys on
+  every push to `main`. Add repo secrets `CLOUDFLARE_API_TOKEN` (scope: *Cloudflare
+  Pages: Edit*) and `CLOUDFLARE_ACCOUNT_ID`; the Pages project is named `canedna`.
+- **Manual:** `npx wrangler pages deploy crates/roddna-gui/dist --project-name=canedna`
+
+`_headers` sets the correct `application/wasm` content-type and long-lived caching.
+If you host under a subpath rather than a domain root, build with
+`trunk build --release --public-url /your-subpath/`.
 
 Regenerate the library from the raw sources (needs Python + `openpyxl`):
 
@@ -75,8 +105,15 @@ python3 scripts/build_library.py              # merge + dedupe -> data/tapers.js
 
 ## Roadmap (next)
 
+- **Release automation:** adopt [Conventional Commits](https://www.conventionalcommits.org)
+  and cut tagged releases (SemVer) from commit history (e.g. release-please).
+- **Compiled release artifacts:** attach built binaries to each tagged release —
+  native builds (macOS/Linux/Windows) and the WASM web bundle.
+- **Casting knowledge base:** parse the RodMakers (RMA) forum archive
+  ([hexrod.net/RMA_allmsg](https://www.hexrod.net/RMA_allmsg/index.html)) into a
+  searchable KB of how specific tapers/rods cast — link organic maker feedback to
+  library tapers by name, to inform future taper exploration.
 - Reconcile tip/butt sections into ferrule-accurate full tapers.
 - Stress-curve computation (Garrison-style) rather than only stored `stresses`.
 - Design mode: edit a taper, add/split ferrule stations (spey split joints).
 - Export a taper (CSV / Hexrod-style station file) for the shop.
-- Optional WASM build for a web version.

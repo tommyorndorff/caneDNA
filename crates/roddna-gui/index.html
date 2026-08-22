@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>caneDNA — Taper Explorer</title>
+    <meta name="description" content="Explore split-bamboo fly rod tapers in your browser." />
+
+    <!-- Trunk builds the current crate to WASM and injects the loader here. -->
+    <link data-trunk rel="rust" data-wasm-opt="2" />
+    <!-- Copy the Cloudflare Pages headers file into dist/ root. -->
+    <link data-trunk rel="copy-file" href="_headers" />
+
+    <style>
+        html, body { margin: 0; height: 100%; overflow: hidden; background: #101418; }
+        /* eframe renders into this canvas; fill the viewport. */
+        canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+        #loading_text {
+            position: absolute; inset: 0; display: flex; align-items: center;
+            justify-content: center; color: #c8ccd0; font: 16px system-ui, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canedna_canvas"></canvas>
+    <div id="loading_text"><p>Loading caneDNA…</p></div>
+</body>
+</html>
