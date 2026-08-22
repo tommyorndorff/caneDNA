@@ -127,38 +127,54 @@ impl App {
         true
     }
 
-    /// Render cited casting feedback for a taper's maker, if the KB has any.
+    /// Render cited casting feedback for a taper (model-level if available, else
+    /// maker-level), with action tags, if the KB has any.
     fn casting_notes(&self, ui: &mut egui::Ui, taper: &Taper) {
-        let Some(mc) = self.kb.for_taper(taper) else {
+        let Some((label, mc)) = self.kb.for_taper(taper) else {
             return;
         };
-        let maker = taper.maker().unwrap_or_default();
         ui.separator();
         egui::CollapsingHeader::new(format!(
-            "Casting notes — {maker} ({} mentions)",
+            "Casting notes — {label} ({} mentions)",
             mc.mentions_with_casting
         ))
         .default_open(true)
         .show(ui, |ui| {
             ui.label(
                 egui::RichText::new(format!(
-                    "How {maker} rods are described in the Rodmakers listserv \
+                    "How “{label}” is described in the Rodmakers listserv \
                      (1995–2004). Showing {} of {} casting mentions.",
                     mc.snippets_shown, mc.mentions_with_casting
                 ))
                 .weak()
                 .small(),
             );
+            // Action summary as chips (most common first).
+            if !mc.action_counts.is_empty() {
+                let mut actions: Vec<(&String, &u64)> = mc.action_counts.iter().collect();
+                actions.sort_by(|a, b| b.1.cmp(a.1));
+                ui.horizontal_wrapped(|ui| {
+                    ui.label(egui::RichText::new("Action:").small().weak());
+                    for (tag, n) in actions {
+                        action_chip(ui, &format!("{tag} {n}"));
+                    }
+                });
+            }
             ui.add_space(4.0);
             for s in &mc.snippets {
                 ui.label(egui::RichText::new(format!("“{}”", s.quote)).italics());
-                let who = s.author.as_deref().unwrap_or("unknown");
-                let year = s.year.map(|y| y.to_string()).unwrap_or_default();
-                ui.label(
-                    egui::RichText::new(format!("— {who}, {year}"))
-                        .weak()
-                        .small(),
-                );
+                ui.horizontal_wrapped(|ui| {
+                    let who = s.author.as_deref().unwrap_or("unknown");
+                    let year = s.year.map(|y| y.to_string()).unwrap_or_default();
+                    ui.label(
+                        egui::RichText::new(format!("— {who}, {year}"))
+                            .weak()
+                            .small(),
+                    );
+                    for tag in &s.actions {
+                        action_chip(ui, tag);
+                    }
+                });
                 ui.add_space(6.0);
             }
         });
@@ -338,6 +354,17 @@ fn opt_num(v: Option<f64>) -> String {
         Some(x) => format!("{x}"),
         None => "—".into(),
     }
+}
+
+/// A small pill rendering an action tag.
+fn action_chip(ui: &mut egui::Ui, text: &str) {
+    egui::Frame::none()
+        .fill(ui.visuals().faint_bg_color)
+        .rounding(6.0)
+        .inner_margin(egui::Margin::symmetric(5.0, 1.0))
+        .show(ui, |ui| {
+            ui.label(egui::RichText::new(text).small());
+        });
 }
 
 /// A combo box over an Option<f64> filter with an "Any" entry.

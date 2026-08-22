@@ -129,10 +129,11 @@ python3 scripts/build_library.py              # merge + dedupe -> data/tapers.js
   and cut tagged releases (SemVer) from commit history (e.g. release-please).
 - **Compiled release artifacts:** attach built binaries to each tagged release —
   native builds (macOS/Linux/Windows) and the WASM web bundle.
-- **Casting knowledge base:** _v1 + GUI surfacing done_ — selecting a rod shows
-  cited casting feedback for its maker (RMA archive) beneath the taper plot. Next:
-  link at the model level (not just maker), and add action tagging
-  (fast/slow/parabolic) for querying.
+- **Casting knowledge base:** _v2 done_ — selecting a rod shows cited casting
+  feedback (RMA archive) beneath the taper plot, matched at the **model level**
+  when possible (e.g. "Payne 98") and falling back to the maker, with **action
+  tags** (fast/slow/parabolic/delicate/…) summarised and per-snippet. Next: filter
+  the rod list by action, and tighten model-match precision.
 - Reconcile tip/butt sections into ferrule-accurate full tapers.
 - Stress-curve computation (Garrison-style) rather than only stored `stresses`.
 - Design mode: edit a taper, add/split ferrule stations (spey split joints).
