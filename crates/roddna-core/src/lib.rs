@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// Fields mirror the original RodDNA XML schema. Most numeric fields are
 /// optional because a handful of records leave them blank.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Taper {
     pub name: Option<String>,
     #[serde(rename = "type")]
@@ -97,6 +97,21 @@ impl Taper {
             .map(|(&s, &d)| [s, d])
             .collect()
     }
+
+    /// The maker token used to link a taper to the casting KB: the first word of
+    /// the rod name (mirrors `scripts/build_casting_kb.py`).
+    pub fn maker(&self) -> Option<String> {
+        let name = self.name.as_deref()?;
+        let tok = name
+            .split([' ', ','])
+            .next()?
+            .trim_matches(|c: char| !c.is_alphanumeric());
+        if tok.is_empty() {
+            None
+        } else {
+            Some(tok.to_string())
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -132,6 +147,49 @@ impl Library {
     }
 }
 
+/// A single cited casting-feedback snippet from the RMA archive.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CastingSnippet {
+    pub quote: String,
+    pub year: Option<i64>,
+    pub date: Option<String>,
+    pub subject: Option<String>,
+    pub author: Option<String>,
+}
+
+/// Casting feedback aggregated for one maker.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MakerCasting {
+    #[serde(default)]
+    pub mentions_with_casting: u64,
+    #[serde(default)]
+    pub snippets_shown: u64,
+    #[serde(default)]
+    pub snippets: Vec<CastingSnippet>,
+}
+
+/// The casting knowledge base (from `scripts/build_casting_kb.py`).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CastingKb {
+    #[serde(default)]
+    pub makers: std::collections::BTreeMap<String, MakerCasting>,
+}
+
+impl CastingKb {
+    pub fn from_json(s: &str) -> Result<Self, serde_json::Error> {
+        serde_json::from_str(s)
+    }
+
+    /// Casting feedback for a taper, matched by maker name (case-insensitive).
+    pub fn for_taper(&self, taper: &Taper) -> Option<&MakerCasting> {
+        let maker = taper.maker()?;
+        self.makers
+            .iter()
+            .find(|(k, _)| k.eq_ignore_ascii_case(&maker))
+            .map(|(_, v)| v)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -154,5 +212,19 @@ mod tests {
             let p = m.provenance.as_ref().expect("provenance present");
             assert!(p.source.is_some(), "{:?}", m.name);
         }
+    }
+
+    #[test]
+    fn casting_kb_links_by_maker() {
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../data/kb/casting_kb.json");
+        let text = std::fs::read_to_string(path).expect("read casting_kb.json");
+        let kb = CastingKb::from_json(&text).expect("parse kb");
+        assert!(kb.makers.contains_key("Garrison"));
+        let t = Taper {
+            name: Some("Garrison 212 8' 5wt".to_string()),
+            ..Default::default()
+        };
+        let mc = kb.for_taper(&t).expect("Garrison casting notes");
+        assert!(!mc.snippets.is_empty());
     }
 }

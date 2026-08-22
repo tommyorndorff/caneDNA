@@ -6,10 +6,11 @@
 
 use eframe::egui;
 use egui_plot::{Legend, Line, Plot, PlotPoints};
-use roddna_core::{Library, Taper};
+use roddna_core::{CastingKb, Library, Taper};
 
 // Bundle the data into the binary so the app is a single self-contained file.
 const TAPERS_JSON: &str = include_str!("../../../data/tapers.json");
+const CASTING_JSON: &str = include_str!("../../../data/kb/casting_kb.json");
 
 /// Native desktop entry point.
 #[cfg(not(target_arch = "wasm32"))]
@@ -68,6 +69,7 @@ fn main() {
 
 struct App {
     lib: Library,
+    kb: CastingKb,
     search: String,
     /// Filter by rod type; empty string == "All".
     type_filter: String,
@@ -83,11 +85,13 @@ struct App {
 impl App {
     fn new() -> Self {
         let lib = Library::from_json(TAPERS_JSON).expect("bundled tapers.json is valid");
+        let kb = CastingKb::from_json(CASTING_JSON).expect("bundled casting_kb.json is valid");
         let rod_types = lib.rod_types();
         let line_weights = distinct(lib.models.iter().filter_map(|m| m.line_weight));
         let piece_counts = distinct(lib.models.iter().filter_map(|m| m.pieces));
         Self {
             lib,
+            kb,
             search: String::new(),
             type_filter: String::new(),
             line_weight_filter: None,
@@ -121,6 +125,43 @@ impl App {
             }
         }
         true
+    }
+
+    /// Render cited casting feedback for a taper's maker, if the KB has any.
+    fn casting_notes(&self, ui: &mut egui::Ui, taper: &Taper) {
+        let Some(mc) = self.kb.for_taper(taper) else {
+            return;
+        };
+        let maker = taper.maker().unwrap_or_default();
+        ui.separator();
+        egui::CollapsingHeader::new(format!(
+            "Casting notes — {maker} ({} mentions)",
+            mc.mentions_with_casting
+        ))
+        .default_open(true)
+        .show(ui, |ui| {
+            ui.label(
+                egui::RichText::new(format!(
+                    "How {maker} rods are described in the Rodmakers listserv \
+                     (1995–2004). Showing {} of {} casting mentions.",
+                    mc.snippets_shown, mc.mentions_with_casting
+                ))
+                .weak()
+                .small(),
+            );
+            ui.add_space(4.0);
+            for s in &mc.snippets {
+                ui.label(egui::RichText::new(format!("“{}”", s.quote)).italics());
+                let who = s.author.as_deref().unwrap_or("unknown");
+                let year = s.year.map(|y| y.to_string()).unwrap_or_default();
+                ui.label(
+                    egui::RichText::new(format!("— {who}, {year}"))
+                        .weak()
+                        .small(),
+                );
+                ui.add_space(6.0);
+            }
+        });
     }
 
     /// Toggle a rod in/out of the selection, preserving click order.
@@ -273,17 +314,19 @@ impl eframe::App for App {
                     }
                 });
 
-            // Notes only make sense for a single rod.
+            // Notes + casting feedback only make sense for a single rod.
             if self.selected.len() == 1 {
-                if let Some(notes) = self.lib.models[self.selected[0]].notes.as_deref() {
-                    if !notes.is_empty() {
-                        ui.separator();
-                        ui.label(egui::RichText::new("Notes").strong());
-                        egui::ScrollArea::vertical().show(ui, |ui| {
+                let taper = &self.lib.models[self.selected[0]];
+                egui::ScrollArea::vertical().show(ui, |ui| {
+                    if let Some(notes) = taper.notes.as_deref() {
+                        if !notes.is_empty() {
+                            ui.separator();
+                            ui.label(egui::RichText::new("Notes").strong());
                             ui.label(notes);
-                        });
+                        }
                     }
-                }
+                    self.casting_notes(ui, taper);
+                });
             }
         });
     }
