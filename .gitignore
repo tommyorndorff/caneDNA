@@ -2,6 +2,10 @@
 **/*.rs.bk
 Cargo.lock.orig
 
+# Python
+__pycache__/
+*.pyc
+
 # Trunk web build output
 **/dist/
 
@@ -11,3 +15,7 @@ Cargo.lock.orig
 
 # keep the source jar out of git; it's a large binary redistributable
 RodDNA_v20.jar
+
+# large external corpus — fetch with scripts/fetch_rma.py; derived KB is committed
+data/raw/rma_archive.zip
+data/kb/rma_messages.jsonl

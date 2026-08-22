@@ -63,6 +63,26 @@ import date). Please preserve attribution if you reuse this data.
 > Note: the Hexrod library has no stated license. It is included here with
 > attribution while permission/licensing is confirmed with the source.
 
+## Casting knowledge base (RMA archive)
+
+To ground future taper exploration in decades of organic maker experience,
+caneDNA mines the **Rodmakers (RMA) listserv archive** (1995–2004, ~80k messages
+from [hexrod.net](https://www.hexrod.net/RMA_allmsg/index.html)) for how specific
+rods actually *cast*. `build_casting_kb.py` captures sentences that mention a
+library maker alongside casting-descriptive language (action, loads, delicate,
+tip-heavy, presentation, …), keeping each quote's citation (year, author,
+subject), and writes `data/kb/casting_kb.json` aggregated by maker.
+
+```sh
+python3 scripts/fetch_rma.py            # download the archive (~20 MB, gitignored)
+python3 scripts/parse_rma.py --stats    # sanity-check parsing (80,329 messages)
+python3 scripts/build_casting_kb.py     # -> data/kb/casting_kb.json (45 makers)
+```
+
+The large archive is gitignored (fetch it locally); the derived, attributed KB is
+committed. This is v1 (maker-level, sentence co-occurrence) — surfacing it next to
+tapers in the GUI and linking at the model level are the next steps.
+
 ## Build & run (native)
 
 ```sh
@@ -109,10 +129,9 @@ python3 scripts/build_library.py              # merge + dedupe -> data/tapers.js
   and cut tagged releases (SemVer) from commit history (e.g. release-please).
 - **Compiled release artifacts:** attach built binaries to each tagged release —
   native builds (macOS/Linux/Windows) and the WASM web bundle.
-- **Casting knowledge base:** parse the RodMakers (RMA) forum archive
-  ([hexrod.net/RMA_allmsg](https://www.hexrod.net/RMA_allmsg/index.html)) into a
-  searchable KB of how specific tapers/rods cast — link organic maker feedback to
-  library tapers by name, to inform future taper exploration.
+- **Casting knowledge base:** _v1 done_ (maker-level, see above). Next: surface
+  snippets next to a taper in the GUI, and link at the model level (not just
+  maker), plus sentiment/action tagging (fast/slow/parabolic) for querying.
 - Reconcile tip/butt sections into ferrule-accurate full tapers.
 - Stress-curve computation (Garrison-style) rather than only stored `stresses`.
 - Design mode: edit a taper, add/split ferrule stations (spey split joints).
