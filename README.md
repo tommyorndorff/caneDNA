@@ -30,15 +30,18 @@ crates/
 
 ## Data
 
-**792 rod models** merged from three sources (see Data Sources below), covering
+**873 rod models** merged from three sources (see Data Sources below), covering
 Fly / Dry-Fly / Spey / Spinning / Casting rods in Hex / Penta / Quad / Rectangular
 construction. Each record carries length, line weight, ferrule specs, notes, the
 `dimensions` taper (flat-to-flat cross-section, in inches, at each station), and a
 per-record `provenance` block for attribution.
 
-The build merges the per-source files and **dedupes by rod name, preferring the
-Hexrod record** on a collision (its rows carry cleaner geometry fields). Pass
-`--keep-all` to `build_library.py` to keep duplicates.
+The build merges the per-source files and dedupes **dimension-aware**: two records
+collapse only when they share a name *and* their tapers match within a tolerance
+(default 0.0015", tune with `--tol`); the higher-priority source (Hexrod) wins.
+Same-named rods whose tapers genuinely differ are both kept and disambiguated with
+a source tag, e.g. `Chubb 9' 3/2 (Hexrod)` vs `Chubb 9' 3/2 (RodDNA)` — the original
+name is preserved in `provenance.orig_name`. Pass `--keep-all` to keep everything.
 
 ## Data Sources & attribution
 
@@ -72,7 +75,6 @@ python3 scripts/build_library.py              # merge + dedupe -> data/tapers.js
 
 ## Roadmap (next)
 
-- Dimension-aware dedup (keep same-named rods whose tapers genuinely differ).
 - Reconcile tip/butt sections into ferrule-accurate full tapers.
 - Stress-curve computation (Garrison-style) rather than only stored `stresses`.
 - Design mode: edit a taper, add/split ferrule stations (spey split joints).
