@@ -37,6 +37,9 @@ scripts/
   fetch_rma.py                 download RMA listserv archive -> data/raw/ (gitignored)
   parse_rma.py                 parse RMA archive into messages (iter_messages)
   build_casting_kb.py          link casting sentences to makers -> data/kb/casting_kb.json
+docs/
+  COMPARISON.md                caneDNA vs RodDNA feature matrix + gap roadmap
+  SPEY_DESIGN.md               method for designing our own trout-spey tapers
 .github/workflows/
   deploy-web.yml               build WASM + deploy to Cloudflare Pages
   release-please.yml           release PRs + attach native/WASM release artifacts

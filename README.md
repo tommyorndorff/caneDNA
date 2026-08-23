@@ -134,7 +134,25 @@ python3 scripts/build_library.py              # merge + dedupe -> data/tapers.js
   when possible (e.g. "Payne 98") and falling back to the maker, with **action
   tags** (fast/slow/parabolic/delicate/…) summarised and per-snippet. Next: filter
   the rod list by action, and tighten model-match precision.
+### RodDNA parity gaps → priorities
+
+See [`docs/COMPARISON.md`](docs/COMPARISON.md) for the full caneDNA-vs-RodDNA
+feature matrix. Gap-driven order:
+
+1. **Garrison stress-curve engine** (`roddna-core`) — compute from the taper +
+   stored inputs (Hex first, then Quad/Penta). Foundation for stress overlays and
+   taper design.
+2. **Taper design/edit mode** — edit stations, scale (multiplier/bias), add/split
+   ferrule stations.
+3. **Planing-form settings** (60° form depths per geometry).
+4. **Guide-spacing calculator.**
+5. **Export** — CSV + Hexrod-style station file; later a printable/PDF sheet.
+
+### Design focus: trout-spey tapers
+
+Designing our own **single-hand spey** and **double-hand trout-spey** tapers — see
+[`docs/SPEY_DESIGN.md`](docs/SPEY_DESIGN.md) for the seed → stress → tune method,
+the reference tapers we're starting from, and the concrete build steps. Depends on
+gaps #1–#2 above.
+
 - Reconcile tip/butt sections into ferrule-accurate full tapers.
-- Stress-curve computation (Garrison-style) rather than only stored `stresses`.
-- Design mode: edit a taper, add/split ferrule stations (spey split joints).
-- Export a taper (CSV / Hexrod-style station file) for the shop.
