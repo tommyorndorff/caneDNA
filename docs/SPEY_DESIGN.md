@@ -8,6 +8,20 @@ Garrison stress theory, and validated against the casting knowledge base.
 This is the design plan. It depends on the **stress-curve engine** (roadmap #1)
 and **design/edit mode** (roadmap #2) from `COMPARISON.md`.
 
+## First design target (decided)
+
+- **11'0" 3-weight trout spey**, 4-piece, **metal (nickel-silver) ferrules**.
+- **PNW / BC style** — a **Skagit-style integrated head** (OPST Commando / RIO
+  Skagit Trout Max lineage), not European Scandi/long-belly.
+- Design to a **head grain window ≈ 250–300 gr** (grains, not AFTMA number).
+- Action: **medium-progressive** — loads deep into the butt but keeps mid-section
+  recovery to turn over light sink tips.
+- **Seed:** the Zeitner 11' Switch Spey (5/6, 4-piece) from the library.
+
+Note: the casting KB (RMA 1995–2004) predates Skagit/trout-spey culture, so it
+informs the *action feel* (progressive vs fast, "loads deep") but not modern
+integrated-head specifics.
+
 ## What we're designing
 
 | Class | Length | Line | Pieces | Notes |
