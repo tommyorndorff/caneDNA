@@ -6,7 +6,9 @@
 
 use eframe::egui;
 use egui_plot::{Bar, BarChart, Legend, Line, Plot, PlotPoint, PlotPoints, Text, VLine};
-use roddna_core::{CastingKb, DeflectionParams, GuideSpacingParams, Library, ModalParams, Taper};
+use roddna_core::{
+    CastingKb, DeflectionParams, GuideSpacingParams, Library, ModalParams, SolveParams, Taper,
+};
 
 // Bundle the data into the binary so the app is a single self-contained file.
 const TAPERS_JSON: &str = include_str!("../../../data/tapers.json");
@@ -105,6 +107,8 @@ struct DesignState {
     scale_bias: f64,
     /// Pending station value for the "insert station" control.
     new_station: f64,
+    /// Target stress (psi) for the "solve to flat stress" control (stage B).
+    solve_target_psi: f64,
 }
 
 impl DesignState {
@@ -116,6 +120,7 @@ impl DesignState {
             scale_multiplier: 1.0,
             scale_bias: 0.0,
             new_station: 0.0,
+            solve_target_psi: 180_000.0,
         }
     }
 }
@@ -444,6 +449,37 @@ fn design_editor(ui: &mut egui::Ui, design: &mut DesignState) {
         );
         if ui.button("Insert").clicked() {
             design.taper.insert_station(design.new_station);
+        }
+    });
+    // Stage B: inverse design. Reshape the current taper so its stress curve
+    // is flat at the target — the classic Garrison move, run automatically.
+    ui.horizontal(|ui| {
+        ui.label("Solve to flat stress (psi):");
+        ui.add(
+            egui::DragValue::new(&mut design.solve_target_psi)
+                .speed(1000.0)
+                .range(50_000.0..=400_000.0),
+        );
+        let solvable = !design.taper.stress_curve().is_empty();
+        if ui
+            .add_enabled(solvable, egui::Button::new("Solve"))
+            .on_hover_text(
+                "Flatten the Garrison stress curve to this value by reshaping station \
+                 dimensions (monotonic tip→butt). See the Stress tab for the result.",
+            )
+            .clicked()
+        {
+            if let Some(solved) = design
+                .taper
+                .solve_to_stress(design.solve_target_psi, &SolveParams::default())
+            {
+                design.taper = solved;
+            }
+        }
+        if !solvable {
+            ui.label(
+                egui::RichText::new("(needs a rod with stress-model inputs)").weak(),
+            );
         }
     });
     ui.horizontal(|ui| {

@@ -844,6 +844,65 @@ impl Taper {
             .collect()
     }
 
+    /// **B — inverse design: solve for a flat stress curve.** Returns a copy of
+    /// this taper whose station dimensions have been reshaped so its Garrison
+    /// stress curve ([`stress_curve`](Self::stress_curve)) is as close to a
+    /// uniform `target_psi` as the loads allow — the classic "flatten the
+    /// stress curve" design move, run automatically instead of by hand.
+    ///
+    /// Method: a fixed-point inversion, not a generic optimizer. Stress varies
+    /// as `1 / d³` at a fixed load, so to move a station's stress onto the
+    /// target its dimension is scaled by `(stress / target)^(1/3)` — a
+    /// Newton-in-log(d) step. The step is driven by [`stress_curve`]'s own
+    /// output rather than an open-loop formula, so it self-corrects for the
+    /// weak dimension→moment coupling (bamboo self-weight) and for the report's
+    /// per-inch sampling, and it converges in a handful of passes (the target
+    /// exponent makes each pass nearly exact).
+    ///
+    /// With `params.monotonic` (the default) the result is forced
+    /// non-decreasing tip→butt — the one property nearly every real taper has;
+    /// it mainly cleans up tip-region noise, since a flat-stress taper is
+    /// naturally monotonic (`d³ ∝ M`, and `M` grows toward the butt). Only the
+    /// `dimensions` change; stations, geometry, and all metadata are preserved,
+    /// so every derived view (mill settings, planing form, …) stays valid.
+    ///
+    /// Returns `None` if the taper lacks the physics inputs `stress_curve`
+    /// needs (same gate), or if `target_psi` isn't positive.
+    ///
+    /// [`stress_curve`]: Self::stress_curve
+    pub fn solve_to_stress(&self, target_psi: f64, params: &SolveParams) -> Option<Taper> {
+        if target_psi <= 0.0 || self.casting_moments(None).is_none() {
+            return None;
+        }
+        let mut out = self.clone();
+        let iterations = params.iterations.max(1);
+        let n_pts = out.profile().len();
+
+        for _ in 0..iterations {
+            // `stress_curve` returns one (station, stress) pair per profile
+            // point, aligned with `dimensions[0..n_pts]`.
+            let curve = out.stress_curve();
+            if curve.is_empty() {
+                return None;
+            }
+            for (j, &[_station, stress]) in curve.iter().enumerate().take(n_pts) {
+                if stress > 0.0 {
+                    out.dimensions[j] *= (stress / target_psi).cbrt();
+                }
+            }
+            if params.monotonic {
+                // Cumulative max from the tip: never let the taper shrink
+                // toward the butt.
+                let mut running = 0.0_f64;
+                for d in out.dimensions.iter_mut().take(n_pts) {
+                    running = running.max(*d);
+                    *d = running;
+                }
+            }
+        }
+        Some(out)
+    }
+
     /// **A2 — dynamic / modal analysis.** Estimates the rod's fundamental
     /// bending frequency (and the effective tip-referred mass/stiffness that
     /// go with it) by treating the rod as a variable-cross-section
@@ -1087,6 +1146,26 @@ pub struct DeflectionStation {
     pub vertical_in: f64,
     /// Casting bending moment at this station, oz·in.
     pub moment_oz_in: f64,
+}
+
+/// Tunable inputs for [`Taper::solve_to_stress`] (stage B).
+#[derive(Debug, Clone, PartialEq)]
+pub struct SolveParams {
+    /// Fixed-point iterations to absorb the self-weight feedback. Converges
+    /// fast (the dimension→moment coupling is weak); ~4 is ample.
+    pub iterations: usize,
+    /// Force the solved taper non-decreasing tip→butt (the default). Off leaves
+    /// the raw per-station inversion, which can dip slightly at a noisy tip.
+    pub monotonic: bool,
+}
+
+impl Default for SolveParams {
+    fn default() -> Self {
+        SolveParams {
+            iterations: 4,
+            monotonic: true,
+        }
+    }
 }
 
 /// Tunable inputs for [`Taper::modal_analysis`] (A2). Bamboo's stiffness varies
@@ -2176,6 +2255,63 @@ mod tests {
             ..params.clone()
         });
         assert!(hard[0].vertical_in > tip.vertical_in, "harder cast deflects more");
+    }
+
+    #[test]
+    fn solve_to_stress_flattens_the_curve() {
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../data/tapers.json");
+        let text = std::fs::read_to_string(path).expect("read tapers.json");
+        let lib = Library::from_json(&text).expect("parse library");
+        let seed = lib
+            .models
+            .iter()
+            .find(|t| !t.stress_curve().is_empty())
+            .expect("a rod with physics inputs");
+
+        let target = 180_000.0;
+        let solved = seed
+            .solve_to_stress(target, &SolveParams::default())
+            .expect("solvable");
+
+        // Metadata preserved; only dimensions changed.
+        assert_eq!(solved.stations, seed.stations);
+        assert_eq!(solved.const_type, seed.const_type);
+        assert_eq!(solved.dimensions.len(), seed.dimensions.len());
+
+        // The solved curve is flat at the target. Skip the tip-most station:
+        // a tiny absolute dimension there cubes into a large relative stress
+        // error (the same numerical-sensitivity artifact stress_curve notes).
+        let curve = solved.stress_curve();
+        assert!(curve.len() > 3);
+        for &[station, stress] in curve.iter().skip(2) {
+            let rel = (stress - target).abs() / target;
+            assert!(rel < 0.02, "station {station}: stress {stress} vs {target} (rel {rel})");
+        }
+
+        // Monotonic tip→butt.
+        let dims = &solved.dimensions[..solved.profile().len()];
+        for w in dims.windows(2) {
+            assert!(w[1] >= w[0] - 1e-9, "non-monotonic: {} -> {}", w[0], w[1]);
+        }
+
+        // A higher target psi means the rod works harder, so it needs *less*
+        // material: every station is thinner than the lower-target solution.
+        let softer = seed.solve_to_stress(target * 1.5, &SolveParams::default()).unwrap();
+        let a: f64 = solved.dimensions.iter().sum();
+        let b: f64 = softer.dimensions.iter().sum();
+        assert!(b < a, "higher target psi should give a thinner taper");
+    }
+
+    #[test]
+    fn solve_to_stress_rejects_bad_inputs() {
+        let seed = Taper {
+            const_type: Some("Hex".into()),
+            stations: vec![0.0, 30.0, 60.0],
+            dimensions: vec![0.06, 0.12, 0.18],
+            ..Default::default()
+        };
+        // No physics inputs -> cannot solve.
+        assert!(seed.solve_to_stress(180_000.0, &SolveParams::default()).is_none());
     }
 
     /// A stiffer/heavier-butt taper (real trout rod) should ring faster than a
