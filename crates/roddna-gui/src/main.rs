@@ -123,11 +123,15 @@ struct App {
     search: String,
     /// Filter by rod type; empty string == "All".
     type_filter: String,
+    /// Filter by provenance source group (see `Taper::source_group`); empty
+    /// string == "All".
+    source_filter: String,
     line_weight_filter: Option<f64>,
     pieces_filter: Option<f64>,
     /// Selected rods, in click order (drives legend/color stability).
     selected: Vec<usize>,
     rod_types: Vec<String>,
+    sources: Vec<String>,
     line_weights: Vec<f64>,
     piece_counts: Vec<f64>,
     view: PanelView,
@@ -145,6 +149,7 @@ impl App {
         let lib = Library::from_json(TAPERS_JSON).expect("bundled tapers.json is valid");
         let kb = CastingKb::from_json(CASTING_JSON).expect("bundled casting_kb.json is valid");
         let rod_types = lib.rod_types();
+        let sources = lib.source_groups();
         let line_weights = distinct(lib.models.iter().filter_map(|m| m.line_weight));
         let piece_counts = distinct(lib.models.iter().filter_map(|m| m.pieces));
         Self {
@@ -152,10 +157,12 @@ impl App {
             kb,
             search: String::new(),
             type_filter: String::new(),
+            source_filter: String::new(),
             line_weight_filter: None,
             pieces_filter: None,
             selected: Vec::new(),
             rod_types,
+            sources,
             line_weights,
             piece_counts,
             view: PanelView::Chart,
@@ -176,6 +183,10 @@ impl App {
             }
         }
         if !self.type_filter.is_empty() && t.rod_type.as_deref() != Some(&self.type_filter) {
+            return false;
+        }
+        if !self.source_filter.is_empty() && t.source_group().as_deref() != Some(&self.source_filter)
+        {
             return false;
         }
         if let Some(lw) = self.line_weight_filter {
@@ -674,6 +685,19 @@ impl eframe::App for App {
                         ui.selectable_value(&mut self.type_filter, String::new(), "All");
                         for t in &self.rod_types {
                             ui.selectable_value(&mut self.type_filter, t.clone(), t);
+                        }
+                    });
+
+                egui::ComboBox::from_label("Source")
+                    .selected_text(if self.source_filter.is_empty() {
+                        "All".to_string()
+                    } else {
+                        self.source_filter.clone()
+                    })
+                    .show_ui(ui, |ui| {
+                        ui.selectable_value(&mut self.source_filter, String::new(), "All");
+                        for s in &self.sources {
+                            ui.selectable_value(&mut self.source_filter, s.clone(), s);
                         }
                     });
 
