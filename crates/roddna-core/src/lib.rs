@@ -285,6 +285,61 @@ impl Taper {
             .collect()
     }
 
+    /// How each rod section registers on the Morgan Hand Mill bed: where the
+    /// section's stations land on the mill's fixed #0-#13 grid, and the
+    /// suggested A-K hold-down / mill-stop letter to start at.
+    ///
+    /// Grounded in the MHM manual (see `data/kb/mhm_kb.json`, `docs/MHM.md`):
+    /// the bed has 14 stations on 5-inch centers; a section's **ferrule/tiptop
+    /// point registers at station #12** with the strip overhanging ~3 in toward
+    /// the tip end (#13), and the taper runs from #12 back toward the butt one
+    /// station per 5 in. A section needs the **extension bed** if it can't fit
+    /// (butt would fall past station #0) — e.g. a long one-piece rod.
+    ///
+    /// The A-K letter is the physical **start / mill-stop position**: you screw
+    /// the strip down at the *lowest* letter that gives enough anvil space, so a
+    /// section needing all 13 stations starts at A and shorter sections step up
+    /// the letters (`clamp(11 - station_span, A..K)`). The 11 letters sit at
+    /// 2.5-in pitch near the tip (`MHM_LETTER_PITCH_IN`); a normal 7 ft 2-piece
+    /// tip (span 8) lands on ~hole D. `letter_estimated` stays true: the exact
+    /// hole shifts a little with how the strip is trimmed.
+    ///
+    /// One entry per `mill_sections` piece (Tip / Mid n / Butt / Full rod).
+    pub fn mill_bed_layouts(&self, rough_allowance: f64, finish_allowance: f64) -> Vec<MillBedLayout> {
+        self.mill_sections(rough_allowance, finish_allowance)
+            .into_iter()
+            .map(|section| {
+                let stations: Vec<f64> = section.settings.iter().map(|s| s.station).collect();
+                let length_in = match (stations.first(), stations.last()) {
+                    (Some(&a), Some(&b)) => b - a,
+                    _ => 0.0,
+                };
+                // Number of 5-in bed stations the taper spans.
+                let station_span = (length_in / MHM_STATION_SPACING_IN).round().max(0.0) as usize;
+                let butt_station = MHM_TIPTOP_STATION as i32 - station_span as i32;
+                let fits_standard_bed = butt_station >= 0;
+                // Lowest letter that gives enough anvil space: all 13 stations
+                // -> A, each shorter station-span steps up the letters. Longer
+                // sections (incl. those needing the extension bed) clamp to A.
+                let letter_index = (11 - station_span as i32)
+                    .clamp(0, MHM_HOLD_DOWN_LETTERS as i32 - 1);
+                let letter = (b'A' + letter_index as u8) as char;
+                MillBedLayout {
+                    label: section.label,
+                    section_length_in: length_in,
+                    station_span,
+                    tiptop_station: MHM_TIPTOP_STATION,
+                    butt_station,
+                    tip_overhang_in: MHM_TIP_OVERHANG_IN,
+                    fits_standard_bed,
+                    needs_extension_bed: !fits_standard_bed,
+                    letter,
+                    letter_estimated: true,
+                }
+            })
+            .collect()
+    }
+
     /// Station-to-station change in flat-to-flat dimension: one entry per
     /// interior profile point, `(midpoint_station, delta)` where `delta` is
     /// the dimension at that point minus the dimension at the previous point.
@@ -847,6 +902,53 @@ pub struct MillSection {
     pub settings: Vec<MillSetting>,
 }
 
+/// The Morgan Hand Mill bed has 14 adjusting stations, #0-#13, on 5-inch
+/// centers (numbers 1-13 are stamped on the bed; see `docs/MHM.md`).
+pub const MHM_STATION_SPACING_IN: f64 = 5.0;
+/// A section's ferrule/tiptop point registers at bed station #12.
+pub const MHM_TIPTOP_STATION: u8 = 12;
+/// The strip overhangs ~3 in past the tiptop station toward the tip end (#13).
+pub const MHM_TIP_OVERHANG_IN: f64 = 3.0;
+/// There are 11 lettered start / mill-stop positions, A-K.
+pub const MHM_HOLD_DOWN_LETTERS: usize = 11;
+/// The A-K start-position letters are stamped at 2.5-inch pitch (half a taper
+/// station), so the odd letters coincide with the 5-inch stations: A=station 1,
+/// C=2, E=3, G=4, I=5, K=6 (confirmed from a mill photo). Distinct from the
+/// numbered taper stations 1-13.
+///
+/// You screw the strip down at the **lowest** letter that gives enough anvil
+/// space for the taper: a section needing all 13 stations starts at A, and
+/// each ~5-inch (one-station) reduction in span steps up ~2 letters. caneDNA
+/// models the start letter as `clamp(11 - station_span, A..K)` — A for the
+/// longest sections (incl. one-piece / extension-bed), which reproduces the
+/// manual's 7 ft 2-piece tip (span 8 -> hole D).
+pub const MHM_LETTER_PITCH_IN: f64 = 2.5;
+
+/// How one rod section registers on the Morgan Hand Mill bed. See
+/// `Taper::mill_bed_layouts`.
+#[derive(Debug, Clone, PartialEq)]
+pub struct MillBedLayout {
+    pub label: String,
+    pub section_length_in: f64,
+    /// Number of 5-inch bed stations the taper spans.
+    pub station_span: usize,
+    /// Bed station the ferrule/tiptop registers at (always #12).
+    pub tiptop_station: u8,
+    /// Bed station the section's butt lands on (#12 − span). Negative means the
+    /// section is too long for the standard bed.
+    pub butt_station: i32,
+    /// Strip length past the tiptop station toward the tip end (~3 in).
+    pub tip_overhang_in: f64,
+    /// True if the section fits the standard 60-inch bed (butt_station ≥ 0).
+    pub fits_standard_bed: bool,
+    /// True if the section needs the extension bed (or is a one-piece rod).
+    pub needs_extension_bed: bool,
+    /// Suggested A-K hold-down / mill-stop letter (see `MHM_IN_PER_LETTER`).
+    pub letter: char,
+    /// Always true: the letter is an estimate, not read from a mill.
+    pub letter_estimated: bool,
+}
+
 /// Station-to-station change in flat-to-flat dimension between two adjacent
 /// profile points, labeled at their midpoint station.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -1105,6 +1207,49 @@ mod tests {
             Some("Some Future Library")
         );
         assert_eq!(Taper::default().source_group(), None);
+    }
+
+    #[test]
+    fn mill_bed_layout_registers_tiptop_at_station_12() {
+        // A ~42-inch single section: stations 0..42 every ~5 in. Matches the
+        // manual's worked 7' tip example (tiptop -> station #12, hole D).
+        let stations: Vec<f64> = vec![0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 42.0];
+        let dimensions: Vec<f64> = vec![
+            0.192, 0.206, 0.220, 0.234, 0.248, 0.262, 0.276, 0.290, 0.304, 0.310,
+        ];
+        let t = Taper {
+            stations,
+            dimensions,
+            ..Default::default()
+        };
+        let layouts = t.mill_bed_layouts(0.07, 0.03);
+        assert_eq!(layouts.len(), 1);
+        let l = &layouts[0];
+        assert_eq!(l.tiptop_station, 12);
+        assert!((l.section_length_in - 42.0).abs() < 1e-9);
+        assert_eq!(l.station_span, 8); // round(42/5)
+        assert_eq!(l.butt_station, 4); // 12 - 8
+        assert!(l.fits_standard_bed && !l.needs_extension_bed);
+        assert_eq!(l.letter, 'D'); // typical finish-milling start, ~7.5" from tip
+        assert!(l.letter_estimated);
+    }
+
+    #[test]
+    fn mill_bed_layout_flags_extension_bed_for_long_section() {
+        // A 70-inch section overruns the 60-inch bed (span 14 > 12).
+        let stations: Vec<f64> = (0..=14).map(|i| i as f64 * 5.0).collect();
+        let dimensions: Vec<f64> = (0..=14).map(|i| 0.10 + i as f64 * 0.02).collect();
+        let t = Taper {
+            stations,
+            dimensions,
+            ..Default::default()
+        };
+        let l = &t.mill_bed_layouts(0.07, 0.03)[0];
+        assert_eq!(l.station_span, 14);
+        assert!(l.butt_station < 0);
+        assert!(!l.fits_standard_bed && l.needs_extension_bed);
+        // A section that overruns the bed (one-piece / extension-bed) starts at A.
+        assert_eq!(l.letter, 'A');
     }
 
     #[test]

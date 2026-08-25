@@ -74,6 +74,16 @@ the section. Choosing the letter:
 → *Anvil-visualizer model:* register the section's tip near station #13, then count
 A–K hold-down positions (A = rightmost) back to the strip's butt to pick the letter.
 
+*Confirmed on a physical mill* (right-hand model, anvil marked "RB") and by the owner:
+the bed carries **two** stamped systems — **numbers = the taper stations (1–13)** and
+**letters A–K = the start / mill-stop positions**. The letters sit at **2.5″ pitch**
+(half a station), so the odd letters land on the 5″ stations: **A1, C2, E3, G4, I5,
+K6** (A = station 1 … K = station 6), covering only the tip-most ~25″. **Rule:** screw
+the strip into the **lowest letter that gives enough anvil space** — a section needing
+**all 13 stations starts at A**, and shorter sections step up the letters. So the letter
+tracks span inversely (`clamp(11 − station_span, A..K)`): a 7′ 2-piece tip (span ~8) → **D**;
+rough-cutting and one-piece / extension-bed setups (longest) → **A**.
+
 ## Milling workflow (chapter L)
 
 Cut **butt → tip**, many light passes (~0.010"/pass roughing, 0.001–0.002"
@@ -111,7 +121,7 @@ treated strips ≥ 1 week before milling. Rough sections ≥ 6" over finished le
 | Per-station "setting" (cumulative bed rise) | `MillSetting.total_increase` |
 | Strip height (½ flat-to-flat, per geometry) | `MillSetting.strip_depth` (roadmap #7) |
 | Bed stations every 5 in, referenced near the thick end | Mill Settings tab rows |
-| Anvil A–K hold-down / mill-stop letters | **planned anvil-position visualizer** |
+| Anvil A–K hold-down / mill-stop letters | **Anvil Layout tab** (`Taper::mill_bed_layouts`) — letter is a calibrated estimate |
 | "Disregard RodDNA's Form Depth/Settings" | why we compute settings ourselves |
 
 _Source: Morgan Hand Mill Manual, chapters A–R. Regenerate the local text with
