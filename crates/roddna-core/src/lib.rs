@@ -279,6 +279,58 @@ impl Taper {
             .collect()
     }
 
+    /// Planing-form V-groove depth at each station, for setting up a
+    /// traditional bamboo planing form: the rodmaker planes each strip's
+    /// outer face flush with the form's rail, which sets the strip's
+    /// cross-section to exactly this depth.
+    ///
+    /// Recovered from RodDNA v2.0's own report (decompiling
+    /// `com.tusoni.RodDNA.printing.PrintPlaningFormSettings`, since this
+    /// formula isn't documented anywhere the source data ships). Only
+    /// Hex/Quad/Penta are supported — RodDNA itself refuses to print a
+    /// planing report for any other geometry ("Planing reports are only
+    /// available for Hex, Quad and Penta geometries!"), because the
+    /// dimension-to-depth relationship is a real per-geometry conversion,
+    /// not a uniform half-dimension:
+    /// - Hex: `dimension / 2` (the inradius — a strip sits apex-down, flat
+    ///   face planed level with the rail).
+    /// - Quad: `dimension / 2 * sqrt(2)` (the circumradius — RodDNA models
+    ///   the Quad strip corner-down rather than flat-down).
+    /// - Penta: `dimension / 1.809753` (RodDNA's own constant, matching a
+    ///   regular pentagon's circumradius/side-length relationship it derives
+    ///   internally as `1.903 * 0.951`).
+    ///
+    /// Each depth is then offset by the taper's own `station_bias *
+    /// station_multiplier` (RodDNA reuses these two fields — otherwise
+    /// unrelated to the stress calc, see `stress_curve` — as a planing-form
+    /// adjustment). Returns an empty vec for unsupported geometries or a
+    /// taper with no profile.
+    ///
+    /// Unlike `stress_curve`, there's no stored ground truth in the library
+    /// to validate this against — `data/tapers.json` carries no planing-form
+    /// depths anywhere. Unit tests below check the formula was transcribed
+    /// correctly against hand-computed expected values, not against real
+    /// builder data.
+    pub fn planing_form_depths(&self) -> Vec<PlaningFormSetting> {
+        let profile = self.profile();
+        if profile.is_empty() {
+            return Vec::new();
+        }
+        let Some(geometry) = PlaningFormGeometry::for_const_type(self.const_type.as_deref())
+        else {
+            return Vec::new();
+        };
+        let adjustment = self.station_bias.unwrap_or(0.0) * self.station_multiplier.unwrap_or(1.0);
+        profile
+            .into_iter()
+            .map(|[station, dimension]| PlaningFormSetting {
+                station,
+                dimension,
+                depth: geometry.depth(dimension) + adjustment,
+            })
+            .collect()
+    }
+
     /// Guide placements from a static-deflection calculator: marching from
     /// the tip, each span is the longest run that keeps the rod's own
     /// self-weight sag at midspan under `params.max_sag_in`, treating the
@@ -693,6 +745,42 @@ pub struct DimensionDelta {
     pub delta: f64,
 }
 
+/// Planing-form V-groove depth at one station. See `Taper::planing_form_depths`.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct PlaningFormSetting {
+    pub station: f64,
+    pub dimension: f64,
+    pub depth: f64,
+}
+
+/// The three geometries RodDNA's own planing-form report supports, each with
+/// its own dimension-to-depth conversion. See `Taper::planing_form_depths`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum PlaningFormGeometry {
+    Hex,
+    Quad,
+    Penta,
+}
+
+impl PlaningFormGeometry {
+    fn for_const_type(const_type: Option<&str>) -> Option<Self> {
+        match const_type.map(|s| s.to_lowercase()) {
+            Some(s) if s.starts_with("hex") => Some(Self::Hex),
+            Some(s) if s.starts_with("quad") => Some(Self::Quad),
+            Some(s) if s.starts_with("penta") => Some(Self::Penta),
+            _ => None,
+        }
+    }
+
+    fn depth(&self, dimension: f64) -> f64 {
+        match self {
+            Self::Hex => dimension / 2.0,
+            Self::Quad => dimension / 2.0 * std::f64::consts::SQRT_2,
+            Self::Penta => dimension / 1.809753,
+        }
+    }
+}
+
 /// Tunable inputs to `Taper::guide_spacing`'s static-deflection calculator.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct GuideSpacingParams {
@@ -1008,6 +1096,58 @@ mod tests {
         // Inserting at an existing station is a no-op.
         assert!(!t.insert_station(10.0));
         assert_eq!(t.stations.len(), 4);
+    }
+
+    #[test]
+    fn planing_form_depths_uses_per_geometry_formula() {
+        let base = Taper {
+            stations: vec![0.0],
+            dimensions: vec![0.2],
+            const_type: Some("Hex".to_string()),
+            ..Default::default()
+        };
+
+        let hex = base.planing_form_depths();
+        assert_eq!(hex.len(), 1);
+        assert!((hex[0].depth - 0.1).abs() < 1e-9);
+
+        let quad = Taper {
+            const_type: Some("Quad".to_string()),
+            ..base.clone()
+        };
+        assert!((quad.planing_form_depths()[0].depth - 0.1 * std::f64::consts::SQRT_2).abs() < 1e-9);
+
+        let penta = Taper {
+            const_type: Some("Penta".to_string()),
+            ..base.clone()
+        };
+        assert!((penta.planing_form_depths()[0].depth - 0.2 / 1.809753).abs() < 1e-9);
+
+        // Unsupported geometries — RodDNA itself refuses these too.
+        let rect = Taper {
+            const_type: Some("Rectangular".to_string()),
+            ..base.clone()
+        };
+        assert!(rect.planing_form_depths().is_empty());
+        let unknown = Taper {
+            const_type: None,
+            ..base.clone()
+        };
+        assert!(unknown.planing_form_depths().is_empty());
+    }
+
+    #[test]
+    fn planing_form_depths_applies_station_bias_and_multiplier() {
+        let t = Taper {
+            stations: vec![0.0],
+            dimensions: vec![0.2],
+            const_type: Some("Hex".to_string()),
+            station_bias: Some(0.01),
+            station_multiplier: Some(2.0),
+            ..Default::default()
+        };
+        // 0.2/2 + 0.01*2.0 == 0.12
+        assert!((t.planing_form_depths()[0].depth - 0.12).abs() < 1e-9);
     }
 
     #[test]

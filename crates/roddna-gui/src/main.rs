@@ -75,6 +75,7 @@ enum PanelView {
     MillSettings,
     DeltaChart,
     Stress,
+    PlaningForm,
     GuideSpacing,
 }
 
@@ -704,6 +705,7 @@ impl eframe::App for App {
                 ui.selectable_value(&mut self.view, PanelView::MillSettings, "Mill Settings");
                 ui.selectable_value(&mut self.view, PanelView::DeltaChart, "Dimension Changes");
                 ui.selectable_value(&mut self.view, PanelView::Stress, "Stress");
+                ui.selectable_value(&mut self.view, PanelView::PlaningForm, "Planing Form");
                 ui.selectable_value(&mut self.view, PanelView::GuideSpacing, "Guide Spacing");
             });
             ui.add_space(4.0);
@@ -893,6 +895,45 @@ impl eframe::App for App {
                                 plot_ui.line(Line::new(points).name(name));
                             }
                         });
+                }
+                PanelView::PlaningForm => {
+                    if self.selected.len() != 1 {
+                        ui.label("Select exactly one rod to view planing-form settings.");
+                    } else {
+                        let t = &self.lib.models[self.selected[0]];
+                        let settings = t.planing_form_depths();
+                        if settings.is_empty() {
+                            ui.label(
+                                egui::RichText::new(
+                                    "No planing-form settings — RodDNA only supports Hex, Quad, \
+                                     and Penta geometries for this report.",
+                                )
+                                .weak(),
+                            );
+                        } else {
+                            egui::ScrollArea::vertical()
+                                .id_salt("planing_form_scroll")
+                                .max_height(ui.available_height() * 0.7)
+                                .show(ui, |ui| {
+                                    egui::Grid::new("planing_form")
+                                        .striped(true)
+                                        .num_columns(3)
+                                        .show(ui, |ui| {
+                                            for h in ["Station (in)", "Dimension (in)", "Form depth (in)"]
+                                            {
+                                                ui.label(egui::RichText::new(h).strong());
+                                            }
+                                            ui.end_row();
+                                            for s in &settings {
+                                                ui.label(format!("{:.2}", s.station));
+                                                ui.label(format!("{:.4}", s.dimension));
+                                                ui.label(format!("{:.4}", s.depth));
+                                                ui.end_row();
+                                            }
+                                        });
+                                });
+                        }
+                    }
                 }
                 PanelView::GuideSpacing => {
                     if self.selected.len() != 1 {
