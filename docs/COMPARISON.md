@@ -37,6 +37,13 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
 1. **Garrison stress-curve engine** (`roddna-core`) — compute the stress curve from
    the taper + already-present inputs, for Hex first then Quad/Penta. Unlocks
    stress overlays and is the foundation for principled taper design. *(RodDNA parity + enables spey work.)*
+   Extend to a full **casting deflection analysis**, matching hexrod.net's
+   report: per-station angle, horizontal/vertical deflection, curvature, and
+   stress, driven by adjustable modulus-of-elasticity and impact-factor (G)
+   inputs. Visualize as (a) the deflected rod shape plotted in physical
+   space (horiz/vert deflection per station) and (b) a stress-vs-station
+   line graph — both alongside the existing Chart/Station Data/Mill Settings
+   tabs.
 2. **Taper design/edit mode** — edit stations, apply scale (multiplier/bias), and
    add/split ferrule stations. Enables designing new tapers (see `SPEY_DESIGN.md`).
 3. **Planing-form settings** — 60° form depth at each station for the chosen geometry.

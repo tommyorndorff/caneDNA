@@ -142,7 +142,8 @@ feature matrix. Gap-driven order:
 
 1. **Garrison stress-curve engine** (`roddna-core`) — compute from the taper +
    stored inputs (Hex first, then Quad/Penta). Foundation for stress overlays and
-   taper design.
+   taper design. Extend to a full **casting deflection analysis** (hexrod.net-style):
+   deflected rod shape + stress-vs-station graphs from adjustable MOE/impact-factor inputs.
 2. **Taper design/edit mode** — edit stations, scale (multiplier/bias), add/split
    ferrule stations.
 3. **Planing-form settings** (60° form depths per geometry).
