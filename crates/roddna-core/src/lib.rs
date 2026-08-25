@@ -181,11 +181,13 @@ impl Taper {
 
     /// Morgan Hand Mill settings for each station, given rough/finish oversize
     /// allowances (Tom Morgan's "2019 Bamboo Taper Sheets" workbook defaults:
-    /// 0.07", 0.03"). `half_dimension` (dimension / 2) is the mill dial
-    /// setting; `total_increase` is the cumulative rise from the butt end to
-    /// each station, i.e. the anvil setting.
+    /// 0.07", 0.03"). `strip_depth` is the mill dial setting — the per-geometry
+    /// strip depth (Hex = dimension/2, Quad/Penta larger, matching
+    /// `planing_form_depths`); `total_increase` is the cumulative rise from the
+    /// butt end to each station, i.e. the anvil setting.
     pub fn mill_settings(&self, rough_allowance: f64, finish_allowance: f64) -> Vec<MillSetting> {
-        settings_for_points(&self.profile(), rough_allowance, finish_allowance)
+        let geometry = PlaningFormGeometry::for_const_type(self.const_type.as_deref());
+        settings_for_points(&self.profile(), geometry, rough_allowance, finish_allowance)
     }
 
     /// Per-piece Morgan Hand Mill sections (Tip / Mid n / Butt), split at
@@ -195,12 +197,13 @@ impl Taper {
     /// the ferrule joint.
     pub fn mill_sections(&self, rough_allowance: f64, finish_allowance: f64) -> Vec<MillSection> {
         let profile = self.profile();
+        let geometry = PlaningFormGeometry::for_const_type(self.const_type.as_deref());
         let pieces = self.pieces.unwrap_or(1.0).round().max(1.0) as usize;
         if pieces <= 1 || profile.len() < pieces {
             return vec![MillSection {
                 label: "Full rod".into(),
                 approximate: false,
-                settings: settings_for_points(&profile, rough_allowance, finish_allowance),
+                settings: settings_for_points(&profile, geometry, rough_allowance, finish_allowance),
             }];
         }
 
@@ -249,6 +252,7 @@ impl Taper {
                     approximate,
                     settings: settings_for_points(
                         &profile[start..end],
+                        geometry,
                         rough_allowance,
                         finish_allowance,
                     ),
@@ -712,25 +716,33 @@ const MHM_ENAMEL_ALLOWANCE: f64 = 0.003;
 
 fn settings_for_points(
     points: &[[f64; 2]],
+    geometry: Option<PlaningFormGeometry>,
     rough_allowance: f64,
     finish_allowance: f64,
 ) -> Vec<MillSetting> {
+    // The strip depth milled per station is a per-geometry conversion of the
+    // flat-to-flat dimension, not a uniform half — RodDNA's own MHM report
+    // (`PrintMHMSettings`) uses the same conversion as its planing-form report.
+    // Hex is dimension/2 (the inradius); Quad/Penta differ. Fall back to
+    // dimension/2 for geometries the planing form doesn't cover (hepta/octa/
+    // rectangular/unspecified), preserving prior behavior for those.
+    let depth = |dimension: f64| geometry.map_or(dimension / 2.0, |g| g.depth(dimension));
     let n = points.len();
-    let butt_half = points.last().map(|p| p[1] / 2.0).unwrap_or(0.0);
+    let butt_depth = points.last().map(|p| depth(p[1])).unwrap_or(0.0);
     points
         .iter()
         .enumerate()
         .map(|(i, &[station, dimension])| {
-            let half_dimension = dimension / 2.0;
+            let strip_depth = depth(dimension);
             MillSetting {
                 station,
                 anvil_number: n - 1 - i,
                 dimension,
-                half_dimension,
-                rough_oversize: half_dimension + rough_allowance,
-                finish_oversize: half_dimension + finish_allowance,
-                finish_enamel: half_dimension + MHM_ENAMEL_ALLOWANCE,
-                total_increase: butt_half - half_dimension,
+                strip_depth,
+                rough_oversize: strip_depth + rough_allowance,
+                finish_oversize: strip_depth + finish_allowance,
+                finish_enamel: strip_depth + MHM_ENAMEL_ALLOWANCE,
+                total_increase: butt_depth - strip_depth,
             }
         })
         .collect()
@@ -786,7 +798,11 @@ pub struct MillSetting {
     /// Anvil/mill station number, descending from tip (highest) to butt (0).
     pub anvil_number: usize,
     pub dimension: f64,
-    pub half_dimension: f64,
+    /// Depth of the strip milled at this station: the per-geometry conversion
+    /// of the flat-to-flat `dimension` (Hex = dimension/2, Quad/Penta larger).
+    /// Equals `dimension / 2` for hex and for geometries without a planing-form
+    /// conversion.
+    pub strip_depth: f64,
     pub rough_oversize: f64,
     pub finish_oversize: f64,
     pub finish_enamel: f64,
@@ -1050,7 +1066,7 @@ mod tests {
 
         let first = &settings[0];
         assert_eq!(first.anvil_number, 11);
-        assert!((first.half_dimension - 0.083).abs() < 1e-9);
+        assert!((first.strip_depth - 0.083).abs() < 1e-9);
         assert!((first.rough_oversize - 0.153).abs() < 1e-9);
         assert!((first.finish_oversize - 0.113).abs() < 1e-9);
         assert!((first.finish_enamel - 0.086).abs() < 1e-9);
@@ -1058,8 +1074,39 @@ mod tests {
 
         let last = settings.last().unwrap();
         assert_eq!(last.anvil_number, 0);
-        assert!((last.half_dimension - 0.167).abs() < 1e-9);
+        assert!((last.strip_depth - 0.167).abs() < 1e-9);
         assert!((last.total_increase - 0.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn mill_settings_strip_depth_is_geometry_aware() {
+        // For non-hex geometries the milled strip depth is the same
+        // per-geometry conversion the planing-form report uses, not a flat
+        // dimension/2. Quad = dimension/2 * sqrt(2); Penta = dimension/1.809753.
+        let dims = vec![0.100, 0.200];
+        let stations = vec![0.0, 5.0];
+        let quad = Taper {
+            stations: stations.clone(),
+            dimensions: dims.clone(),
+            const_type: Some("Quad".into()),
+            ..Default::default()
+        };
+        let q = quad.mill_settings(0.0, 0.0);
+        assert!((q[0].strip_depth - 0.100 / 2.0 * std::f64::consts::SQRT_2).abs() < 1e-9);
+        // Oversize and total_increase build on the geometry-aware depth.
+        assert!((q[0].rough_oversize - q[0].strip_depth).abs() < 1e-9);
+        assert!((q[0].total_increase - (q[1].strip_depth - q[0].strip_depth)).abs() < 1e-9);
+
+        let penta = Taper {
+            stations,
+            dimensions: dims,
+            const_type: Some("Penta".into()),
+            ..Default::default()
+        };
+        let p = penta.mill_settings(0.0, 0.0);
+        assert!((p[1].strip_depth - 0.200 / 1.809753).abs() < 1e-9);
+        // Hex-less/unknown geometry still falls back to half the dimension.
+        assert!(p[0].strip_depth > 0.100 / 2.0);
     }
 
     fn synthetic_profile(n: usize) -> (Vec<f64>, Vec<f64>) {
