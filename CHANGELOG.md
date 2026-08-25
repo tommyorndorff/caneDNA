@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.5.0](https://github.com/tommyorndorff/caneDNA/compare/v0.4.0...v0.5.0) (2026-08-25)
+
+
+### Features
+
+* export tapers to CSV and a plain station file ([#12](https://github.com/tommyorndorff/caneDNA/issues/12)) ([fc4e900](https://github.com/tommyorndorff/caneDNA/commit/fc4e9005f13b6adb39814f07e447982f04087947))
+* filter the library by provenance source ([#16](https://github.com/tommyorndorff/caneDNA/issues/16)) ([728dc26](https://github.com/tommyorndorff/caneDNA/commit/728dc26b224471e1343e5df676304f4d0719e747))
+* Morgan Hand Mill anvil-position layout ([#18](https://github.com/tommyorndorff/caneDNA/issues/18)) ([8db155f](https://github.com/tommyorndorff/caneDNA/commit/8db155fe416d5cafbadbc6e5b0fe13cda8146659))
+* Morgan Hand Mill knowledge base ([#17](https://github.com/tommyorndorff/caneDNA/issues/17)) ([7317258](https://github.com/tommyorndorff/caneDNA/commit/73172583c6e9397fc44226e5e5c69da2f9cd100b))
+
+
+### Bug Fixes
+
+* compute Morgan Hand Mill strip depth per geometry ([#14](https://github.com/tommyorndorff/caneDNA/issues/14)) ([353cb4b](https://github.com/tommyorndorff/caneDNA/commit/353cb4b843b7fad8378ad326a451cfc42c233d48))
+* correctness and design-edit fixes from RodDNA-parity audit ([#15](https://github.com/tommyorndorff/caneDNA/issues/15)) ([7362b08](https://github.com/tommyorndorff/caneDNA/commit/7362b08ca9778d5d4c0131b182cd86d859d0a1a4))
+
 ## [0.4.0](https://github.com/tommyorndorff/caneDNA/compare/v0.3.0...v0.4.0) (2026-08-25)
 
 
