@@ -90,12 +90,21 @@ impl Taper {
     }
 
     /// (station, dimension) pairs, zipped and truncated to the shorter of the two.
+    ///
+    /// Trailing zero-dimension points are dropped: some imported sources pad
+    /// fixed-size station arrays with `0.0` past the rod's real taper length,
+    /// which would otherwise plot as a spurious plunge to zero.
     pub fn profile(&self) -> Vec<[f64; 2]> {
-        self.stations
+        let mut points: Vec<[f64; 2]> = self
+            .stations
             .iter()
             .zip(self.dimensions.iter())
             .map(|(&s, &d)| [s, d])
-            .collect()
+            .collect();
+        while points.len() > 1 && points.last().map(|p| p[1]) == Some(0.0) {
+            points.pop();
+        }
+        points
     }
 
     /// The maker token used to link a taper to the casting KB: the first word of
