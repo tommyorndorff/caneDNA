@@ -74,14 +74,15 @@ the section. Choosing the letter:
 → *Anvil-visualizer model:* register the section's tip near station #13, then count
 A–K hold-down positions (A = rightmost) back to the strip's butt to pick the letter.
 
-*Observed on a physical mill* (right-hand model, anvil marked "RB"): the steel base is
-stamped **A, B, C, D, E, F, G, …** along its length, with a matching lettered row on the
-bed below the anvil hold-down screws; alternating letters also carry a number —
-**A1, C2, E3, G4** (A/C/E/G = 1/2/3/4, presumably … I5, K6). This confirms the A–K
-ordering physically. The photo has no ruler, so the absolute letter **pitch** is still
-unmeasured — and the manual's "42″ tip → hole D" doesn't fit a simple length ÷ pitch
-rule — so caneDNA's letter stays a calibrated estimate until we have a measured pitch
-or the maker's own letter-selection rule.
+*Confirmed on a physical mill* (right-hand model, anvil marked "RB") and by the owner:
+the bed carries **two** stamped systems — **numbers = the taper stations (1–13)** and
+**letters A–K = the start / mill-stop positions**. The letters sit at **2.5″ pitch**
+(half a station), so the odd letters land on the 5″ stations: **A1, C2, E3, G4, I5,
+K6** (A = station 1 … K = station 6), covering only the tip-most ~25″. You **start a
+finish pass ~hole D** (~7.5″ from the tip, just past the tiptop at #12 — the manual's
+"start ~6″ from the tip"); **rough-cutting and one-piece / extension-bed setups start at
+A**. So the start letter is roughly fixed by build type — it's the **station span** that
+grows with section length, not the letter.
 
 ## Milling workflow (chapter L)
 

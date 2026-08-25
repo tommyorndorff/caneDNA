@@ -1185,9 +1185,10 @@ fn anvil_layout_view(ui: &mut egui::Ui, layouts: &[roddna_core::MillBedLayout]) 
     );
     ui.label(
         egui::RichText::new(
-            "Note: the A–K letter is a caneDNA estimate calibrated to the manual's one \
-             worked example (a ~42 in tip section → hole D); exact anvil hole spacing isn't \
-             in the manual text. Rough-cutting always uses hole A.",
+            "The A–K letters are start / mill-stop positions at 2.5\" pitch near the tip (the \
+             odd letters sit on the numbered taper stations 1–6). Finish milling starts ~hole D, \
+             just past the tiptop; rough-cutting and one-piece / extension-bed setups start at A. \
+             What varies with section length is the station span (below), not the start letter.",
         )
         .weak()
         .small(),
@@ -1265,6 +1266,24 @@ fn anvil_bed_schematic(ui: &mut egui::Ui, layouts: &[roddna_core::MillBedLayout]
                         format!("#{s}"),
                     )
                     .color(egui::Color32::from_gray(140)),
+                );
+            }
+            // A-K start / mill-stop letters at 2.5" pitch near the tip (A at #13),
+            // drawn along the bottom; the typical finish start (D) is highlighted.
+            for i in 0..11u8 {
+                let letter = (b'A' + i) as char;
+                let x = 13.0 - i as f64 * 0.5; // 2.5" pitch = half a 5" station
+                let hot = letter == 'D';
+                plot_ui.text(
+                    Text::new(
+                        egui_plot::PlotPoint::new(x, -0.3),
+                        letter.to_string(),
+                    )
+                    .color(if hot {
+                        egui::Color32::from_rgb(70, 140, 220)
+                    } else {
+                        egui::Color32::from_gray(130)
+                    }),
                 );
             }
             for (i, l) in layouts.iter().enumerate() {
