@@ -30,6 +30,7 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
 | Customers / vendors / rods DBs | ✅ | ⛔ | Business-management side; not a goal |
 | Network / chat / registration | ✅ | ⛔ | Obsolete; not a goal |
 | Morgan Hand Mill (MHM) settings | ✅ | ✅ | caneDNA computes MHM dial settings natively (adjustable rough/finish oversize allowances) rather than replicating RodDNA's printed report format |
+| **Dimension-change (delta) chart** | ❌ | ❌ | hexrod.net-style bar+line chart of station-to-station dimension change every 5", with ferrule-location markers — see roadmap |
 
 ## Gap-driven roadmap (priority order)
 
@@ -41,5 +42,14 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
 3. **Planing-form settings** — 60° form depth at each station for the chosen geometry.
 4. **Guide-spacing calculator** — from length/line/# guides, with a static-deflection option.
 5. **Export** — CSV + a Hexrod-style station file; later a printable/PDF sheet.
+6. **Dimension-change (delta) chart** — a new view alongside Chart/Station
+   Data/Mill Settings showing the station-to-station change in flat-to-flat
+   dimension (bar chart, one bar per 5" span, with a connecting line and
+   value labels), plus vertical markers for each `Taper::ferrules()` location
+   — hexrod.net's "Dimension Changes Every 5 Inches" report is the reference.
+   Useful for spotting abrupt/uneven taper steps (e.g. a jump right after a
+   ferrule) that a raw dimension chart can hide. Low-cost: the underlying
+   diff is trivial from `profile()`, and ferrule markers reuse `ferrules()`
+   from the Mill Settings work.
 
 These are reflected in the README roadmap.

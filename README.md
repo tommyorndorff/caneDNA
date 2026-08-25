@@ -148,6 +148,8 @@ feature matrix. Gap-driven order:
 3. **Planing-form settings** (60° form depths per geometry).
 4. **Guide-spacing calculator.**
 5. **Export** — CSV + Hexrod-style station file; later a printable/PDF sheet.
+6. **Dimension-change (delta) chart** — hexrod.net-style bar+line view of
+   station-to-station dimension change with ferrule markers.
 
 ### Design focus: trout-spey tapers
 
