@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/tommyorndorff/caneDNA/compare/v0.3.0...v0.4.0) (2026-08-25)
+
+
+### Features
+
+* add guide-spacing calculator ([#10](https://github.com/tommyorndorff/caneDNA/issues/10)) ([5cb877c](https://github.com/tommyorndorff/caneDNA/commit/5cb877ca513dc451696f122a9179fb96d8822dd7))
+* add planing-form settings ([#9](https://github.com/tommyorndorff/caneDNA/issues/9)) ([dff70e5](https://github.com/tommyorndorff/caneDNA/commit/dff70e593f579138260c7f53e946a59ab3c0d6fd))
+
 ## [0.3.0](https://github.com/tommyorndorff/caneDNA/compare/v0.2.0...v0.3.0) (2026-08-25)
 
 
