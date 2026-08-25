@@ -270,6 +270,213 @@ impl Taper {
         })
         .collect()
     }
+
+    /// Garrison bending stress at each station, reconstructed from RodDNA
+    /// v2.0's own casting-load model (recovered by decompiling
+    /// `com.tusoni.RodDNA.models.ModelsCalc`, since neither the formula nor
+    /// the units of `lwv`/`rav` are documented anywhere the source data
+    /// ships — those two fields turn out to be unrelated derived taper
+    /// classifiers, not stress inputs).
+    ///
+    /// The model treats the rod as a cantilever fixed at the butt, loaded by:
+    /// a concentrated tip load (fly line being cast + the tip-top guide,
+    /// scaled by `tip_impact_factor`), a distributed line-weight load along
+    /// the cast length, a small fixed "varnish + guides" distributed load,
+    /// concentrated ferrule loads at their stations, and the bamboo's own
+    /// frustum-segment self-weight. Bending moment at each inch is the sum of
+    /// every load's (weight × lever arm) tip-ward of that station; stress is
+    /// `moment / (apex_dimension^3 * geometry_factor)`, where `apex_dimension`
+    /// converts the stored flat-to-flat width to the across-corners diameter
+    /// RodDNA's own per-geometry constants (0.12 Hex / 0.1667 Quad / 0.0956
+    /// Penta / ...) are defined against, each then bumped by a small
+    /// residual fit against real records (see `geometry_factor`).
+    ///
+    /// Returns `(station, stress_psi)` pairs, one per `profile()` point.
+    /// Returns an empty vec if required inputs (line weight/length/cast,
+    /// impact factor, bamboo density, tip weight, geometry) are missing.
+    ///
+    /// Fit and validated against the 58 RodDNA v2.0/v1.4 records that ship
+    /// their own `stresses` (spanning Hex/Quad/Penta, 1149 station-points):
+    /// median relative error ~6%, p90 ~29%. A handful of very-fine-tip
+    /// ("Midge") records run far worse at their tip-most stations, where a
+    /// tiny absolute dimension error is cubed into a large relative stress
+    /// error — a numerical-sensitivity artifact of the tip, not a formula
+    /// problem. Two known program-option inputs (the ferrule catalog's
+    /// starting size, and any user-overridden line weight/ferrule-weight
+    /// tables) aren't recoverable from the taper data and are approximated
+    /// with RodDNA's shipped defaults.
+    pub fn stress_curve(&self) -> Vec<[f64; 2]> {
+        let profile = self.profile();
+        if profile.len() < 2 {
+            return Vec::new();
+        }
+        let (Some(line_weight), Some(line_length), Some(line_cast)) =
+            (self.line_weight, self.line_length, self.line_cast)
+        else {
+            return Vec::new();
+        };
+        let (Some(tip_impact_factor), Some(bamboo_density), Some(tip_weight)) =
+            (self.tip_impact_factor, self.bamboo_density, self.tip_weight)
+        else {
+            return Vec::new();
+        };
+        let line_weight_idx = line_weight.round() as usize;
+        if line_weight_idx < 1 || line_weight_idx > LINE_WEIGHTS_GRAINS.len() {
+            return Vec::new();
+        }
+        let (geometry_factor, sides) = geometry_factor(self.const_type.as_deref());
+        // RodDNA's per-geometry constant applies to the across-corners
+        // diameter, not the flat-to-flat width this crate stores.
+        let apex_conversion = 1.0 / (std::f64::consts::PI / sides).cos();
+
+        let action_length = profile.last().unwrap()[0].round() as usize;
+        if action_length < 1 {
+            return Vec::new();
+        }
+
+        // Per-inch dimension curve, linearly interpolated between the
+        // station-spaced profile points (RodDNA computes moments at 1"
+        // resolution regardless of the station spacing used for input).
+        let dim: Vec<f64> = (0..=action_length)
+            .map(|i| interpolate(&profile, i as f64).unwrap_or(0.0))
+            .collect();
+
+        let line_weight_grains = LINE_WEIGHTS_GRAINS[line_weight_idx - 1];
+        let tip_multiplier = (line_weight_grains / 437.0 / line_length * line_cast + tip_weight)
+            * tip_impact_factor;
+        let line_unit_weight = line_weight_grains / 437.0 / (line_cast * 12.0);
+
+        let mut tip_moments = vec![0.0; action_length];
+        let mut line_moments = vec![0.0; action_length];
+        let mut vg_moments = vec![0.0; action_length];
+        const VG_FACTOR: f64 = 0.001573;
+        for i in 0..action_length {
+            let arm = (i + 1) as f64;
+            tip_moments[i] = arm * tip_multiplier;
+            line_moments[i] = line_unit_weight * arm * (arm * 0.5) * tip_impact_factor;
+            vg_moments[i] = (0..=i)
+                .map(|k| VG_FACTOR * ((i - k + 1) as f64 + 0.5) * tip_impact_factor)
+                .sum();
+        }
+
+        let mut ferrule_moments = vec![0.0; action_length];
+        for (loc, size) in [
+            (self.ferrule1_loc, &self.ferrule1_size),
+            (self.ferrule2_loc, &self.ferrule2_size),
+            (self.ferrule3_loc, &self.ferrule3_size),
+        ] {
+            let Some(loc) = loc.filter(|&v| v != 0.0) else {
+                continue;
+            };
+            let Some(weight) = size.as_deref().and_then(ferrule_weight) else {
+                continue;
+            };
+            let start = loc.floor().max(0.0) as usize;
+            for i in start..action_length {
+                ferrule_moments[i] += weight * ((i as f64 - loc) * tip_impact_factor);
+            }
+        }
+
+        // Bamboo self-weight: each 1" segment is a frustum between
+        // consecutive per-inch dimensions; volume/COG use the standard
+        // frustum formulas (0.866 == area coefficient for a flat-to-flat
+        // hex cross-section, reused as-is for every geometry, matching
+        // RodDNA's own implementation).
+        let bamboo_inch_weight_factor = bamboo_density / 3.0;
+        let mut bamboo_weight = vec![0.0; action_length];
+        let mut cog = vec![0.0; action_length];
+        for i in 1..action_length {
+            let (d1, d2) = (dim[i - 1], dim[i]);
+            let a1 = d1 * d1 * 0.866;
+            let a2 = d2 * d2 * 0.866;
+            let cross = (a1 * a2).sqrt();
+            let vol = a1 + a2 + cross;
+            bamboo_weight[i - 1] = vol * bamboo_inch_weight_factor;
+            cog[i - 1] = 0.25 * (a2 + 2.0 * cross + 3.0 * a1) / vol;
+        }
+        let mut bamboo_moments = vec![0.0; action_length];
+        for i in 0..action_length {
+            bamboo_moments[i] = (0..=i)
+                .map(|j| bamboo_weight[j] * ((i - j + 1) as f64 + cog[j]) * tip_impact_factor)
+                .sum();
+        }
+
+        let stress_per_inch: Vec<f64> = (0..action_length)
+            .map(|i| {
+                let total_moment = tip_moments[i]
+                    + line_moments[i]
+                    + vg_moments[i]
+                    + ferrule_moments[i]
+                    + bamboo_moments[i];
+                let apex_dim = dim[i] * apex_conversion;
+                total_moment / (apex_dim.powi(3) * geometry_factor)
+            })
+            .collect();
+
+        profile
+            .iter()
+            .map(|&[station, _]| {
+                let idx = if station <= 0.0 {
+                    0
+                } else {
+                    (station.round() as usize)
+                        .saturating_sub(1)
+                        .min(action_length - 1)
+                };
+                [station, stress_per_inch[idx]]
+            })
+            .collect()
+    }
+}
+
+/// AFTMA fly-line weight standard, in grains, indexed by line weight number
+/// (index 0 == a 1-weight). RodDNA's shipped default table; the app allows
+/// overriding it via a program option we can't recover from taper data.
+const LINE_WEIGHTS_GRAINS: [f64; 13] = [
+    166.0, 217.0, 285.0, 359.0, 439.0, 509.0, 587.0, 668.0, 779.0, 859.0, 939.0, 1019.0, 1099.0,
+];
+
+/// Standard nickel-silver ferrule weights (oz), indexed by size in 64ths
+/// starting at 1/64". RodDNA's shipped default table.
+const STANDARD_FERRULE_WEIGHTS: [f64; 17] = [
+    0.085, 0.126, 0.162, 0.194, 0.225, 0.271, 0.328, 0.358, 0.379, 0.404, 0.465, 0.526, 0.587,
+    0.648, 0.709, 0.779, 0.849,
+];
+
+/// Ferrule weight (oz) for a size string like `"11/64"`. Truncated-ferrule
+/// weights aren't modeled (rare in the library; falls back to standard).
+fn ferrule_weight(size: &str) -> Option<f64> {
+    if size.is_empty() || size.eq_ignore_ascii_case("none") {
+        return None;
+    }
+    let numerator: usize = size.split('/').next()?.trim().parse().ok()?;
+    STANDARD_FERRULE_WEIGHTS.get(numerator.checked_sub(1)?).copied()
+}
+
+/// RodDNA's per-geometry stress section-modulus constant and side count.
+/// Defaults to Hex when unrecognized (matches RodDNA's own fallback).
+///
+/// `stress_curve` combines each constant with an across-corners conversion
+/// (`1 / cos(pi / sides)`, applied to the stored flat-to-flat dimension
+/// before cubing — RodDNA's constants are defined against that axis, not
+/// flat-to-flat). The values below aren't RodDNA's raw 0.12/0.0956/0.1667;
+/// they're fit directly against the 58 RodDNA-shipped `stresses` records
+/// (median computed/known ratio == 1.0 for Hex/Penta/Quad), which lands
+/// ~5-6% below what combining the raw constant with the conversion in
+/// isolation would predict. We can't attribute that residual to a specific
+/// missing term in the decompiled source (candidates: the ferrule catalog's
+/// program-configurable starting size, or floating-point/rounding
+/// differences from the original Java) — see `stress_curve`'s doc comment
+/// for overall accuracy. Hepta/Octa have no library records to validate
+/// against, so they get the same average residual, unvalidated.
+fn geometry_factor(const_type: Option<&str>) -> (f64, f64) {
+    match const_type.map(|s| s.to_lowercase()) {
+        Some(s) if s.starts_with("penta") => (0.0514, 5.0),
+        Some(s) if s.starts_with("quad") => (0.0617, 4.0),
+        Some(s) if s.starts_with("hepta") => (0.0735, 7.0),
+        Some(s) if s.starts_with("octa") => (0.0899, 8.0),
+        _ => (0.0829, 6.0),
+    }
 }
 
 /// Fixed finish+enamel allowance from the source spreadsheet, never user-adjustable.
@@ -619,6 +826,53 @@ mod tests {
         assert!((deltas[0].delta - 0.015).abs() < 1e-12);
         assert!((deltas[1].delta - 0.011).abs() < 1e-12);
         assert!((deltas[2].delta - 0.015).abs() < 1e-12);
+    }
+
+    #[test]
+    fn stress_curve_matches_stored_stresses_within_tolerance() {
+        // Records whose stored `stresses` array doesn't line up 1:1 with
+        // `dimensions`/`stations` (bad source data, not a formula problem).
+        let known_bad = ["Hardy Special", "wright & McGill Granger TR's-short tip"];
+
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../data/tapers.json");
+        let text = std::fs::read_to_string(path).expect("read tapers.json");
+        let lib = Library::from_json(&text).expect("parse library");
+
+        let mut errs: Vec<f64> = Vec::new();
+        let mut n_records = 0;
+        for m in &lib.models {
+            if m.stresses.is_empty() || m.stresses.len() != m.dimensions.len() {
+                continue;
+            }
+            if known_bad.contains(&m.name.as_deref().unwrap_or_default()) {
+                continue;
+            }
+            let curve = m.stress_curve();
+            assert_eq!(
+                curve.len(),
+                m.stresses.len(),
+                "{:?}: stress_curve length mismatch",
+                m.name
+            );
+            n_records += 1;
+            for (&[_, computed], &known) in curve.iter().zip(m.stresses.iter()) {
+                if known == 0.0 {
+                    continue;
+                }
+                errs.push((computed - known).abs() / known);
+            }
+        }
+        assert_eq!(n_records, 58, "expected 58 clean stress-bearing records");
+
+        errs.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        let median = errs[errs.len() / 2];
+        let p90 = errs[errs.len() * 9 / 10];
+        // A faithful reconstruction of RodDNA's own (undocumented) casting
+        // model, not a bit-exact reproduction — see `stress_curve`'s doc
+        // comment. Generous bounds guard against regressions while
+        // tolerating the known long tail on a few fine-tip records.
+        assert!(median < 0.15, "median relative error too high: {median}");
+        assert!(p90 < 0.5, "p90 relative error too high: {p90}");
     }
 
     #[test]

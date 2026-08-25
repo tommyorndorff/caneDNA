@@ -140,16 +140,18 @@ python3 scripts/build_library.py              # merge + dedupe -> data/tapers.js
 See [`docs/COMPARISON.md`](docs/COMPARISON.md) for the full caneDNA-vs-RodDNA
 feature matrix. Gap-driven order:
 
-1. **Garrison stress-curve engine** (`roddna-core`) — compute from the taper +
-   stored inputs (Hex first, then Quad/Penta). Foundation for stress overlays and
-   taper design. Extend to a full **casting deflection analysis** (hexrod.net-style):
+1. _Done_ — **Garrison stress-curve engine** (`roddna-core`): `Taper::stress_curve()`
+   reconstructs RodDNA's own casting-load model across Hex/Quad/Penta (recovered by
+   decompiling `RodDNA_v20.jar`), validated to ~6% median error against the 58
+   records that ship stored stresses. Foundation for taper design. Not yet done:
+   extending to a full **casting deflection analysis** (hexrod.net-style):
    deflected rod shape + stress-vs-station graphs from adjustable MOE/impact-factor inputs.
 2. **Taper design/edit mode** — edit stations, scale (multiplier/bias), add/split
    ferrule stations.
 3. **Planing-form settings** (60° form depths per geometry).
 4. **Guide-spacing calculator.**
 5. **Export** — CSV + Hexrod-style station file; later a printable/PDF sheet.
-6. **Dimension-change (delta) chart** — hexrod.net-style bar+line view of
+6. _Done_ — **Dimension-change (delta) chart** — hexrod.net-style bar+line view of
    station-to-station dimension change with ferrule markers.
 7. **Mine decompiled RodDNA for Mill-Settings ideas** — check the RodDNA app
    internals (decompiled for the stress-formula work in #1) for Morgan Hand

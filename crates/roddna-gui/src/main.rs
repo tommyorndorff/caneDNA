@@ -74,6 +74,7 @@ enum PanelView {
     StationData,
     MillSettings,
     DeltaChart,
+    Stress,
 }
 
 struct App {
@@ -385,6 +386,7 @@ impl eframe::App for App {
                 ui.selectable_value(&mut self.view, PanelView::StationData, "Station Data");
                 ui.selectable_value(&mut self.view, PanelView::MillSettings, "Mill Settings");
                 ui.selectable_value(&mut self.view, PanelView::DeltaChart, "Dimension Changes");
+                ui.selectable_value(&mut self.view, PanelView::Stress, "Stress");
             });
             ui.add_space(4.0);
 
@@ -530,6 +532,29 @@ impl eframe::App for App {
                                 }
                             });
                     }
+                }
+                PanelView::Stress => {
+                    // Overlaid Garrison stress curves, same idiom as the
+                    // Chart tab. Rods missing a required input (line
+                    // weight/length/cast, impact factor, bamboo density, tip
+                    // weight) contribute no line rather than erroring.
+                    Plot::new("stress")
+                        .legend(Legend::default())
+                        .x_axis_label("Station (in from tip)")
+                        .y_axis_label("Stress (psi)")
+                        .height(ui.available_height() * 0.7)
+                        .show(ui, |plot_ui| {
+                            for &i in &self.selected {
+                                let t = &self.lib.models[i];
+                                let curve = t.stress_curve();
+                                if curve.is_empty() {
+                                    continue;
+                                }
+                                let name = t.name.clone().unwrap_or_else(|| format!("model {i}"));
+                                let points: PlotPoints = curve.into_iter().collect();
+                                plot_ui.line(Line::new(points).name(name));
+                            }
+                        });
                 }
             }
 
