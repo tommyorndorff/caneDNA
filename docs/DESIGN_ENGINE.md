@@ -48,11 +48,38 @@ already in `roddna-core`.
 
 ### B — Inverse design (solve for a taper)
 
-Given a target — a stress curve shape, a frequency, a grain window — search
-taper space for a taper that hits it. Starts from a seed (`Taper::scaled` +
-per-station edits are the manual version of this today) and optimizes stations
-against an A1/A2 objective. This is the first stage that *creates* a taper
-rather than measuring one.
+The first stage that *creates* a taper rather than measuring one: given a
+target, solve for the station dimensions that hit it. Manual today via
+`Taper::scaled` + per-station edits in design mode.
+
+**First cut — spec (decided):**
+
+- **Target = a flat stress curve** at a user-chosen psi. This is the classic
+  Garrison "flatten the stress curve" design move, and A1 (`stress_curve`) is
+  the best-validated engine to solve against. Frequency (A2) and shape (A2b)
+  targets are deferred — a single frequency is badly underdetermined, and A2b
+  has no ground truth.
+- **Solver = fixed-point inversion, not a generic optimizer.** The physics
+  factorizes: `stress_i = M_i / (k · apex(d_i)³)`, and the moment `M_i` depends
+  on the dimensions only weakly (through bamboo self-weight; the dominant
+  tip/line/ferrule loads are dimension-independent). So each station inverts in
+  near-closed-form to hit a target stress `T`:
+  `d_i = (M_i / (k·T))^(1/3) / apex_conversion`. Recompute `M` with the new
+  dimensions and repeat 2–3× to absorb the self-weight feedback. Simpler,
+  faster, and more physically motivated than Gauss-Newton / global search,
+  which we'd only reach for if a target proves un-invertible.
+- **Constraint = monotonic** (dimension non-decreasing tip→butt), the one
+  property nearly every real taper has; it rules out nonsensical solutions.
+  Tip dimension is *not* pinned and no explicit smoothness penalty is applied
+  in the first cut — a flat-stress target over a smooth moment field already
+  yields a smooth taper.
+- **API:** `Taper::solve_to_stress(target_psi, &SolveParams) -> Taper`, built on
+  the existing shared `casting_moments()`. Wires into `DesignState` design mode
+  as a "Solve to flat stress" control with live Stress-tab re-render.
+
+Later extensions once the first cut lands: clone-another-rod's-stress target,
+optional smoothness/tip-pin constraints, and frequency/grain-window objectives
+(the trout-spey case, where "does it load in its head range" matters most).
 
 ### C — KB action model (calibrate to real rods)
 
