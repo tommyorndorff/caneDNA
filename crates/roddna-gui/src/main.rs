@@ -77,6 +77,7 @@ enum PanelView {
     Stress,
     PlaningForm,
     GuideSpacing,
+    AnvilLayout,
 }
 
 /// Which view is active while editing a taper in design mode.
@@ -818,6 +819,7 @@ impl eframe::App for App {
                 ui.selectable_value(&mut self.view, PanelView::Stress, "Stress");
                 ui.selectable_value(&mut self.view, PanelView::PlaningForm, "Planing Form");
                 ui.selectable_value(&mut self.view, PanelView::GuideSpacing, "Guide Spacing");
+                ui.selectable_value(&mut self.view, PanelView::AnvilLayout, "Anvil Layout");
             });
             ui.add_space(4.0);
 
@@ -1116,6 +1118,14 @@ impl eframe::App for App {
                         }
                     }
                 }
+                PanelView::AnvilLayout => {
+                    if self.selected.len() != 1 {
+                        ui.label("Select exactly one rod to view its Morgan Hand Mill anvil layout.");
+                    } else {
+                        let t = &self.lib.models[self.selected[0]];
+                        anvil_layout_view(ui, &t.mill_bed_layouts(self.rough_oversize, self.finish_oversize));
+                    }
+                }
             }
 
             // Notes + casting feedback only make sense for a single rod.
@@ -1158,6 +1168,141 @@ fn action_chip(ui: &mut egui::Ui, text: &str) {
         .show(ui, |ui| {
             ui.label(egui::RichText::new(text).small());
         });
+}
+
+/// Render the Morgan Hand Mill anvil-layout view: which bed stations each rod
+/// section registers on, the suggested A-K hold-down/mill-stop letter, and a
+/// schematic of the bed. See `roddna_core::Taper::mill_bed_layouts` / `docs/MHM.md`.
+fn anvil_layout_view(ui: &mut egui::Ui, layouts: &[roddna_core::MillBedLayout]) {
+    ui.label(
+        egui::RichText::new(
+            "Morgan Hand Mill bed: 14 stations (#0 butt … #13 tip) on 5-inch centers. \
+             Each section's ferrule/tiptop registers at station #12, with the strip \
+             overhanging ~3 in toward the tip. The A–K letter is the hold-down / mill-stop \
+             position to start at.",
+        )
+        .small(),
+    );
+    ui.label(
+        egui::RichText::new(
+            "Note: the A–K letter is a caneDNA estimate calibrated to the manual's one \
+             worked example (a ~42 in tip section → hole D); exact anvil hole spacing isn't \
+             in the manual text. Rough-cutting always uses hole A.",
+        )
+        .weak()
+        .small(),
+    );
+    ui.add_space(4.0);
+
+    if layouts.is_empty() {
+        ui.label("No anvil layout — this rod has no taper profile.");
+        return;
+    }
+
+    egui::Grid::new("anvil_layout_grid")
+        .striped(true)
+        .num_columns(6)
+        .show(ui, |ui| {
+            for h in [
+                "Section",
+                "Length (in)",
+                "Stations",
+                "Tiptop @",
+                "Butt @",
+                "Start letter",
+            ] {
+                ui.label(egui::RichText::new(h).strong());
+            }
+            ui.end_row();
+            for l in layouts {
+                ui.label(&l.label);
+                ui.label(format!("{:.1}", l.section_length_in));
+                ui.label(format!("{}", l.station_span));
+                ui.label(format!("#{}", l.tiptop_station));
+                if l.fits_standard_bed {
+                    ui.label(format!("#{}", l.butt_station));
+                } else {
+                    ui.label(
+                        egui::RichText::new("extension bed").color(egui::Color32::from_rgb(200, 120, 40)),
+                    );
+                }
+                ui.label(egui::RichText::new(format!("{}", l.letter)).strong());
+                ui.end_row();
+            }
+        });
+
+    ui.add_space(8.0);
+    anvil_bed_schematic(ui, layouts);
+}
+
+/// A horizontal schematic of the mill bed (#0 butt on the left → #13 tip on the
+/// right) with each section drawn as a band from its butt station to the tiptop
+/// station (#12), plus its ~3 in overhang toward #13 and its start letter.
+fn anvil_bed_schematic(ui: &mut egui::Ui, layouts: &[roddna_core::MillBedLayout]) {
+    let tiptop = 12.0_f64;
+    let tip_end = 13.0_f64;
+    let n = layouts.len().max(1);
+    Plot::new("anvil_bed_schematic")
+        .height(28.0 * n as f32 + 40.0)
+        .show_axes([false, false])
+        .show_grid(false)
+        .allow_drag(false)
+        .allow_zoom(false)
+        .allow_scroll(false)
+        .show_x(false)
+        .show_y(false)
+        .include_x(-1.0)
+        .include_x(14.0)
+        .include_y(-0.5)
+        .include_y(n as f64)
+        .show(ui, |plot_ui| {
+            // Station gridlines #0..#13 with numeric labels along the top.
+            for s in 0..=13 {
+                plot_ui.vline(VLine::new(s as f64).color(egui::Color32::from_gray(80)).width(0.5));
+                plot_ui.text(
+                    Text::new(
+                        egui_plot::PlotPoint::new(s as f64, n as f64 - 0.35),
+                        format!("#{s}"),
+                    )
+                    .color(egui::Color32::from_gray(140)),
+                );
+            }
+            for (i, l) in layouts.iter().enumerate() {
+                let y = (n - 1 - i) as f64; // Tip section on top
+                let butt_x = if l.fits_standard_bed { l.butt_station as f64 } else { 0.0 };
+                let color = if l.fits_standard_bed {
+                    egui::Color32::from_rgb(70, 140, 220)
+                } else {
+                    egui::Color32::from_rgb(200, 120, 40)
+                };
+                // The taper band from butt station to the tiptop (#12).
+                plot_ui.line(
+                    Line::new(PlotPoints::from(vec![[butt_x, y], [tiptop, y]]))
+                        .color(color)
+                        .width(6.0),
+                );
+                // The ~3 in overhang from #12 toward the tip end (#13), thinner.
+                plot_ui.line(
+                    Line::new(PlotPoints::from(vec![[tiptop, y], [tip_end, y]]))
+                        .color(color.gamma_multiply(0.5))
+                        .width(2.5),
+                );
+                // Section label + start letter at the butt end.
+                plot_ui.text(
+                    Text::new(
+                        egui_plot::PlotPoint::new(butt_x, y + 0.28),
+                        format!("{} · start {}", l.label, l.letter),
+                    )
+                    .anchor(egui::Align2::LEFT_CENTER)
+                    .color(color),
+                );
+            }
+        });
+    ui.label(
+        egui::RichText::new("Blue = fits the standard bed · orange = needs the extension bed. Left = butt (#0), right = tip (#13).")
+            .weak()
+            .small(),
+    );
 }
 
 /// Render one Morgan Hand Mill settings table.

@@ -111,7 +111,7 @@ treated strips ≥ 1 week before milling. Rough sections ≥ 6" over finished le
 | Per-station "setting" (cumulative bed rise) | `MillSetting.total_increase` |
 | Strip height (½ flat-to-flat, per geometry) | `MillSetting.strip_depth` (roadmap #7) |
 | Bed stations every 5 in, referenced near the thick end | Mill Settings tab rows |
-| Anvil A–K hold-down / mill-stop letters | **planned anvil-position visualizer** |
+| Anvil A–K hold-down / mill-stop letters | **Anvil Layout tab** (`Taper::mill_bed_layouts`) — letter is a calibrated estimate |
 | "Disregard RodDNA's Form Depth/Settings" | why we compute settings ourselves |
 
 _Source: Morgan Hand Mill Manual, chapters A–R. Regenerate the local text with

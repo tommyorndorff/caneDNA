@@ -31,6 +31,7 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
 | Network / chat / registration | ✅ | ⛔ | Obsolete; not a goal |
 | Morgan Hand Mill (MHM) settings | ✅ | ✅ | caneDNA computes MHM dial settings natively (adjustable rough/finish oversize allowances) rather than replicating RodDNA's printed report format. Strip depth is per-geometry (Hex/Quad/Penta), matching RodDNA's `PrintMHMSettings` — see roadmap #7 |
 | **Dimension-change (delta) chart** | ❌ | ✅ | hexrod.net-style bar+line chart of station-to-station dimension change every 5", with ferrule-location markers |
+| **MHM anvil-position layout** | ❌ | ✅ | `Taper::mill_bed_layouts` + an "Anvil Layout" tab: which bed stations (#0–#13) each section registers on (ferrule/tiptop at #12) and the suggested A–K hold-down/mill-stop letter, from the digitized Morgan Hand Mill manual (`docs/MHM.md`). Novel — RodDNA has no anvil-registration logic |
 
 ## Gap-driven roadmap (priority order)
 
