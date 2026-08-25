@@ -22,7 +22,7 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
 | Ferrule sizing / placement | ✅ | 🟡 | Fields captured & shown; no sizing logic |
 | Multi-geometry (Hex/Penta/Quad/Rect) | ✅ | 🟡 | Data carries `const_type`; plotting is flat-to-flat (geometry-agnostic). Stress/planing will need geometry |
 | Reports / print / PDF export | ✅ | ❌ | RodDNA uses iText/JFreeReport; caneDNA has no taper export yet |
-| Taper export (CSV / shop format) | 🟡 | ❌ | Roadmap item |
+| Taper export (CSV / shop format) | 🟡 | ✅ | `Taper::to_csv()`/`to_station_file()`, both carrying a provenance comment header. Native saves via a file dialog (`rfd`); web triggers a browser download (Blob + anchor click) — no backend either way |
 | **Casting knowledge base** | ❌ | ✅ | caneDNA links RMA-listserv casting feedback to makers/models w/ action tags — novel |
 | Cross-platform native + **web (WASM)** | ❌ (Java desktop) | ✅ | Single binary + static Cloudflare-hosted web app |
 | Reproducible data pipeline | ❌ | ✅ | Scripted importers + merge/dedup |
@@ -76,7 +76,15 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
    threshold (standard simply-supported-beam formula, treating the local
    cross-section as an equivalent solid circle). A GUI "Guide Spacing" tab
    shows the computed placements next to any stored `guide_spacings`.
-5. **Export** — CSV + a Hexrod-style station file; later a printable/PDF sheet.
+5. ✅ **Export** — `Taper::to_csv()` and `Taper::to_station_file()`, both with a
+   `#`-prefixed provenance/metadata header so attribution travels with the
+   file. The station file is an honestly-labeled plain station/dimension
+   list, not a verified reproduction of any specific rodmaking software's
+   native format (no such spec was available to check against — see
+   `to_station_file`'s doc comment). GUI export buttons appear next to a
+   selected library rod and in the design panel; native saves via `rfd`'s
+   file dialog, web triggers a Blob-based browser download. A printable/PDF
+   sheet remains a later item.
 6. ✅ **Dimension-change (delta) chart** — a view alongside Chart/Station
    Data/Mill Settings showing the station-to-station change in flat-to-flat
    dimension (bar chart, one bar per 5" span, with a connecting line and

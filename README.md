@@ -157,7 +157,9 @@ feature matrix. Gap-driven order:
    be a lookup table, not a formula, so `Taper::guide_spacing()` is an
    original static-deflection calculator instead: spacing grows toward the
    butt as the rod's self-weight sag under an adjustable threshold allows.
-5. **Export** — CSV + Hexrod-style station file; later a printable/PDF sheet.
+5. _Done_ — **Export** — `Taper::to_csv()`/`to_station_file()`, both carrying a
+   provenance header. Native saves via a file dialog; web downloads via a
+   Blob. A printable/PDF sheet remains a later item.
 6. _Done_ — **Dimension-change (delta) chart** — hexrod.net-style bar+line view of
    station-to-station dimension change with ferrule markers.
 7. **Mine decompiled RodDNA for Mill-Settings ideas** — check the RodDNA app

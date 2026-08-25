@@ -411,6 +411,62 @@ impl Taper {
         placements
     }
 
+    /// A shared `#`-prefixed metadata block (name, type/construction/length/
+    /// line/pieces, provenance) used by both export formats, so attribution
+    /// travels with the taper wherever it's exported to.
+    fn export_header(&self) -> String {
+        let mut lines = vec![
+            "# caneDNA taper export".to_string(),
+            format!("# Name: {}", self.name.as_deref().unwrap_or("(unnamed)")),
+            format!(
+                "# Type: {} | Construction: {} | Length: {} | Line: {} | Pieces: {}",
+                self.rod_type.as_deref().unwrap_or("—"),
+                self.const_type.as_deref().unwrap_or("—"),
+                self.length.map_or("—".to_string(), |l| format!("{l}\"")),
+                fmt_opt(self.line_weight),
+                fmt_opt(self.pieces),
+            ),
+        ];
+        if let Some(p) = &self.provenance {
+            lines.push(format!(
+                "# Source: {} ({})",
+                p.source.as_deref().unwrap_or("unknown"),
+                p.author.as_deref().unwrap_or("unknown"),
+            ));
+        }
+        lines.join("\n")
+    }
+
+    /// CSV export: the shared metadata header as `#`-prefixed comment lines
+    /// (skippable by any CSV reader that ignores leading `#` rows, a common
+    /// convention for hobby/scientific data exchange), then a header row and
+    /// one `station,dimension` row per profile point.
+    pub fn to_csv(&self) -> String {
+        let mut out = self.export_header();
+        out.push_str("\nStation (in),Dimension (in)\n");
+        for [station, dimension] in self.profile() {
+            out.push_str(&format!("{station:.2},{dimension:.4}\n"));
+        }
+        out
+    }
+
+    /// Plain-text station file: the shared metadata header, then one
+    /// whitespace-separated `station  dimension` line per profile point —
+    /// the simple station/dimension list rodmakers commonly exchange.
+    ///
+    /// This is *not* a verified byte-for-byte reproduction of any specific
+    /// rodmaking software's native file format (no such spec is available
+    /// to us); it's an honestly-labeled plain list in that spirit, portable
+    /// to any text editor or spreadsheet.
+    pub fn to_station_file(&self) -> String {
+        let mut out = self.export_header();
+        out.push_str("\n# Station (in)\tDimension (in)\n");
+        for [station, dimension] in self.profile() {
+            out.push_str(&format!("{station:.2}\t{dimension:.4}\n"));
+        }
+        out
+    }
+
     /// Ferrule size/type/location info for each ferrule slot that's actually
     /// set. Unused slots are stored as `0.0` location / `"None"` size rather
     /// than `null`, so those placeholders are skipped rather than shown.
@@ -685,6 +741,17 @@ fn section_label(k: usize, pieces: usize) -> String {
         (0, _) => "Tip".into(),
         (k, p) if k == p - 1 => "Butt".into(),
         (k, _) => format!("Mid {k}"),
+    }
+}
+
+/// Formats an optional numeric field for export/display, dropping a
+/// trailing `.0` for whole numbers (line weight, pieces) and falling back to
+/// an em dash when absent.
+fn fmt_opt(v: Option<f64>) -> String {
+    match v {
+        Some(x) if x.fract() == 0.0 => format!("{}", x as i64),
+        Some(x) => format!("{x}"),
+        None => "—".to_string(),
     }
 }
 
@@ -1206,6 +1273,50 @@ mod tests {
     fn guide_spacing_returns_empty_for_a_taper_with_no_profile() {
         let t = Taper::default();
         assert!(t.guide_spacing(&GuideSpacingParams::default()).is_empty());
+    }
+
+    #[test]
+    fn to_csv_includes_provenance_and_station_rows() {
+        let t = Taper {
+            name: Some("Test Rod".to_string()),
+            rod_type: Some("Fly-Rod".to_string()),
+            const_type: Some("Hex".to_string()),
+            length: Some(90.0),
+            line_weight: Some(5.0),
+            pieces: Some(2.0),
+            stations: vec![0.0, 5.0],
+            dimensions: vec![0.065, 0.08],
+            provenance: Some(Provenance {
+                source: Some("Test Source".to_string()),
+                author: Some("Test Author".to_string()),
+                ..Default::default()
+            }),
+            ..Default::default()
+        };
+        let csv = t.to_csv();
+        assert!(csv.starts_with("# caneDNA taper export"));
+        assert!(csv.contains("# Name: Test Rod"));
+        assert!(csv.contains("Type: Fly-Rod | Construction: Hex | Length: 90\" | Line: 5 | Pieces: 2"));
+        assert!(csv.contains("# Source: Test Source (Test Author)"));
+        assert!(csv.contains("Station (in),Dimension (in)"));
+        assert!(csv.contains("0.00,0.0650"));
+        assert!(csv.contains("5.00,0.0800"));
+    }
+
+    #[test]
+    fn to_station_file_uses_tab_separated_rows() {
+        let t = Taper {
+            name: Some("Test Rod".to_string()),
+            stations: vec![0.0, 5.0],
+            dimensions: vec![0.065, 0.08],
+            ..Default::default()
+        };
+        let file = t.to_station_file();
+        assert!(file.contains("# Name: Test Rod"));
+        assert!(file.contains("0.00\t0.0650"));
+        assert!(file.contains("5.00\t0.0800"));
+        // No provenance block when the taper has none.
+        assert!(!file.contains("# Source:"));
     }
 
     #[test]
