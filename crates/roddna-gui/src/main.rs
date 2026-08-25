@@ -1,6 +1,6 @@
 //! RodDNA GUI — browse and compare bamboo rod tapers.
 //!
-//! Multi-select the ~619 tapers from the library, overlay their profiles on a
+//! Multi-select the tapers from the library, overlay their profiles on a
 //! single plot to compare patterns, and inspect specs. Foundation for the taper
 //! explorer (travel rods, spey rods, etc.).
 
@@ -457,17 +457,34 @@ fn design_editor(ui: &mut egui::Ui, design: &mut DesignState) {
                         ui.label(egui::RichText::new(h).strong());
                     }
                     ui.end_row();
-                    for (station, dimension) in design
-                        .taper
-                        .stations
-                        .iter_mut()
-                        .zip(design.taper.dimensions.iter_mut())
-                    {
-                        ui.add(egui::DragValue::new(station).speed(0.5).fixed_decimals(2));
+                    // Clamp each station between its neighbors so an edit can't
+                    // reorder the profile — `Taper::profile` zips stations and
+                    // dimensions in stored order, so out-of-order stations
+                    // would silently corrupt every derived view (stress, mill,
+                    // delta, guide spacing) via `interpolate`.
+                    let n = design.taper.stations.len();
+                    for i in 0..n {
+                        let lo = if i == 0 {
+                            f64::NEG_INFINITY
+                        } else {
+                            design.taper.stations[i - 1]
+                        };
+                        let hi = if i + 1 >= n {
+                            f64::INFINITY
+                        } else {
+                            design.taper.stations[i + 1]
+                        };
                         ui.add(
-                            egui::DragValue::new(dimension)
+                            egui::DragValue::new(&mut design.taper.stations[i])
+                                .speed(0.5)
+                                .fixed_decimals(2)
+                                .range(lo..=hi),
+                        );
+                        ui.add(
+                            egui::DragValue::new(&mut design.taper.dimensions[i])
                                 .speed(0.001)
-                                .fixed_decimals(4),
+                                .fixed_decimals(4)
+                                .range(0.0..=f64::INFINITY),
                         );
                         ui.end_row();
                     }
