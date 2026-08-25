@@ -537,7 +537,27 @@ impl eframe::App for App {
                     // Overlaid Garrison stress curves, same idiom as the
                     // Chart tab. Rods missing a required input (line
                     // weight/length/cast, impact factor, bamboo density, tip
-                    // weight) contribute no line rather than erroring.
+                    // weight) contribute no line rather than erroring — flag
+                    // them explicitly so an empty plot doesn't look broken.
+                    let missing: Vec<&str> = self
+                        .selected
+                        .iter()
+                        .map(|&i| &self.lib.models[i])
+                        .filter(|t| t.stress_curve().is_empty())
+                        .map(|t| t.name.as_deref().unwrap_or("(unnamed)"))
+                        .collect();
+                    if !missing.is_empty() {
+                        ui.label(
+                            egui::RichText::new(format!(
+                                "No stress curve for: {} — this source library doesn't carry the \
+                                 physics inputs (line length/cast, impact factor, bamboo density, \
+                                 tip weight) the model needs. Only RodDNA-sourced records have them.",
+                                missing.join(", ")
+                            ))
+                            .weak(),
+                        );
+                        ui.add_space(4.0);
+                    }
                     Plot::new("stress")
                         .legend(Legend::default())
                         .x_axis_label("Station (in from tip)")
