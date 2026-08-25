@@ -5,7 +5,7 @@
 //! explorer (travel rods, spey rods, etc.).
 
 use eframe::egui;
-use egui_plot::{Legend, Line, Plot, PlotPoints};
+use egui_plot::{Bar, BarChart, Legend, Line, Plot, PlotPoint, PlotPoints, Text, VLine};
 use roddna_core::{CastingKb, Library, Taper};
 
 // Bundle the data into the binary so the app is a single self-contained file.
@@ -73,6 +73,7 @@ enum PanelView {
     Chart,
     StationData,
     MillSettings,
+    DeltaChart,
 }
 
 struct App {
@@ -383,6 +384,7 @@ impl eframe::App for App {
                 ui.selectable_value(&mut self.view, PanelView::Chart, "Chart");
                 ui.selectable_value(&mut self.view, PanelView::StationData, "Station Data");
                 ui.selectable_value(&mut self.view, PanelView::MillSettings, "Mill Settings");
+                ui.selectable_value(&mut self.view, PanelView::DeltaChart, "Dimension Changes");
             });
             ui.add_space(4.0);
 
@@ -484,6 +486,46 @@ impl eframe::App for App {
                                         ui,
                                         "mill_settings",
                                         &t.mill_settings(self.rough_oversize, self.finish_oversize),
+                                    );
+                                }
+                            });
+                    }
+                }
+                PanelView::DeltaChart => {
+                    if self.selected.len() != 1 {
+                        ui.label(
+                            "Select exactly one rod to view station-to-station dimension changes.",
+                        );
+                    } else {
+                        let t = &self.lib.models[self.selected[0]];
+                        let deltas = t.dimension_deltas();
+                        let bars: Vec<Bar> = deltas
+                            .iter()
+                            .map(|d| Bar::new(d.station, d.delta).name(format!("{:.2}\"", d.station)))
+                            .collect();
+                        let line_points: PlotPoints =
+                            deltas.iter().map(|d| [d.station, d.delta]).collect();
+                        let ferrule_locations: Vec<f64> =
+                            t.ferrules().iter().map(|f| f.location).collect();
+                        Plot::new("delta")
+                            .legend(Legend::default())
+                            .x_axis_label("Station (in from tip)")
+                            .y_axis_label("Dimension change (in)")
+                            .height(ui.available_height() * 0.7)
+                            .show(ui, |plot_ui| {
+                                plot_ui.bar_chart(BarChart::new(bars).name("Δ dimension").width(4.0));
+                                plot_ui.line(Line::new(line_points).name("Δ dimension"));
+                                for d in &deltas {
+                                    plot_ui.text(Text::new(
+                                        PlotPoint::new(d.station, d.delta),
+                                        format!("{:.3}", d.delta),
+                                    ));
+                                }
+                                for loc in ferrule_locations {
+                                    plot_ui.vline(
+                                        VLine::new(loc)
+                                            .name("Ferrule")
+                                            .color(egui::Color32::from_rgb(200, 80, 80)),
                                     );
                                 }
                             });

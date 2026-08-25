@@ -217,6 +217,28 @@ impl Taper {
             .collect()
     }
 
+    /// Station-to-station change in flat-to-flat dimension: one entry per
+    /// interior profile point, `(midpoint_station, delta)` where `delta` is
+    /// the dimension at that point minus the dimension at the previous point.
+    /// Mirrors hexrod.net's "Dimension Changes Every 5 Inches" report; the
+    /// midpoint station labels each bar between the two stations it spans.
+    pub fn dimension_deltas(&self) -> Vec<DimensionDelta> {
+        let profile = self.profile();
+        profile
+            .windows(2)
+            .map(|w| {
+                let [s0, d0] = w[0];
+                let [s1, d1] = w[1];
+                DimensionDelta {
+                    station: (s0 + s1) / 2.0,
+                    from_station: s0,
+                    to_station: s1,
+                    delta: d1 - d0,
+                }
+            })
+            .collect()
+    }
+
     /// Ferrule size/type/location info for each ferrule slot that's actually
     /// set. Unused slots are stored as `0.0` location / `"None"` size rather
     /// than `null`, so those placeholders are skipped rather than shown.
@@ -332,6 +354,16 @@ pub struct MillSection {
     /// True if no ferrule-location data existed and stations were split evenly.
     pub approximate: bool,
     pub settings: Vec<MillSetting>,
+}
+
+/// Station-to-station change in flat-to-flat dimension between two adjacent
+/// profile points, labeled at their midpoint station.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct DimensionDelta {
+    pub station: f64,
+    pub from_station: f64,
+    pub to_station: f64,
+    pub delta: f64,
 }
 
 /// Ferrule size/type/location info for one ferrule on a taper.
@@ -570,6 +602,23 @@ mod tests {
         assert_eq!(sections[1].label, "Mid 1");
         assert_eq!(sections[2].label, "Butt");
         assert!(sections.iter().all(|s| s.approximate));
+    }
+
+    #[test]
+    fn dimension_deltas_diffs_adjacent_stations() {
+        let t = Taper {
+            stations: vec![0.0, 5.0, 10.0, 15.0],
+            dimensions: vec![0.065, 0.08, 0.091, 0.106],
+            ..Default::default()
+        };
+        let deltas = t.dimension_deltas();
+        assert_eq!(deltas.len(), 3);
+        assert_eq!(deltas[0].from_station, 0.0);
+        assert_eq!(deltas[0].to_station, 5.0);
+        assert_eq!(deltas[0].station, 2.5);
+        assert!((deltas[0].delta - 0.015).abs() < 1e-12);
+        assert!((deltas[1].delta - 0.011).abs() < 1e-12);
+        assert!((deltas[2].delta - 0.015).abs() < 1e-12);
     }
 
     #[test]

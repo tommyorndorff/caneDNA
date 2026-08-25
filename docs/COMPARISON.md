@@ -58,5 +58,16 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
    ferrule) that a raw dimension chart can hide. Low-cost: the underlying
    diff is trivial from `profile()`, and ferrule markers reuse `ferrules()`
    from the Mill Settings work.
+7. **Mine the decompiled RodDNA app for Mill-Settings ideas** — we already
+   decompile `RodDNA_v20.jar` (buried in `RodDNAInstaller.jar` →
+   `data/RodDNA_v20.zip` → `RodDNA.jar`, via `cfr-decompiler`) to recover the
+   Garrison stress formula for #1. While in there, check
+   `com/tusoni/RodDNA/models/` (and any `*Mill*`/`*Anvil*`/`*Dial*` classes) for
+   Morgan Hand Mill logic beyond what we already replicate in
+   `Taper::mill_settings`/`mill_sections` — e.g. other allowance presets,
+   printed-report layout worth matching, or per-geometry (Quad/Penta) anvil
+   conventions we haven't modeled. Research-only: nothing here is committed
+   (the decompiled sources live outside the repo), this just tells us whether
+   `roddna-gui`'s Mill Settings tab is missing anything RodDNA's did.
 
 These are reflected in the README roadmap.

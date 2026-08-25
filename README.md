@@ -151,6 +151,10 @@ feature matrix. Gap-driven order:
 5. **Export** — CSV + Hexrod-style station file; later a printable/PDF sheet.
 6. **Dimension-change (delta) chart** — hexrod.net-style bar+line view of
    station-to-station dimension change with ferrule markers.
+7. **Mine decompiled RodDNA for Mill-Settings ideas** — check the RodDNA app
+   internals (decompiled for the stress-formula work in #1) for Morgan Hand
+   Mill logic beyond what `Taper::mill_settings`/`mill_sections` already
+   replicate.
 
 ### Design focus: trout-spey tapers
 
