@@ -26,7 +26,7 @@ already in `roddna-core`.
 - **A1 · Static stress curve** — ✅ done. `Taper::stress_curve()`: Garrison
   cantilever bending-moment model, ~6% median error vs. the 58 records that
   ship stored `stresses`. Tells you *load* at each station.
-- **A2 · Dynamic / modal engine** — 🔨 in progress (this branch).
+- **A2 · Dynamic / modal engine** — ✅ done.
   Euler–Bernoulli variable-section cantilever → fundamental frequency, period,
   and effective (modal) tip mass/stiffness. Where A1 answers "how hard is each
   section working under load," A2 answers "how does the rod *move*" — the thing
@@ -35,9 +35,16 @@ already in `roddna-core`.
   closed-form prismatic-beam frequency. Inputs: per-geometry cross-section area
   and second moment of area `I(x)`, a bamboo Young's modulus (parameter,
   default ~2.4e6 psi), and the taper's own `bamboo_density`/`tip_weight`.
-  - *Follow-up (from COMPARISON #1):* full casting-**deflection** analysis
-    (per-station angle, horizontal/vertical deflection, curvature, deflected
-    rod shape) matching hexrod.net's report. Shares A2's `EI(x)` machinery.
+- **A2b · Casting deflection** — ✅ done. `Taper::casting_deflection()`: the
+  static deflected *shape* under the casting load, hexrod.net-style. Reuses the
+  shared casting-moment field (`casting_moments`, now also backing A1) as
+  curvature `κ(x) = M(x)/(E·I(x))`, then a large-deflection butt→tip march
+  giving per-station tangent angle, curvature, and horizontal/vertical
+  position. Adjustable Young's modulus and load multiplier (default static
+  1.0 — the casting `tip_impact_factor` of ~3–4 curls the shape unrealistically
+  far, so it's a knob, not the default). GUI "Deflection" tab draws the bent
+  rod at equal aspect. Same validation posture as A2 (curvature transcription +
+  physical monotonicity checks; no stored shape ground truth).
 
 ### B — Inverse design (solve for a taper)
 
@@ -66,8 +73,8 @@ engines (A/B) do the math; the model drives them and explains the result.
 | Stage | What | Status |
 |-------|------|--------|
 | A1 | Static stress curve | ✅ done |
-| A2 | Modal / dynamic engine | 🔨 in progress |
-| A2b | Full deflection analysis | ⬜ planned |
+| A2 | Modal / dynamic engine | ✅ done |
+| A2b | Casting deflection analysis | ✅ done |
 | B  | Inverse-design optimizer | ⬜ planned |
 | C  | KB action model | ⬜ planned |
 | D  | LLM design assistant | ⬜ planned |

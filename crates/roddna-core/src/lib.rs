@@ -622,32 +622,60 @@ impl Taper {
     /// tables) aren't recoverable from the taper data and are approximated
     /// with RodDNA's shipped defaults.
     pub fn stress_curve(&self) -> Vec<[f64; 2]> {
-        let profile = self.profile();
-        if profile.len() < 2 {
-            return Vec::new();
-        }
-        let (Some(line_weight), Some(line_length), Some(line_cast)) =
-            (self.line_weight, self.line_length, self.line_cast)
-        else {
+        let Some(m) = self.casting_moments(None) else {
             return Vec::new();
         };
-        let (Some(tip_impact_factor), Some(bamboo_density), Some(tip_weight)) =
-            (self.tip_impact_factor, self.bamboo_density, self.tip_weight)
-        else {
-            return Vec::new();
-        };
-        let line_weight_idx = line_weight.round() as usize;
-        if line_weight_idx < 1 || line_weight_idx > LINE_WEIGHTS_GRAINS.len() {
-            return Vec::new();
-        }
         let (geometry_factor, sides) = geometry_factor(self.const_type.as_deref());
         // RodDNA's per-geometry constant applies to the across-corners
         // diameter, not the flat-to-flat width this crate stores.
         let apex_conversion = 1.0 / (std::f64::consts::PI / sides).cos();
 
+        let stress_per_inch: Vec<f64> = (0..m.action_length)
+            .map(|i| {
+                let apex_dim = m.dim[i] * apex_conversion;
+                m.moment[i] / (apex_dim.powi(3) * geometry_factor)
+            })
+            .collect();
+
+        m.profile
+            .iter()
+            .map(|&[station, _]| [station, stress_per_inch[m.index_for(station)]])
+            .collect()
+    }
+
+    /// Per-inch casting bending-moment field, shared by [`stress_curve`] (A1)
+    /// and [`casting_deflection`] (A2b). Reconstructs RodDNA's load model:
+    /// concentrated tip load (fly line held in the air + tip weight),
+    /// distributed line weight, a small varnish/guide distributed load,
+    /// concentrated ferrule weights, and the bamboo's own frustum self-weight —
+    /// each scaled by the tip impact factor. The moment at station `i+1"` is
+    /// the sum of every load's `weight × lever arm` tip-ward of it, in oz·in.
+    ///
+    /// `impact_override` replaces the taper's stored `tip_impact_factor` (the
+    /// deflection view exposes it as an adjustable "how hard is the cast"
+    /// knob); `None` uses the stored value. Returns `None` when any required
+    /// physics input is missing.
+    ///
+    /// [`stress_curve`]: Self::stress_curve
+    /// [`casting_deflection`]: Self::casting_deflection
+    fn casting_moments(&self, impact_override: Option<f64>) -> Option<CastingMoments> {
+        let profile = self.profile();
+        if profile.len() < 2 {
+            return None;
+        }
+        let (line_weight, line_length, line_cast) =
+            (self.line_weight?, self.line_length?, self.line_cast?);
+        let (tip_impact_factor, bamboo_density, tip_weight) =
+            (self.tip_impact_factor?, self.bamboo_density?, self.tip_weight?);
+        let tip_impact_factor = impact_override.unwrap_or(tip_impact_factor);
+        let line_weight_idx = line_weight.round() as usize;
+        if line_weight_idx < 1 || line_weight_idx > LINE_WEIGHTS_GRAINS.len() {
+            return None;
+        }
+
         let action_length = profile.last().unwrap()[0].round() as usize;
         if action_length < 1 {
-            return Vec::new();
+            return None;
         }
 
         // Per-inch dimension curve, linearly interpolated between the
@@ -717,29 +745,96 @@ impl Taper {
                 .sum();
         }
 
-        let stress_per_inch: Vec<f64> = (0..action_length)
+        let moment: Vec<f64> = (0..action_length)
             .map(|i| {
-                let total_moment = tip_moments[i]
+                tip_moments[i]
                     + line_moments[i]
                     + vg_moments[i]
                     + ferrule_moments[i]
-                    + bamboo_moments[i];
-                let apex_dim = dim[i] * apex_conversion;
-                total_moment / (apex_dim.powi(3) * geometry_factor)
+                    + bamboo_moments[i]
             })
             .collect();
 
-        profile
+        Some(CastingMoments {
+            profile,
+            dim,
+            moment,
+            action_length,
+        })
+    }
+
+    /// **A2b — casting deflection analysis.** The static deflected shape of the
+    /// rod under the same casting load [`stress_curve`](Self::stress_curve)
+    /// uses for bending stress, à la hexrod.net's deflection report. Where the
+    /// modal analysis ([`modal_analysis`](Self::modal_analysis)) gives a
+    /// frequency, this gives the *shape* a caster sees: how far and at what
+    /// angle each station swings under load.
+    ///
+    /// Method: bending curvature `κ(x) = M(x) / (E·I(x))` from the shared
+    /// casting-moment field and the true per-geometry second moment of area,
+    /// then a large-deflection march from the clamped butt to the tip —
+    /// `θ += κ·ds`, position `+= (cos θ, sin θ)·ds` — so horizontal and
+    /// vertical deflection separate the way hexrod reports them (rather than a
+    /// small-angle `y(x)` that overstates tip travel on a deep-bending rod).
+    /// Coordinates are relative to the butt, which sits at the origin with the
+    /// rod initially pointing along +x.
+    ///
+    /// `youngs_modulus_psi` and `impact_factor` are the adjustable inputs
+    /// (bamboo modulus varies; impact factor is the load multiplier, default
+    /// static 1.0). Returns one entry per `profile()` station, tip-last, or an
+    /// empty vec if the physics inputs `stress_curve` needs are missing. Like
+    /// `modal_analysis`, there's no stored ground truth to validate against —
+    /// it's the same validated moment field divided by a physical `EI`.
+    pub fn casting_deflection(&self, params: &DeflectionParams) -> Vec<DeflectionStation> {
+        let Some(m) = self.casting_moments(Some(params.impact_factor)) else {
+            return Vec::new();
+        };
+        let (_factor, sides) = geometry_factor(self.const_type.as_deref());
+        let e = params.youngs_modulus_psi;
+
+        // Per-inch curvature (1/in). M is in oz·in; /16 -> lbf·in so that
+        // M/(E·I) is dimensionless per inch. I is the true polygon second
+        // moment of area at that inch's dimension.
+        let curvature: Vec<f64> = (0..m.action_length)
+            .map(|i| {
+                let (_area, inertia) = polygon_section(m.dim[i], sides);
+                if inertia <= 0.0 {
+                    0.0
+                } else {
+                    (m.moment[i] / OZ_PER_LB) / (e * inertia)
+                }
+            })
+            .collect();
+
+        // March from the clamped butt (highest station index) toward the tip,
+        // accumulating angle and position. `curvature[i]` is the curvature at
+        // the section ~`i+1"` from the tip; the clamp is at `action_length`.
+        let n = m.action_length;
+        let mut angle = 0.0_f64;
+        let mut hx = 0.0_f64;
+        let mut vy = 0.0_f64;
+        // Per-inch-station deflection state, indexed by section i.
+        let mut state = vec![(0.0_f64, 0.0_f64, 0.0_f64); n]; // (angle, hx, vy)
+        for i in (0..n).rev() {
+            angle += curvature[i]; // ds = 1"
+            hx += angle.cos();
+            vy += angle.sin();
+            state[i] = (angle, hx, vy);
+        }
+
+        m.profile
             .iter()
             .map(|&[station, _]| {
-                let idx = if station <= 0.0 {
-                    0
-                } else {
-                    (station.round() as usize)
-                        .saturating_sub(1)
-                        .min(action_length - 1)
-                };
-                [station, stress_per_inch[idx]]
+                let idx = m.index_for(station);
+                let (angle, hx, vy) = state[idx];
+                DeflectionStation {
+                    station,
+                    angle_deg: angle.to_degrees(),
+                    curvature_per_in: curvature[idx],
+                    horizontal_in: hx,
+                    vertical_in: vy,
+                    moment_oz_in: m.moment[idx],
+                }
             })
             .collect()
     }
@@ -915,6 +1010,78 @@ fn geometry_factor(const_type: Option<&str>) -> (f64, f64) {
         Some(s) if s.starts_with("octa") => (0.0899, 8.0),
         _ => (0.0829, 6.0),
     }
+}
+
+/// Shared per-inch casting bending-moment field (see `Taper::casting_moments`),
+/// consumed by both the stress curve (A1) and the deflection analysis (A2b).
+struct CastingMoments {
+    /// The taper's `profile()` points (station, dimension), tip-first.
+    profile: Vec<[f64; 2]>,
+    /// Per-inch flat-to-flat dimension, index 0..=action_length.
+    dim: Vec<f64>,
+    /// Per-inch total bending moment (oz·in), index 0..action_length; entry
+    /// `i` is the moment at the section ~`i+1"` from the tip.
+    moment: Vec<f64>,
+    action_length: usize,
+}
+
+impl CastingMoments {
+    /// Per-inch array index for a profile `station` (inches from tip), matching
+    /// RodDNA's 1"-resolution moment grid.
+    fn index_for(&self, station: f64) -> usize {
+        if station <= 0.0 {
+            0
+        } else {
+            (station.round() as usize)
+                .saturating_sub(1)
+                .min(self.action_length - 1)
+        }
+    }
+}
+
+/// Tunable inputs for [`Taper::casting_deflection`] (A2b): the bamboo modulus
+/// and a load multiplier.
+#[derive(Debug, Clone, PartialEq)]
+pub struct DeflectionParams {
+    /// Young's modulus of the bamboo, psi (see [`ModalParams`]).
+    pub youngs_modulus_psi: f64,
+    /// Load multiplier applied to the whole casting-moment field. `1.0`
+    /// (the default) is the **static** deflected shape — the rod held out with
+    /// the line hanging, no dynamic amplification — which is what a "deflected
+    /// rod" picture usually shows. Raising it mimics a harder, dynamically
+    /// loaded cast (Garrison's `tip_impact_factor` is ~3–4; the stress curve
+    /// uses that value, but for a *shape* it curls the rod unrealistically far,
+    /// so deflection defaults to static instead).
+    pub impact_factor: f64,
+}
+
+impl Default for DeflectionParams {
+    fn default() -> Self {
+        DeflectionParams {
+            youngs_modulus_psi: 2.4e6,
+            impact_factor: 1.0,
+        }
+    }
+}
+
+/// One station of [`Taper::casting_deflection`] (A2b). `horizontal_in` /
+/// `vertical_in` are the deflected position of this station relative to the
+/// butt (butt at origin, rod initially along +x), so plotting the pairs draws
+/// the bent rod; `angle_deg` is the local tangent angle there.
+#[derive(Debug, Clone, PartialEq)]
+pub struct DeflectionStation {
+    pub station: f64,
+    /// Local tangent angle relative to the (horizontal) butt axis, degrees.
+    pub angle_deg: f64,
+    /// Bending curvature `M/(E·I)` at this station, 1/in.
+    pub curvature_per_in: f64,
+    /// Deflected-shape coordinate along the initial rod axis, inches from butt.
+    pub horizontal_in: f64,
+    /// Deflected-shape coordinate transverse to the initial axis (the bend),
+    /// inches.
+    pub vertical_in: f64,
+    /// Casting bending moment at this station, oz·in.
+    pub moment_oz_in: f64,
 }
 
 /// Tunable inputs for [`Taper::modal_analysis`] (A2). Bamboo's stiffness varies
@@ -1931,6 +2098,72 @@ mod tests {
         let rel = (m.frequency_hz - f_analytic).abs() / f_analytic;
         assert!(rel < 0.005, "f={} analytic={} rel={}", m.frequency_hz, f_analytic, rel);
         assert!(m.period_ms > 0.0 && m.effective_stiffness_lb_in > 0.0);
+    }
+
+    #[test]
+    fn casting_deflection_is_physical_and_scales_with_modulus() {
+        // Use a real RodDNA-sourced rod that carries the physics inputs.
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../data/tapers.json");
+        let text = std::fs::read_to_string(path).expect("read tapers.json");
+        let lib = Library::from_json(&text).expect("parse library");
+        let rod = lib
+            .models
+            .iter()
+            .find(|t| !t.stress_curve().is_empty())
+            .expect("a rod with physics inputs");
+
+        let params = DeflectionParams {
+            youngs_modulus_psi: 2.4e6,
+            impact_factor: 1.0,
+        };
+        let d = rod.casting_deflection(&params);
+        assert!(d.len() >= 2, "deflection has stations");
+
+        // Stations come back tip-last (largest station last), matching profile.
+        let tip = &d[0];
+        let butt = d.last().unwrap();
+        assert!(tip.station < butt.station);
+        // Clamp end barely bends; the tip swings the most.
+        assert!(butt.angle_deg.abs() < tip.angle_deg.abs());
+        assert!(butt.vertical_in.abs() < tip.vertical_in.abs());
+        assert!(tip.vertical_in > 0.0, "tip deflects under load");
+
+        // Curvature transcription: κ·E·I == moment/16 (oz -> lbf) at each
+        // station, using the true polygon second moment of area.
+        let (_f, sides) = geometry_factor(rod.const_type.as_deref());
+        let profile = rod.profile();
+        let action_length = profile.last().unwrap()[0].round() as usize;
+        for s in &d {
+            // Engine evaluates I on its 1"-resolution grid; replicate the
+            // same integer-inch index used internally.
+            let idx = if s.station <= 0.0 {
+                0
+            } else {
+                (s.station.round() as usize).saturating_sub(1).min(action_length - 1)
+            };
+            let dim = interpolate(&profile, idx as f64).unwrap();
+            let (_a, inertia) = polygon_section(dim, sides);
+            let lhs = s.curvature_per_in * params.youngs_modulus_psi * inertia;
+            assert!(
+                (lhs - s.moment_oz_in / OZ_PER_LB).abs() < 1e-6,
+                "curvature relation at station {}",
+                s.station
+            );
+        }
+
+        // A stiffer rod (2× modulus) bends less: smaller tip deflection.
+        let stiff = rod.casting_deflection(&DeflectionParams {
+            youngs_modulus_psi: params.youngs_modulus_psi * 2.0,
+            impact_factor: 1.0,
+        });
+        assert!(stiff[0].vertical_in < tip.vertical_in, "stiffer rod deflects less");
+
+        // A harder cast (higher load multiplier) bends more.
+        let hard = rod.casting_deflection(&DeflectionParams {
+            impact_factor: 1.5,
+            ..params.clone()
+        });
+        assert!(hard[0].vertical_in > tip.vertical_in, "harder cast deflects more");
     }
 
     /// A stiffer/heavier-butt taper (real trout rod) should ring faster than a

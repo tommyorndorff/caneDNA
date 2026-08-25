@@ -44,11 +44,11 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
    ~6% relative error, p90 ~29%. A GUI "Stress" tab overlays it like Chart.
    *(RodDNA parity + foundation for spey design work.)*
 
-   Not done: extending to a full **casting deflection analysis** matching
-   hexrod.net's report (per-station angle, horizontal/vertical deflection,
-   curvature, driven by adjustable modulus-of-elasticity and impact-factor
-   inputs, visualized as a deflected rod shape) — a natural follow-up once
-   design mode (#2) needs it.
+   The follow-up **casting deflection analysis** matching hexrod.net's report
+   (per-station angle, horizontal/vertical deflection, curvature from
+   adjustable modulus/load, visualized as a deflected rod shape) is now done as
+   design-engine stage **A2b** — see [`DESIGN_ENGINE.md`](DESIGN_ENGINE.md) and
+   `Taper::casting_deflection()`.
 2. ✅ **Taper design/edit mode** — an in-memory `DesignState` session (GUI): clone
    a seed taper (or start from the decided spey target), edit stations, apply
    scale (`Taper::scaled`), and insert ferrule stations (`Taper::insert_station`)

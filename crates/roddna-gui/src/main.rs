@@ -6,7 +6,7 @@
 
 use eframe::egui;
 use egui_plot::{Bar, BarChart, Legend, Line, Plot, PlotPoint, PlotPoints, Text, VLine};
-use roddna_core::{CastingKb, GuideSpacingParams, Library, ModalParams, Taper};
+use roddna_core::{CastingKb, DeflectionParams, GuideSpacingParams, Library, ModalParams, Taper};
 
 // Bundle the data into the binary so the app is a single self-contained file.
 const TAPERS_JSON: &str = include_str!("../../../data/tapers.json");
@@ -76,6 +76,7 @@ enum PanelView {
     DeltaChart,
     Stress,
     Modal,
+    Deflection,
     PlaningForm,
     GuideSpacing,
     AnvilLayout,
@@ -143,6 +144,8 @@ struct App {
     guide_spacing_params: GuideSpacingParams,
     /// Bamboo modulus / density inputs for the A2 modal analysis (Modal tab).
     modal_params: ModalParams,
+    /// Modulus / load inputs for the A2b deflection analysis (Deflection tab).
+    deflection_params: DeflectionParams,
     /// Active taper design/edit session, if any. When set, the central panel
     /// shows the design UI instead of the browse/compare view.
     design: Option<DesignState>,
@@ -175,6 +178,7 @@ impl App {
             split_by_piece: false,
             guide_spacing_params: GuideSpacingParams::default(),
             modal_params: ModalParams::default(),
+            deflection_params: DeflectionParams::default(),
             design: None,
         }
     }
@@ -822,6 +826,7 @@ impl eframe::App for App {
                 ui.selectable_value(&mut self.view, PanelView::DeltaChart, "Dimension Changes");
                 ui.selectable_value(&mut self.view, PanelView::Stress, "Stress");
                 ui.selectable_value(&mut self.view, PanelView::Modal, "Modal");
+                ui.selectable_value(&mut self.view, PanelView::Deflection, "Deflection");
                 ui.selectable_value(&mut self.view, PanelView::PlaningForm, "Planing Form");
                 ui.selectable_value(&mut self.view, PanelView::GuideSpacing, "Guide Spacing");
                 ui.selectable_value(&mut self.view, PanelView::AnvilLayout, "Anvil Layout");
@@ -1100,6 +1105,90 @@ impl eframe::App for App {
                             .weak(),
                         );
                     }
+                }
+                PanelView::Deflection => {
+                    // A2b casting-deflection: the bent-rod shape under load.
+                    // Plot each selected rod's deflected profile (butt at the
+                    // origin, tip curling up); equal aspect so it reads as a
+                    // real rod, not a stretched graph.
+                    ui.horizontal(|ui| {
+                        ui.label("Young's modulus (psi):");
+                        ui.add(
+                            egui::DragValue::new(
+                                &mut self.deflection_params.youngs_modulus_psi,
+                            )
+                            .speed(1.0e4)
+                            .range(5.0e5..=6.0e6),
+                        );
+                        ui.separator();
+                        ui.label("Load ×:");
+                        ui.add(
+                            egui::DragValue::new(&mut self.deflection_params.impact_factor)
+                                .speed(0.05)
+                                .range(0.25..=5.0),
+                        );
+                        ui.label(
+                            egui::RichText::new(
+                                "1.0 = static hold; higher = harder, dynamically loaded cast",
+                            )
+                            .weak(),
+                        );
+                    });
+                    ui.add_space(4.0);
+                    let missing: Vec<&str> = self
+                        .selected
+                        .iter()
+                        .map(|&i| &self.lib.models[i])
+                        .filter(|t| t.casting_deflection(&self.deflection_params).is_empty())
+                        .map(|t| t.name.as_deref().unwrap_or("(unnamed)"))
+                        .collect();
+                    if !missing.is_empty() {
+                        ui.label(
+                            egui::RichText::new(format!(
+                                "No deflection for: {} — needs the same physics inputs as the \
+                                 stress model (only RodDNA-sourced records carry them).",
+                                missing.join(", ")
+                            ))
+                            .weak(),
+                        );
+                        ui.add_space(4.0);
+                    }
+                    Plot::new("deflection")
+                        .legend(Legend::default())
+                        .x_axis_label("Along rod (in from butt)")
+                        .y_axis_label("Deflection (in)")
+                        .data_aspect(1.0)
+                        .height(ui.available_height() * 0.7)
+                        .show(ui, |plot_ui| {
+                            for &i in &self.selected {
+                                let t = &self.lib.models[i];
+                                let stations = t.casting_deflection(&self.deflection_params);
+                                if stations.is_empty() {
+                                    continue;
+                                }
+                                let name =
+                                    t.name.clone().unwrap_or_else(|| format!("model {i}"));
+                                // Butt (origin) first, then out to the tip.
+                                let mut pts: Vec<[f64; 2]> = vec![[0.0, 0.0]];
+                                pts.extend(
+                                    stations
+                                        .iter()
+                                        .rev()
+                                        .map(|s| [s.horizontal_in, s.vertical_in]),
+                                );
+                                let points: PlotPoints = pts.into_iter().collect();
+                                plot_ui.line(Line::new(points).name(name));
+                            }
+                        });
+                    ui.add_space(6.0);
+                    ui.label(
+                        egui::RichText::new(
+                            "Static Euler–Bernoulli deflected shape: curvature M/(EI) from the \
+                             casting-load model, integrated butt→tip (see docs/DESIGN_ENGINE.md, \
+                             A2b). A design/ranking estimate, not an FE solve.",
+                        )
+                        .weak(),
+                    );
                 }
                 PanelView::PlaningForm => {
                     if self.selected.len() != 1 {
