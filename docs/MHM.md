@@ -74,6 +74,15 @@ the section. Choosing the letter:
 → *Anvil-visualizer model:* register the section's tip near station #13, then count
 A–K hold-down positions (A = rightmost) back to the strip's butt to pick the letter.
 
+*Observed on a physical mill* (right-hand model, anvil marked "RB"): the steel base is
+stamped **A, B, C, D, E, F, G, …** along its length, with a matching lettered row on the
+bed below the anvil hold-down screws; alternating letters also carry a number —
+**A1, C2, E3, G4** (A/C/E/G = 1/2/3/4, presumably … I5, K6). This confirms the A–K
+ordering physically. The photo has no ruler, so the absolute letter **pitch** is still
+unmeasured — and the manual's "42″ tip → hole D" doesn't fit a simple length ÷ pitch
+rule — so caneDNA's letter stays a calibrated estimate until we have a measured pitch
+or the maker's own letter-selection rule.
+
 ## Milling workflow (chapter L)
 
 Cut **butt → tip**, many light passes (~0.010"/pass roughing, 0.001–0.002"
