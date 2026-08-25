@@ -107,6 +107,46 @@ impl Taper {
         points
     }
 
+    /// A clone with every dimension linearly rescaled: `d' = d * multiplier +
+    /// bias`, clamped at zero. Stations are untouched — this changes the
+    /// rod's power/stiffness at a given length, not its length. The starting
+    /// point for taper design: scale a seed taper up/down before reshaping
+    /// individual stations.
+    pub fn scaled(&self, multiplier: f64, bias: f64) -> Taper {
+        let mut t = self.clone();
+        for d in &mut t.dimensions {
+            *d = (*d * multiplier + bias).max(0.0);
+        }
+        t
+    }
+
+    /// Inserts a new profile point at `station`, with its dimension linearly
+    /// interpolated from the existing curve, keeping `stations`/`dimensions`
+    /// sorted by station. No-op (returns `false`) if a point already exists
+    /// there (within 1e-6"). Used to carve out an explicit breakpoint for a
+    /// new ferrule location when designing a taper, so `mill_sections`/
+    /// `ferrules` have a real station to split on.
+    pub fn insert_station(&mut self, station: f64) -> bool {
+        let profile = self.profile();
+        if profile
+            .iter()
+            .any(|p| (p[0] - station).abs() < 1e-6)
+        {
+            return false;
+        }
+        let Some(dimension) = interpolate(&profile, station) else {
+            return false;
+        };
+        let idx = self
+            .stations
+            .iter()
+            .position(|&s| s > station)
+            .unwrap_or(self.stations.len());
+        self.stations.insert(idx, station);
+        self.dimensions.insert(idx, dimension);
+        true
+    }
+
     /// The maker token used to link a taper to the casting KB: the first word of
     /// the rod name (mirrors `scripts/build_casting_kb.py`).
     pub fn maker(&self) -> Option<String> {
@@ -826,6 +866,40 @@ mod tests {
         assert!((deltas[0].delta - 0.015).abs() < 1e-12);
         assert!((deltas[1].delta - 0.011).abs() < 1e-12);
         assert!((deltas[2].delta - 0.015).abs() < 1e-12);
+    }
+
+    #[test]
+    fn scaled_applies_multiplier_and_bias_leaving_stations_alone() {
+        let t = Taper {
+            stations: vec![0.0, 5.0, 10.0],
+            dimensions: vec![0.1, 0.2, 0.3],
+            ..Default::default()
+        };
+        let scaled = t.scaled(2.0, 0.01);
+        assert_eq!(scaled.stations, t.stations);
+        assert!((scaled.dimensions[0] - 0.21).abs() < 1e-12);
+        assert!((scaled.dimensions[1] - 0.41).abs() < 1e-12);
+        assert!((scaled.dimensions[2] - 0.61).abs() < 1e-12);
+
+        // A large negative bias clamps at zero rather than going negative.
+        let clamped = t.scaled(1.0, -1.0);
+        assert!(clamped.dimensions.iter().all(|&d| d == 0.0));
+    }
+
+    #[test]
+    fn insert_station_interpolates_and_stays_sorted() {
+        let mut t = Taper {
+            stations: vec![0.0, 10.0, 20.0],
+            dimensions: vec![0.1, 0.3, 0.5],
+            ..Default::default()
+        };
+        assert!(t.insert_station(5.0));
+        assert_eq!(t.stations, vec![0.0, 5.0, 10.0, 20.0]);
+        assert!((t.dimensions[1] - 0.2).abs() < 1e-12);
+
+        // Inserting at an existing station is a no-op.
+        assert!(!t.insert_station(10.0));
+        assert_eq!(t.stations.len(), 4);
     }
 
     #[test]
