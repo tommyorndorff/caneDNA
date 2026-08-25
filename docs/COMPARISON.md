@@ -29,7 +29,7 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
 | Versioned releases + artifacts | ❌ | ✅ | Conventional Commits → release-please, native + WASM builds |
 | Customers / vendors / rods DBs | ✅ | ⛔ | Business-management side; not a goal |
 | Network / chat / registration | ✅ | ⛔ | Obsolete; not a goal |
-| MHM report (RodDNA-specific) | ✅ | ⛔ | Not planned |
+| Morgan Hand Mill (MHM) settings | ✅ | ✅ | caneDNA computes MHM dial settings natively (adjustable rough/finish oversize allowances) rather than replicating RodDNA's printed report format |
 
 ## Gap-driven roadmap (priority order)
 

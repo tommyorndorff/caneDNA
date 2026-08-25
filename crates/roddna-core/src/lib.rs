@@ -138,6 +138,51 @@ impl Taper {
             Some(format!("{} {}", a.to_lowercase(), b.to_lowercase()))
         }
     }
+
+    /// Morgan Hand Mill settings for each station, given rough/finish oversize
+    /// allowances (Tom Morgan's "2019 Bamboo Taper Sheets" workbook defaults:
+    /// 0.07", 0.03"). `half_dimension` (dimension / 2) is the mill dial
+    /// setting; `total_increase` is the cumulative rise from the butt end to
+    /// each station, i.e. the anvil setting.
+    pub fn mill_settings(&self, rough_allowance: f64, finish_allowance: f64) -> Vec<MillSetting> {
+        let profile = self.profile();
+        let n = profile.len();
+        let butt_half = profile.last().map(|p| p[1] / 2.0).unwrap_or(0.0);
+        profile
+            .iter()
+            .enumerate()
+            .map(|(i, &[station, dimension])| {
+                let half_dimension = dimension / 2.0;
+                MillSetting {
+                    station,
+                    anvil_number: n - 1 - i,
+                    dimension,
+                    half_dimension,
+                    rough_oversize: half_dimension + rough_allowance,
+                    finish_oversize: half_dimension + finish_allowance,
+                    finish_enamel: half_dimension + MHM_ENAMEL_ALLOWANCE,
+                    total_increase: butt_half - half_dimension,
+                }
+            })
+            .collect()
+    }
+}
+
+/// Fixed finish+enamel allowance from the source spreadsheet, never user-adjustable.
+const MHM_ENAMEL_ALLOWANCE: f64 = 0.003;
+
+/// One row of Morgan Hand Mill dial settings, derived from a taper's profile.
+#[derive(Debug, Clone, PartialEq)]
+pub struct MillSetting {
+    pub station: f64,
+    /// Anvil/mill station number, descending from tip (highest) to butt (0).
+    pub anvil_number: usize,
+    pub dimension: f64,
+    pub half_dimension: f64,
+    pub rough_oversize: f64,
+    pub finish_oversize: f64,
+    pub finish_enamel: f64,
+    pub total_increase: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -280,5 +325,33 @@ mod tests {
         };
         let (label, _mc) = kb.for_taper(&payne).expect("Payne 98 notes");
         assert_eq!(label, "Payne 98");
+    }
+
+    #[test]
+    fn mill_settings_matches_morgan_taper_sheet() {
+        // Butt section of the "Master" sheet in Tom Morgan's "2019 Bamboo
+        // Taper Sheets" workbook, using its default oversize allowances.
+        let t = Taper {
+            stations: vec![-5.0, 0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0],
+            dimensions: vec![
+                0.166, 0.184, 0.206, 0.214, 0.22, 0.244, 0.258, 0.272, 0.298, 0.316, 0.334, 0.334,
+            ],
+            ..Default::default()
+        };
+        let settings = t.mill_settings(0.07, 0.03);
+        assert_eq!(settings.len(), 12);
+
+        let first = &settings[0];
+        assert_eq!(first.anvil_number, 11);
+        assert!((first.half_dimension - 0.083).abs() < 1e-9);
+        assert!((first.rough_oversize - 0.153).abs() < 1e-9);
+        assert!((first.finish_oversize - 0.113).abs() < 1e-9);
+        assert!((first.finish_enamel - 0.086).abs() < 1e-9);
+        assert!((first.total_increase - 0.084).abs() < 1e-9);
+
+        let last = settings.last().unwrap();
+        assert_eq!(last.anvil_number, 0);
+        assert!((last.half_dimension - 0.167).abs() < 1e-9);
+        assert!((last.total_increase - 0.0).abs() < 1e-9);
     }
 }

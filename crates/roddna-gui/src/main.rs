@@ -67,6 +67,14 @@ fn main() {
     });
 }
 
+/// Which central-panel view is active for the current selection.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum PanelView {
+    Chart,
+    StationData,
+    MillSettings,
+}
+
 struct App {
     lib: Library,
     kb: CastingKb,
@@ -80,6 +88,9 @@ struct App {
     rod_types: Vec<String>,
     line_weights: Vec<f64>,
     piece_counts: Vec<f64>,
+    view: PanelView,
+    rough_oversize: f64,
+    finish_oversize: f64,
 }
 
 impl App {
@@ -100,6 +111,9 @@ impl App {
             rod_types,
             line_weights,
             piece_counts,
+            view: PanelView::Chart,
+            rough_oversize: 0.07,
+            finish_oversize: 0.03,
         }
     }
 
@@ -226,6 +240,10 @@ impl eframe::App for App {
                         ui.label(format!("{} selected", self.selected.len()));
                     });
                 });
+                ui.hyperlink_to(
+                    format!("v{}", env!("CARGO_PKG_VERSION")),
+                    "https://github.com/tommyorndorff/caneDNA/blob/main/CHANGELOG.md",
+                );
                 ui.horizontal(|ui| {
                     ui.label("Search:");
                     ui.text_edit_singleline(&mut self.search);
@@ -314,21 +332,115 @@ impl eframe::App for App {
 
             ui.separator();
 
-            // Overlaid taper profiles. egui_plot auto-assigns a stable color per
-            // named line, and the legend lets you toggle individual rods.
-            Plot::new("taper")
-                .legend(Legend::default())
-                .x_axis_label("Station (in from tip)")
-                .y_axis_label("Flat-to-flat (in)")
-                .height(ui.available_height() * 0.7)
-                .show(ui, |plot_ui| {
-                    for &i in &self.selected {
-                        let t = &self.lib.models[i];
-                        let name = t.name.clone().unwrap_or_else(|| format!("model {i}"));
-                        let points: PlotPoints = t.profile().into_iter().collect();
-                        plot_ui.line(Line::new(points).name(name));
+            ui.horizontal(|ui| {
+                ui.selectable_value(&mut self.view, PanelView::Chart, "Chart");
+                ui.selectable_value(&mut self.view, PanelView::StationData, "Station Data");
+                ui.selectable_value(&mut self.view, PanelView::MillSettings, "Mill Settings");
+            });
+            ui.add_space(4.0);
+
+            match self.view {
+                PanelView::Chart => {
+                    // Overlaid taper profiles. egui_plot auto-assigns a stable
+                    // color per named line, and the legend lets you toggle
+                    // individual rods.
+                    Plot::new("taper")
+                        .legend(Legend::default())
+                        .x_axis_label("Station (in from tip)")
+                        .y_axis_label("Flat-to-flat (in)")
+                        .height(ui.available_height() * 0.7)
+                        .show(ui, |plot_ui| {
+                            for &i in &self.selected {
+                                let t = &self.lib.models[i];
+                                let name = t.name.clone().unwrap_or_else(|| format!("model {i}"));
+                                let points: PlotPoints = t.profile().into_iter().collect();
+                                plot_ui.line(Line::new(points).name(name));
+                            }
+                        });
+                }
+                PanelView::StationData => {
+                    if self.selected.len() != 1 {
+                        ui.label("Select exactly one rod to view its station data.");
+                    } else {
+                        let t = &self.lib.models[self.selected[0]];
+                        egui::ScrollArea::vertical()
+                            .max_height(ui.available_height() * 0.7)
+                            .show(ui, |ui| {
+                                egui::Grid::new("station_data")
+                                    .striped(true)
+                                    .num_columns(2)
+                                    .show(ui, |ui| {
+                                        for h in ["Station (in)", "Dimension (in)"] {
+                                            ui.label(egui::RichText::new(h).strong());
+                                        }
+                                        ui.end_row();
+                                        for [station, dimension] in t.profile() {
+                                            ui.label(format!("{station:.2}"));
+                                            ui.label(format!("{dimension:.4}"));
+                                            ui.end_row();
+                                        }
+                                    });
+                            });
                     }
-                });
+                }
+                PanelView::MillSettings => {
+                    if self.selected.len() != 1 {
+                        ui.label("Select exactly one rod to view Morgan Hand Mill settings.");
+                    } else {
+                        let t = &self.lib.models[self.selected[0]];
+                        ui.horizontal(|ui| {
+                            ui.label("Rough oversize:");
+                            ui.add(
+                                egui::DragValue::new(&mut self.rough_oversize)
+                                    .speed(0.001)
+                                    .fixed_decimals(3),
+                            );
+                            ui.label("Finish oversize:");
+                            ui.add(
+                                egui::DragValue::new(&mut self.finish_oversize)
+                                    .speed(0.001)
+                                    .fixed_decimals(3),
+                            );
+                        });
+                        ui.add_space(4.0);
+                        egui::ScrollArea::vertical()
+                            .max_height(ui.available_height() * 0.7)
+                            .show(ui, |ui| {
+                                egui::Grid::new("mill_settings")
+                                    .striped(true)
+                                    .num_columns(8)
+                                    .show(ui, |ui| {
+                                        for h in [
+                                            "Station",
+                                            "Anvil #",
+                                            "Dimension",
+                                            "Half",
+                                            "Rough Oversize",
+                                            "Finish Oversize",
+                                            "Finish+Enamel",
+                                            "Total Increase",
+                                        ] {
+                                            ui.label(egui::RichText::new(h).strong());
+                                        }
+                                        ui.end_row();
+                                        for m in
+                                            t.mill_settings(self.rough_oversize, self.finish_oversize)
+                                        {
+                                            ui.label(format!("{:.2}", m.station));
+                                            ui.label(format!("#{}", m.anvil_number));
+                                            ui.label(format!("{:.4}", m.dimension));
+                                            ui.label(format!("{:.4}", m.half_dimension));
+                                            ui.label(format!("{:.4}", m.rough_oversize));
+                                            ui.label(format!("{:.4}", m.finish_oversize));
+                                            ui.label(format!("{:.4}", m.finish_enamel));
+                                            ui.label(format!("{:.4}", m.total_increase));
+                                            ui.end_row();
+                                        }
+                                    });
+                            });
+                    }
+                }
+            }
 
             // Notes + casting feedback only make sense for a single rod.
             if self.selected.len() == 1 {
