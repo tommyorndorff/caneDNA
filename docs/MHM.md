@@ -78,11 +78,11 @@ A–K hold-down positions (A = rightmost) back to the strip's butt to pick the l
 the bed carries **two** stamped systems — **numbers = the taper stations (1–13)** and
 **letters A–K = the start / mill-stop positions**. The letters sit at **2.5″ pitch**
 (half a station), so the odd letters land on the 5″ stations: **A1, C2, E3, G4, I5,
-K6** (A = station 1 … K = station 6), covering only the tip-most ~25″. You **start a
-finish pass ~hole D** (~7.5″ from the tip, just past the tiptop at #12 — the manual's
-"start ~6″ from the tip"); **rough-cutting and one-piece / extension-bed setups start at
-A**. So the start letter is roughly fixed by build type — it's the **station span** that
-grows with section length, not the letter.
+K6** (A = station 1 … K = station 6), covering only the tip-most ~25″. **Rule:** screw
+the strip into the **lowest letter that gives enough anvil space** — a section needing
+**all 13 stations starts at A**, and shorter sections step up the letters. So the letter
+tracks span inversely (`clamp(11 − station_span, A..K)`): a 7′ 2-piece tip (span ~8) → **D**;
+rough-cutting and one-piece / extension-bed setups (longest) → **A**.
 
 ## Milling workflow (chapter L)
 

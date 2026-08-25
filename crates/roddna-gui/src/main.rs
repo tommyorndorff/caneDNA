@@ -1186,9 +1186,9 @@ fn anvil_layout_view(ui: &mut egui::Ui, layouts: &[roddna_core::MillBedLayout]) 
     ui.label(
         egui::RichText::new(
             "The A–K letters are start / mill-stop positions at 2.5\" pitch near the tip (the \
-             odd letters sit on the numbered taper stations 1–6). Finish milling starts ~hole D, \
-             just past the tiptop; rough-cutting and one-piece / extension-bed setups start at A. \
-             What varies with section length is the station span (below), not the start letter.",
+             odd letters sit on the numbered taper stations 1–6). You screw the strip into the \
+             lowest letter that gives enough anvil space: a section needing all 13 stations \
+             starts at A, and shorter sections step up the letters (a 7 ft 2-piece tip ≈ D).",
         )
         .weak()
         .small(),
@@ -1269,11 +1269,11 @@ fn anvil_bed_schematic(ui: &mut egui::Ui, layouts: &[roddna_core::MillBedLayout]
                 );
             }
             // A-K start / mill-stop letters at 2.5" pitch near the tip (A at #13),
-            // drawn along the bottom; the typical finish start (D) is highlighted.
+            // drawn along the bottom; letters used by a section are highlighted.
             for i in 0..11u8 {
                 let letter = (b'A' + i) as char;
                 let x = 13.0 - i as f64 * 0.5; // 2.5" pitch = half a 5" station
-                let hot = letter == 'D';
+                let hot = layouts.iter().any(|l| l.letter == letter);
                 plot_ui.text(
                     Text::new(
                         egui_plot::PlotPoint::new(x, -0.3),

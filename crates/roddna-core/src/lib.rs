@@ -296,14 +296,13 @@ impl Taper {
     /// station per 5 in. A section needs the **extension bed** if it can't fit
     /// (butt would fall past station #0) — e.g. a long one-piece rod.
     ///
-    /// The A-K letter is the physical **start / mill-stop position**, not a
-    /// function of section length. The 11 letters sit at 2.5-in pitch near the
-    /// tip (`MHM_LETTER_PITCH_IN`); finish milling starts just past the tiptop,
-    /// ~hole D (`MHM_FINISH_START_LETTER`), while rough-cutting and one-piece /
-    /// extension-bed setups start at A (per the manual). What actually varies
-    /// with section length is `station_span` / `butt_station`, above.
-    /// `letter_estimated` stays true: it's the manual's typical value, and the
-    /// exact hole shifts with piece count and how the strip is trimmed.
+    /// The A-K letter is the physical **start / mill-stop position**: you screw
+    /// the strip down at the *lowest* letter that gives enough anvil space, so a
+    /// section needing all 13 stations starts at A and shorter sections step up
+    /// the letters (`clamp(11 - station_span, A..K)`). The 11 letters sit at
+    /// 2.5-in pitch near the tip (`MHM_LETTER_PITCH_IN`); a normal 7 ft 2-piece
+    /// tip (span 8) lands on ~hole D. `letter_estimated` stays true: the exact
+    /// hole shifts a little with how the strip is trimmed.
     ///
     /// One entry per `mill_sections` piece (Tip / Mid n / Butt / Full rod).
     pub fn mill_bed_layouts(&self, rough_allowance: f64, finish_allowance: f64) -> Vec<MillBedLayout> {
@@ -319,14 +318,12 @@ impl Taper {
                 let station_span = (length_in / MHM_STATION_SPACING_IN).round().max(0.0) as usize;
                 let butt_station = MHM_TIPTOP_STATION as i32 - station_span as i32;
                 let fits_standard_bed = butt_station >= 0;
-                // Start letter is a tip-region position, ~fixed: D for a normal
-                // finish pass, A when the section overruns the bed (one-piece /
-                // extension-bed, which the manual starts at A).
-                let letter = if fits_standard_bed {
-                    MHM_FINISH_START_LETTER
-                } else {
-                    'A'
-                };
+                // Lowest letter that gives enough anvil space: all 13 stations
+                // -> A, each shorter station-span steps up the letters. Longer
+                // sections (incl. those needing the extension bed) clamp to A.
+                let letter_index = (11 - station_span as i32)
+                    .clamp(0, MHM_HOLD_DOWN_LETTERS as i32 - 1);
+                let letter = (b'A' + letter_index as u8) as char;
                 MillBedLayout {
                     label: section.label,
                     section_length_in: length_in,
@@ -918,11 +915,14 @@ pub const MHM_HOLD_DOWN_LETTERS: usize = 11;
 /// station), so the odd letters coincide with the 5-inch stations: A=station 1,
 /// C=2, E=3, G=4, I=5, K=6 (confirmed from a mill photo). Distinct from the
 /// numbered taper stations 1-13.
+///
+/// You screw the strip down at the **lowest** letter that gives enough anvil
+/// space for the taper: a section needing all 13 stations starts at A, and
+/// each ~5-inch (one-station) reduction in span steps up ~2 letters. caneDNA
+/// models the start letter as `clamp(11 - station_span, A..K)` — A for the
+/// longest sections (incl. one-piece / extension-bed), which reproduces the
+/// manual's 7 ft 2-piece tip (span 8 -> hole D).
 pub const MHM_LETTER_PITCH_IN: f64 = 2.5;
-/// Typical finish-milling start letter: ~7.5 in from the tip, just past the
-/// tiptop station (#12) — where the manual has you "start cutting ~6 in from
-/// the tip." Rough-cutting (and one-piece/extension-bed setups) start at A.
-pub const MHM_FINISH_START_LETTER: char = 'D';
 
 /// How one rod section registers on the Morgan Hand Mill bed. See
 /// `Taper::mill_bed_layouts`.
