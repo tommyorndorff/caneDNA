@@ -147,6 +147,30 @@ impl Taper {
         true
     }
 
+    /// A short, human-friendly grouping of this taper's `provenance.source`,
+    /// collapsing the source library's own version strings into one bucket —
+    /// e.g. "RodDNA v2.0" and "RodDNA v1.4 update" both become "RodDNA", and
+    /// "David Ray's Taper Library (Hexrod)" becomes "Hexrod". Used to filter
+    /// the library by where a taper came from. Returns the raw source string
+    /// for any source not recognised here, and `None` if the record carries no
+    /// source.
+    pub fn source_group(&self) -> Option<String> {
+        let src = self.provenance.as_ref()?.source.as_deref()?;
+        let lower = src.to_lowercase();
+        let label = if lower.contains("hexrod") {
+            "Hexrod"
+        } else if lower.contains("roddna") {
+            "RodDNA"
+        } else if lower.contains("taper sheets") {
+            "Taper Sheets"
+        } else if lower.contains("bob clay") {
+            "Bob Clay"
+        } else {
+            return Some(src.to_string());
+        };
+        Some(label.to_string())
+    }
+
     /// The maker token used to link a taper to the casting KB: the first word of
     /// the rod name (mirrors `scripts/build_casting_kb.py`).
     pub fn maker(&self) -> Option<String> {
@@ -921,6 +945,15 @@ impl Library {
         v.dedup();
         v
     }
+
+    /// Distinct provenance source groups present (see `Taper::source_group`),
+    /// sorted — the values a source filter offers.
+    pub fn source_groups(&self) -> Vec<String> {
+        let mut v: Vec<String> = self.models.iter().filter_map(|m| m.source_group()).collect();
+        v.sort();
+        v.dedup();
+        v
+    }
 }
 
 /// A single cited casting-feedback snippet from the RMA archive.
@@ -1008,6 +1041,49 @@ mod tests {
             let p = m.provenance.as_ref().expect("provenance present");
             assert!(p.source.is_some(), "{:?}", m.name);
         }
+        // Source groups collapse the version-tagged RodDNA sources into one
+        // bucket, and Hexrod/Taper Sheets/Bob Clay are present.
+        let groups = lib.source_groups();
+        for g in ["Hexrod", "RodDNA", "Taper Sheets", "Bob Clay"] {
+            assert!(groups.iter().any(|s| s == g), "missing source group {g}");
+        }
+    }
+
+    #[test]
+    fn source_group_collapses_versions_and_recognises_libraries() {
+        let with_source = |s: &str| Taper {
+            provenance: Some(Provenance {
+                source: Some(s.to_string()),
+                ..Default::default()
+            }),
+            ..Default::default()
+        };
+        assert_eq!(
+            with_source("RodDNA v1.4 update").source_group().as_deref(),
+            Some("RodDNA")
+        );
+        assert_eq!(
+            with_source("RodDNA v2.0").source_group().as_deref(),
+            Some("RodDNA")
+        );
+        assert_eq!(
+            with_source("David Ray's Taper Library (Hexrod)")
+                .source_group()
+                .as_deref(),
+            Some("Hexrod")
+        );
+        assert_eq!(
+            with_source("2019 Bamboo Taper Sheets (Tom Morgan)")
+                .source_group()
+                .as_deref(),
+            Some("Taper Sheets")
+        );
+        // Unknown source falls back to the raw string; no source -> None.
+        assert_eq!(
+            with_source("Some Future Library").source_group().as_deref(),
+            Some("Some Future Library")
+        );
+        assert_eq!(Taper::default().source_group(), None);
     }
 
     #[test]
