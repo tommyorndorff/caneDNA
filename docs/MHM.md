@@ -80,9 +80,12 @@ the bed carries **two** stamped systems — **numbers = the taper stations (1–
 (half a station), so the odd letters land on the 5″ stations: **A1, C2, E3, G4, I5,
 K6** (A = station 1 … K = station 6), covering only the tip-most ~25″. **Rule:** screw
 the strip into the **lowest letter that gives enough anvil space** — a section needing
-**all 13 stations starts at A**, and shorter sections step up the letters. So the letter
-tracks span inversely (`clamp(11 − station_span, A..K)`): a 7′ 2-piece tip (span ~8) → **D**;
-rough-cutting and one-piece / extension-bed setups (longest) → **A**.
+**all 13 stations starts at A**, and shorter sections step up the letters. The strip's
+tip is fixed near #13, so the letter tracks its **butt** hold-down and depends on the
+**strip** length (finished section + ~6″ cutoffs + ~2″ hold-down), not the taper length —
+which is why a rod's **tip and butt share a letter**. caneDNA models it as
+`clamp(13 − round((section_len + 8) / 5), A..K)`: a 7′ 2-piece rod (51″ strips) → **D**
+for both sections; rough-cutting and one-piece / extension-bed (longest) → **A**.
 
 ## Milling workflow (chapter L)
 

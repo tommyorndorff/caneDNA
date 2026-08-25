@@ -299,9 +299,12 @@ impl Taper {
     /// The A-K letter is the physical **start / mill-stop position**: you screw
     /// the strip down at the *lowest* letter that gives enough anvil space, so a
     /// section needing all 13 stations starts at A and shorter sections step up
-    /// the letters (`clamp(11 - station_span, A..K)`). The 11 letters sit at
-    /// 2.5-in pitch near the tip (`MHM_LETTER_PITCH_IN`); a normal 7 ft 2-piece
-    /// tip (span 8) lands on ~hole D. `letter_estimated` stays true: the exact
+    /// the letters. Because the strip's tip is fixed near #13, the letter tracks
+    /// its BUTT hold-down and so depends on the *strip* length (finished section
+    /// + `MHM_STRIP_ALLOWANCE_IN` of cutoffs/hold-down), which is why a rod's
+    /// tip and butt share a letter: `clamp(13 - round((len + 8)/5), A..K)`. A
+    /// normal 7 ft 2-piece rod lands on hole D (both sections); the longest
+    /// sections / rough cutting use A. `letter_estimated` stays true: the exact
     /// hole shifts a little with how the strip is trimmed.
     ///
     /// One entry per `mill_sections` piece (Tip / Mid n / Butt / Full rod).
@@ -318,11 +321,13 @@ impl Taper {
                 let station_span = (length_in / MHM_STATION_SPACING_IN).round().max(0.0) as usize;
                 let butt_station = MHM_TIPTOP_STATION as i32 - station_span as i32;
                 let fits_standard_bed = butt_station >= 0;
-                // Lowest letter that gives enough anvil space: all 13 stations
-                // -> A, each shorter station-span steps up the letters. Longer
-                // sections (incl. those needing the extension bed) clamp to A.
-                let letter_index = (11 - station_span as i32)
-                    .clamp(0, MHM_HOLD_DOWN_LETTERS as i32 - 1);
+                // Lowest letter that gives enough anvil space, keyed off the
+                // strip length (finished section + cutoffs/hold-down) so a rod's
+                // tip and butt share a letter: all 13 stations -> A, shorter
+                // strips step up. Longest sections (incl. extension bed) -> A.
+                let strip_span =
+                    ((length_in + MHM_STRIP_ALLOWANCE_IN) / MHM_STATION_SPACING_IN).round() as i32;
+                let letter_index = (13 - strip_span).clamp(0, MHM_HOLD_DOWN_LETTERS as i32 - 1);
                 let letter = (b'A' + letter_index as u8) as char;
                 MillBedLayout {
                     label: section.label,
@@ -917,12 +922,19 @@ pub const MHM_HOLD_DOWN_LETTERS: usize = 11;
 /// numbered taper stations 1-13.
 ///
 /// You screw the strip down at the **lowest** letter that gives enough anvil
-/// space for the taper: a section needing all 13 stations starts at A, and
-/// each ~5-inch (one-station) reduction in span steps up ~2 letters. caneDNA
-/// models the start letter as `clamp(11 - station_span, A..K)` — A for the
-/// longest sections (incl. one-piece / extension-bed), which reproduces the
-/// manual's 7 ft 2-piece tip (span 8 -> hole D).
+/// space: a section needing all 13 stations starts at A, and shorter sections
+/// step up the letters. The letter tracks where the strip's BUTT hold-down
+/// screw lands (its tip is fixed near #13), so it's driven by the *strip*
+/// length, not the taper length — which is why both the tip and butt of one
+/// rod share a letter. caneDNA models it as
+/// `clamp(13 - round((section_len + MHM_STRIP_ALLOWANCE_IN) / 5), A..K)`,
+/// reproducing the manual's 7 ft 2-piece rod (51-in strips -> hole D for both
+/// tip and butt) and A for the longest sections / rough cutting.
 pub const MHM_LETTER_PITCH_IN: f64 = 2.5;
+/// Extra strip length beyond the finished section: ~6 in of end cutoffs plus
+/// ~2 in at the butt for the hold-down screw (per the manual's 7 ft example:
+/// 43 in finished + 6 + 2 = 51 in). Used to place the butt hold-down letter.
+pub const MHM_STRIP_ALLOWANCE_IN: f64 = 8.0;
 
 /// How one rod section registers on the Morgan Hand Mill bed. See
 /// `Taper::mill_bed_layouts`.
