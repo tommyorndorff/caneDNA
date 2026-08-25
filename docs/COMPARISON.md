@@ -107,3 +107,12 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
    outside the repo.
 
 These are reflected in the README roadmap.
+
+## Beyond parity: the design engine
+
+RodDNA parity (above) is done. Forward work — the physics/design engine that
+takes caneDNA past what RodDNA does — is tracked separately in
+[`DESIGN_ENGINE.md`](DESIGN_ENGINE.md). First new capability landed:
+**A2 — modal/dynamic analysis** (`Taper::modal_analysis()`), estimating a rod's
+fundamental bending frequency and effective tip mass/stiffness (RodDNA has no
+dynamic model at all).

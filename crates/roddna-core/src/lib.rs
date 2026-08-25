@@ -743,6 +743,128 @@ impl Taper {
             })
             .collect()
     }
+
+    /// **A2 — dynamic / modal analysis.** Estimates the rod's fundamental
+    /// bending frequency (and the effective tip-referred mass/stiffness that
+    /// go with it) by treating the rod as a variable-cross-section
+    /// Euler–Bernoulli cantilever, clamped at the butt and free at the tip.
+    ///
+    /// Where [`stress_curve`](Self::stress_curve) (A1) answers "how hard is
+    /// each section working under a casting load," this answers "how does the
+    /// rod *move*" — the fast/slow action and recovery a caster actually
+    /// feels. A stiffer, lighter rod rings at a higher frequency and recovers
+    /// faster; a soft full-flex rod is slow and low.
+    ///
+    /// Method: the Rayleigh quotient
+    /// `ω² = ∫ EI(x) ψ''(x)² dx / (∫ m(x) ψ(x)² dx + M_tip ψ(L)²)`
+    /// with the closed-form first mode shape of a *uniform* cantilever as the
+    /// assumed shape `ψ`. For a genuinely prismatic rod this reproduces the
+    /// exact Euler–Bernoulli frequency (verified in tests); for a real taper
+    /// it's a well-behaved upper-bound estimate — good enough to *rank*
+    /// tapers by action and to drive inverse design (stage B), the intended
+    /// use, not a substitute for a full FE modal solve.
+    ///
+    /// `EI(x)` uses a true per-geometry cross-section (regular-polygon area and
+    /// second moment of area from the flat-to-flat `dimensions`), not the
+    /// hex-area approximation A1 reuses from RodDNA. Young's modulus is a
+    /// parameter (bamboo varies a lot); specific weight defaults to the
+    /// taper's own `bamboo_density`, and a tip point mass from `tip_weight`.
+    ///
+    /// Returns `None` if the profile is too short (< 2 points) or has no
+    /// length. There is **no stored ground truth** for frequency in the
+    /// library (unlike A1's `stresses`), so this is validated by construction
+    /// against the analytic prismatic-beam solution, not against real records.
+    pub fn modal_analysis(&self, params: &ModalParams) -> Option<ModalAnalysis> {
+        let profile = self.profile();
+        if profile.len() < 2 {
+            return None;
+        }
+        // Clamp at the butt (largest station), free at the tip (station 0);
+        // the active bending length is the taper's own extent.
+        let length = profile.last().unwrap()[0];
+        if length <= 0.0 {
+            return None;
+        }
+        let (_factor, sides) = geometry_factor(self.const_type.as_deref());
+
+        // Specific weight (oz/in^3) -> mass density (lbf·s²/in per in³).
+        let specific_weight_oz = params
+            .specific_weight_oz_in3
+            .or(self.bamboo_density)
+            .unwrap_or(DEFAULT_BAMBOO_SPECIFIC_WEIGHT_OZ);
+        let mass_density = (specific_weight_oz / OZ_PER_LB) / GRAVITY_IN_S2;
+        let youngs = params.youngs_modulus_psi;
+
+        // March in 1" steps like `stress_curve`; x is distance from the
+        // clamped butt, so x = length - station.
+        let n = length.round() as usize;
+        if n < 1 {
+            return None;
+        }
+        let step = length / n as f64;
+
+        // Uniform-cantilever first mode: ψ(x) = cosh βx - cos βx
+        //   - σ (sinh βx - sin βx), with βL = 1.8751041 and σ = 0.7340955.
+        let beta = FIRST_MODE_BETA_L / length;
+        let sigma = FIRST_MODE_SIGMA;
+        let shape = |x: f64| -> (f64, f64) {
+            let bx = beta * x;
+            let (s, c, sh, ch) = (bx.sin(), bx.cos(), bx.sinh(), bx.cosh());
+            let psi = ch - c - sigma * (sh - s);
+            // ψ'' = β² [cosh βx + cos βx - σ(sinh βx + sin βx)]
+            let psi2 = beta * beta * (ch + c - sigma * (sh + s));
+            (psi, psi2)
+        };
+
+        // Trapezoidal integration of numerator (∫ EI ψ''²) and the
+        // distributed part of the denominator (∫ m ψ²).
+        let mut numer = 0.0;
+        let mut denom = 0.0;
+        let sample = |i: usize| -> (f64, f64) {
+            let station = (i as f64) * step;
+            let x = length - station;
+            let d = interpolate(&profile, station).unwrap_or(0.0);
+            let (area, inertia) = polygon_section(d, sides);
+            let (psi, psi2) = shape(x);
+            let ei = youngs * inertia;
+            let m = mass_density * area;
+            (ei * psi2 * psi2, m * psi * psi)
+        };
+        let (mut prev_n, mut prev_d) = sample(0);
+        for i in 1..=n {
+            let (cur_n, cur_d) = sample(i);
+            numer += 0.5 * (prev_n + cur_n) * step;
+            denom += 0.5 * (prev_d + cur_d) * step;
+            prev_n = cur_n;
+            prev_d = cur_d;
+        }
+
+        // Tip point mass (line-top guide + tip section) at the free end.
+        let tip_mass = (self.tip_weight.unwrap_or(0.0) / OZ_PER_LB) / GRAVITY_IN_S2;
+        let (psi_tip, _) = shape(length);
+        denom += tip_mass * psi_tip * psi_tip;
+
+        if denom <= 0.0 || numer <= 0.0 {
+            return None;
+        }
+        let omega2 = numer / denom;
+        let omega = omega2.sqrt();
+        let frequency_hz = omega / (2.0 * std::f64::consts::PI);
+
+        // Tip-referred effective (modal) mass: normalize the generalized mass
+        // by the tip amplitude so k = ω²·m reads as an equivalent tip spring.
+        let effective_mass = denom / (psi_tip * psi_tip);
+        let effective_stiffness = omega2 * effective_mass;
+
+        Some(ModalAnalysis {
+            frequency_hz,
+            period_ms: 1000.0 / frequency_hz,
+            effective_mass_oz: effective_mass * GRAVITY_IN_S2 * OZ_PER_LB,
+            effective_stiffness_lb_in: effective_stiffness,
+            tip_mass_oz: self.tip_weight.unwrap_or(0.0),
+            active_length_in: length,
+        })
+    }
 }
 
 /// AFTMA fly-line weight standard, in grains, indexed by line weight number
@@ -793,6 +915,78 @@ fn geometry_factor(const_type: Option<&str>) -> (f64, f64) {
         Some(s) if s.starts_with("octa") => (0.0899, 8.0),
         _ => (0.0829, 6.0),
     }
+}
+
+/// Tunable inputs for [`Taper::modal_analysis`] (A2). Bamboo's stiffness varies
+/// widely by culm, grade, and heat-treatment, so Young's modulus is exposed
+/// rather than baked in.
+#[derive(Debug, Clone, PartialEq)]
+pub struct ModalParams {
+    /// Young's modulus of the bamboo, psi. Split-cane is typically ~2.0e6 to
+    /// ~4.0e6 psi along the fiber; the default is a mid-range value.
+    pub youngs_modulus_psi: f64,
+    /// Override the specific weight (oz/in³). `None` uses the taper's own
+    /// `bamboo_density`, falling back to RodDNA's shipped default.
+    pub specific_weight_oz_in3: Option<f64>,
+}
+
+impl Default for ModalParams {
+    fn default() -> Self {
+        ModalParams {
+            youngs_modulus_psi: 2.4e6,
+            specific_weight_oz_in3: None,
+        }
+    }
+}
+
+/// Result of [`Taper::modal_analysis`] (A2) — the rod's fundamental bending
+/// mode, expressed both as a frequency and as an equivalent tip spring/mass.
+#[derive(Debug, Clone, PartialEq)]
+pub struct ModalAnalysis {
+    /// Fundamental (first-mode) bending frequency, Hz. Higher = faster action.
+    pub frequency_hz: f64,
+    /// Period of that mode, milliseconds (`1000 / frequency_hz`) — a rough
+    /// proxy for recovery time.
+    pub period_ms: f64,
+    /// Effective modal mass referred to the tip, oz.
+    pub effective_mass_oz: f64,
+    /// Equivalent tip stiffness `k = ω²·m`, lbf/in.
+    pub effective_stiffness_lb_in: f64,
+    /// The tip point mass included in the model, oz (from `tip_weight`).
+    pub tip_mass_oz: f64,
+    /// Cantilever length used (tip-to-butt taper extent), inches.
+    pub active_length_in: f64,
+}
+
+/// First-mode eigenvalue `βL` and shape constant `σ` of a uniform cantilever
+/// (clamped-free), used as the assumed shape in the Rayleigh quotient.
+const FIRST_MODE_BETA_L: f64 = 1.875_104_1;
+const FIRST_MODE_SIGMA: f64 = 0.734_095_5;
+/// Standard gravity in inches/s², to convert weight (lbf) to mass.
+const GRAVITY_IN_S2: f64 = 386.088;
+const OZ_PER_LB: f64 = 16.0;
+/// RodDNA's shipped default bamboo specific weight (oz/in³).
+const DEFAULT_BAMBOO_SPECIFIC_WEIGHT_OZ: f64 = 0.668;
+
+/// Area (in²) and second moment of area `I` (in⁴) about a centroidal axis of a
+/// regular `sides`-gon whose flat-to-flat width (apothem × 2) is `dimension`.
+///
+/// For any regular polygon with ≥ 3 sides the second-moment tensor is
+/// isotropic — the same `I` about every centroidal in-plane axis — so a single
+/// value is meaningful regardless of how the strip is clocked. Derived from the
+/// apothem `a = dimension / 2` and half-angle `θ = π/sides`:
+///   `A = n·a²·tanθ`,  `I = (n·a⁴/4)·tanθ·(1 + tan²θ/3)`.
+/// (Checks out against the square `s⁴/12` and hex `(√3/2)·w²` area.)
+fn polygon_section(dimension: f64, sides: f64) -> (f64, f64) {
+    if dimension <= 0.0 || sides < 3.0 {
+        return (0.0, 0.0);
+    }
+    let a = dimension / 2.0;
+    let theta = std::f64::consts::PI / sides;
+    let t = theta.tan();
+    let area = sides * a * a * t;
+    let inertia = sides * a.powi(4) / 4.0 * t * (1.0 + t * t / 3.0);
+    (area, inertia)
 }
 
 /// Fixed finish+enamel allowance from the source spreadsheet, never user-adjustable.
@@ -1690,5 +1884,80 @@ mod tests {
             ..Default::default()
         };
         assert!(t.ferrules().is_empty());
+    }
+
+    #[test]
+    fn polygon_section_matches_known_formulas() {
+        // Square: A = s², I = s⁴/12 (flat-to-flat == side length).
+        let (a, i) = polygon_section(2.0, 4.0);
+        assert!((a - 4.0).abs() < 1e-9, "square area {a}");
+        assert!((i - 16.0 / 12.0).abs() < 1e-9, "square I {i}");
+        // Hex: A = (√3/2)·w².
+        let (a, _) = polygon_section(3.0, 6.0);
+        assert!((a - (3.0_f64.sqrt() / 2.0) * 9.0).abs() < 1e-9, "hex area {a}");
+    }
+
+    /// A prismatic (constant-dimension) cantilever must reproduce the
+    /// closed-form Euler–Bernoulli fundamental frequency
+    /// `f = (βL)² / (2π) · sqrt(EI / (m·L⁴))`, since the Rayleigh quotient with
+    /// the exact uniform-beam mode shape is exact for a uniform beam. This is
+    /// the validation anchor for A2 (no stored frequency ground truth exists).
+    #[test]
+    fn modal_frequency_matches_prismatic_beam() {
+        let length = 90.0_f64;
+        let dim = 0.25;
+        let stations: Vec<f64> = (0..=18).map(|i| i as f64 * 5.0).collect();
+        let dims = vec![dim; stations.len()];
+        let t = Taper {
+            const_type: Some("Hex".into()),
+            stations,
+            dimensions: dims,
+            // No tip mass — keep it a pure prismatic beam for the check.
+            tip_weight: Some(0.0),
+            ..Default::default()
+        };
+        let params = ModalParams {
+            youngs_modulus_psi: 2.4e6,
+            specific_weight_oz_in3: Some(0.668),
+        };
+        let m = t.modal_analysis(&params).expect("modal result");
+
+        // Analytic reference.
+        let (area, inertia) = polygon_section(dim, 6.0);
+        let mass_per_len = (0.668 / OZ_PER_LB) / GRAVITY_IN_S2 * area;
+        let omega = FIRST_MODE_BETA_L.powi(2)
+            * (2.4e6 * inertia / (mass_per_len * length.powi(4))).sqrt();
+        let f_analytic = omega / (2.0 * std::f64::consts::PI);
+        let rel = (m.frequency_hz - f_analytic).abs() / f_analytic;
+        assert!(rel < 0.005, "f={} analytic={} rel={}", m.frequency_hz, f_analytic, rel);
+        assert!(m.period_ms > 0.0 && m.effective_stiffness_lb_in > 0.0);
+    }
+
+    /// A stiffer/heavier-butt taper (real trout rod) should ring faster than a
+    /// limp uniform stick of the same length: a monotonicity sanity check that
+    /// the taper actually drives the frequency.
+    #[test]
+    fn modal_ranks_stiffer_rod_higher() {
+        let stations: Vec<f64> = (0..=16).map(|i| i as f64 * 5.0).collect();
+        let uniform = Taper {
+            const_type: Some("Hex".into()),
+            stations: stations.clone(),
+            dimensions: vec![0.15; stations.len()],
+            tip_weight: Some(0.0),
+            ..Default::default()
+        };
+        // Tapered: fine tip growing to a stout butt.
+        let tapered_dims: Vec<f64> = stations
+            .iter()
+            .map(|&s| 0.07 + 0.16 * (s / 80.0))
+            .collect();
+        let tapered = Taper {
+            dimensions: tapered_dims,
+            ..uniform.clone()
+        };
+        let p = ModalParams::default();
+        let fu = uniform.modal_analysis(&p).unwrap().frequency_hz;
+        let ft = tapered.modal_analysis(&p).unwrap().frequency_hz;
+        assert!(ft > fu, "tapered {ft} should exceed uniform {fu}");
     }
 }

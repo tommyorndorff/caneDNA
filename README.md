@@ -135,6 +135,16 @@ python3 scripts/build_library.py              # merge + dedupe -> data/tapers.js
   when possible (e.g. "Payne 98") and falling back to the maker, with **action
   tags** (fast/slow/parabolic/delicate/…) summarised and per-snippet. Next: filter
   the rod list by action, and tighten model-match precision.
+### Design engine (beyond RodDNA)
+
+Turning caneDNA from a taper browser/editor into a taper **design** tool — a
+physics engine that predicts how a rod behaves and, eventually, solves for a
+taper that hits a target action. See [`docs/DESIGN_ENGINE.md`](docs/DESIGN_ENGINE.md)
+for the full A→D roadmap. Landed so far: **A2 — dynamic/modal engine**
+(`Taper::modal_analysis()`), an Euler–Bernoulli cantilever estimate of the
+rod's fundamental bending frequency (fast vs. slow action) and equivalent tip
+mass/stiffness, surfaced in a GUI **Modal** tab.
+
 ### RodDNA parity gaps → priorities
 
 See [`docs/COMPARISON.md`](docs/COMPARISON.md) for the full caneDNA-vs-RodDNA
