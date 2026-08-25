@@ -36,7 +36,7 @@ crates/
 
 ## Data
 
-**873 rod models** merged from three sources (see Data Sources below), covering
+**874 rod models** merged from four sources (see Data Sources below), covering
 Fly / Dry-Fly / Spey / Spinning / Casting rods in Hex / Penta / Quad / Rectangular
 construction. Each record carries length, line weight, ferrule specs, notes, the
 `dimensions` taper (flat-to-flat cross-section, in inches, at each station), and a
@@ -59,6 +59,7 @@ import date). Please preserve attribution if you reuse this data.
 | [RodDNA v2.0](http://www.highsierrarods.com/roddna.html) | Larry Tusoni | Free (released without registration) | Extracted from the RodDNA installer JAR |
 | [David Ray's Taper Library (Hexrod)](https://www.hexrod.net/Tapers/drtapers/index.html) | compiled by David Ray | **Unspecified** — hobbyist compilation, attributed pending clarification | `drtapers.xlsx` |
 | 2019 Bamboo Taper Sheets | Tom W. Morgan (© 2005) | See workbook copyright notice | Tip/butt section sheets; raw sections kept under `provenance.sections` |
+| [Bamboo Rod Building with Bob Clay](https://courses.anchoredoutdoors.com/courses/bamboo-rod-building-with-bob-clay) | Bob Clay | Course material; used for reference/education | Single example "universal" 12' taper from the course |
 
 > Note: the Hexrod library has no stated license. It is included here with
 > attribution while permission/licensing is confirmed with the source.
@@ -141,12 +142,15 @@ feature matrix. Gap-driven order:
 
 1. **Garrison stress-curve engine** (`roddna-core`) — compute from the taper +
    stored inputs (Hex first, then Quad/Penta). Foundation for stress overlays and
-   taper design.
+   taper design. Extend to a full **casting deflection analysis** (hexrod.net-style):
+   deflected rod shape + stress-vs-station graphs from adjustable MOE/impact-factor inputs.
 2. **Taper design/edit mode** — edit stations, scale (multiplier/bias), add/split
    ferrule stations.
 3. **Planing-form settings** (60° form depths per geometry).
 4. **Guide-spacing calculator.**
 5. **Export** — CSV + Hexrod-style station file; later a printable/PDF sheet.
+6. **Dimension-change (delta) chart** — hexrod.net-style bar+line view of
+   station-to-station dimension change with ferrule markers.
 
 ### Design focus: trout-spey tapers
 
