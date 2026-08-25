@@ -190,9 +190,9 @@ impl Taper {
 
     /// Per-piece Morgan Hand Mill sections (Tip / Mid n / Butt), split at
     /// ferrule locations when the record has them, else evenly by piece
-    /// count. Each internal boundary overlaps its neighbor by one profile
-    /// point, since a builder needs a station of reference on both sides of
-    /// the ferrule joint.
+    /// count. Each internal boundary shares the two profile points bracketing
+    /// the ferrule with its neighbor, since a builder needs a station of
+    /// reference on both sides of the ferrule joint.
     pub fn mill_sections(&self, rough_allowance: f64, finish_allowance: f64) -> Vec<MillSection> {
         let profile = self.profile();
         let pieces = self.pieces.unwrap_or(1.0).round().max(1.0) as usize;
@@ -482,7 +482,12 @@ impl Taper {
             let location = loc.filter(|&v| v != 0.0)?;
             let size = size.as_deref().filter(|s| !s.is_empty() && *s != "None")?;
             let dimension_at_location = interpolate(&profile, location)?;
-            let outside_diameter_apexes = if self.const_type.as_deref() == Some("Hex") {
+            let is_hex = self
+                .const_type
+                .as_deref()
+                .map(|s| s.to_lowercase().starts_with("hex"))
+                .unwrap_or(false);
+            let outside_diameter_apexes = if is_hex {
                 Some(dimension_at_location * 2.0 / 3.0_f64.sqrt())
             } else {
                 None
@@ -700,7 +705,7 @@ fn ferrule_weight(size: &str) -> Option<f64> {
 fn geometry_factor(const_type: Option<&str>) -> (f64, f64) {
     match const_type.map(|s| s.to_lowercase()) {
         Some(s) if s.starts_with("penta") => (0.0514, 5.0),
-        Some(s) if s.starts_with("quad") => (0.0617, 4.0),
+        Some(s) if s.contains("quad") => (0.0617, 4.0),
         Some(s) if s.starts_with("hepta") => (0.0735, 7.0),
         Some(s) if s.starts_with("octa") => (0.0899, 8.0),
         _ => (0.0829, 6.0),
@@ -833,7 +838,7 @@ impl PlaningFormGeometry {
     fn for_const_type(const_type: Option<&str>) -> Option<Self> {
         match const_type.map(|s| s.to_lowercase()) {
             Some(s) if s.starts_with("hex") => Some(Self::Hex),
-            Some(s) if s.starts_with("quad") => Some(Self::Quad),
+            Some(s) if s.contains("quad") => Some(Self::Quad),
             Some(s) if s.starts_with("penta") => Some(Self::Penta),
             _ => None,
         }
@@ -1189,6 +1194,17 @@ mod tests {
             ..base.clone()
         };
         assert!((penta.planing_form_depths()[0].depth - 0.2 / 1.809753).abs() < 1e-9);
+
+        // "Two Piece Quad" carries the piece count in the const_type string;
+        // it should still be recognised as Quad geometry (contains "quad").
+        let two_piece_quad = Taper {
+            const_type: Some("Two Piece Quad".to_string()),
+            ..base.clone()
+        };
+        assert!(
+            (two_piece_quad.planing_form_depths()[0].depth - 0.1 * std::f64::consts::SQRT_2).abs()
+                < 1e-9
+        );
 
         // Unsupported geometries — RodDNA itself refuses these too.
         let rect = Taper {
