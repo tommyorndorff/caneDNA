@@ -80,10 +80,11 @@ explicit and lets us target a specific loading feel for a given grain window.
 
 ## Concrete next steps (turn this into code)
 
-- [ ] **Stress engine** in `roddna-core`: `fn stress_curve(&Taper) -> Vec<[f64;2]>`
-      (Garrison), Hex first; unit-test against a taper that ships stored `stresses`
-      (several RodDNA records have them) to validate the implementation.
-- [ ] Overlay the computed stress curve in the GUI (new plot tab alongside the taper).
+- [x] **Stress engine** in `roddna-core`: `Taper::stress_curve() -> Vec<[f64;2]>`
+      (Garrison, Hex/Quad/Penta), recovered by decompiling `RodDNA_v20.jar`;
+      unit-tested against the 58 records that ship stored `stresses` (median
+      ~6% error).
+- [x] Overlay the computed stress curve in the GUI (new "Stress" plot tab alongside the taper).
 - [ ] **Design mode**: load a seed taper, edit stations, live-recompute stress and
       grain response; scale by multiplier/bias; add/split ferrule stations.
 - [ ] Seed presets for the two target classes above.

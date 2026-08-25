@@ -5,7 +5,7 @@
 //! explorer (travel rods, spey rods, etc.).
 
 use eframe::egui;
-use egui_plot::{Legend, Line, Plot, PlotPoints};
+use egui_plot::{Bar, BarChart, Legend, Line, Plot, PlotPoint, PlotPoints, Text, VLine};
 use roddna_core::{CastingKb, Library, Taper};
 
 // Bundle the data into the binary so the app is a single self-contained file.
@@ -73,6 +73,46 @@ enum PanelView {
     Chart,
     StationData,
     MillSettings,
+    DeltaChart,
+    Stress,
+}
+
+/// Which view is active while editing a taper in design mode.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum DesignView {
+    Editor,
+    Profile,
+    Stress,
+    DeltaChart,
+    MillSettings,
+}
+
+/// An in-memory, unsaved taper edit session: a seed taper (cloned so the
+/// original library record is untouched) plus the scale/insert-station
+/// controls used to reshape it. Nothing here persists past the app session —
+/// export (a later roadmap item) is how a design leaves the app.
+struct DesignState {
+    taper: Taper,
+    /// Name of the library rod this design started from, for display only.
+    seed_name: String,
+    view: DesignView,
+    scale_multiplier: f64,
+    scale_bias: f64,
+    /// Pending station value for the "insert station" control.
+    new_station: f64,
+}
+
+impl DesignState {
+    fn new(seed: &Taper) -> Self {
+        Self {
+            taper: seed.clone(),
+            seed_name: seed.name.clone().unwrap_or_else(|| "(unnamed)".to_string()),
+            view: DesignView::Editor,
+            scale_multiplier: 1.0,
+            scale_bias: 0.0,
+            new_station: 0.0,
+        }
+    }
 }
 
 struct App {
@@ -92,6 +132,9 @@ struct App {
     rough_oversize: f64,
     finish_oversize: f64,
     split_by_piece: bool,
+    /// Active taper design/edit session, if any. When set, the central panel
+    /// shows the design UI instead of the browse/compare view.
+    design: Option<DesignState>,
 }
 
 impl App {
@@ -116,6 +159,7 @@ impl App {
             rough_oversize: 0.07,
             finish_oversize: 0.03,
             split_by_piece: false,
+            design: None,
         }
     }
 
@@ -235,6 +279,248 @@ impl App {
             self.selected.push(i);
         }
     }
+
+    /// Renders the taper design/edit session in place of the browse view.
+    fn design_panel(&mut self, ui: &mut egui::Ui) {
+        let mut discard = false;
+        if let Some(design) = self.design.as_mut() {
+            ui.horizontal(|ui| {
+                ui.heading(format!("Designing (seed: {})", design.seed_name));
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                    if ui.button("Discard design").clicked() {
+                        discard = true;
+                    }
+                });
+            });
+            ui.horizontal(|ui| {
+                ui.label("Name:");
+                ui.text_edit_singleline(design.taper.name.get_or_insert_with(String::new));
+            });
+            ui.separator();
+
+            ui.horizontal(|ui| {
+                ui.selectable_value(&mut design.view, DesignView::Editor, "Station Editor");
+                ui.selectable_value(&mut design.view, DesignView::Profile, "Profile");
+                ui.selectable_value(&mut design.view, DesignView::Stress, "Stress");
+                ui.selectable_value(&mut design.view, DesignView::DeltaChart, "Dimension Changes");
+                ui.selectable_value(&mut design.view, DesignView::MillSettings, "Mill Settings");
+            });
+            ui.add_space(4.0);
+
+            match design.view {
+                DesignView::Editor => design_editor(ui, design),
+                DesignView::Profile => {
+                    let points: PlotPoints = design.taper.profile().into_iter().collect();
+                    Plot::new("design_profile")
+                        .x_axis_label("Station (in from tip)")
+                        .y_axis_label("Flat-to-flat (in)")
+                        .height(ui.available_height() * 0.7)
+                        .show(ui, |plot_ui| {
+                            plot_ui.line(Line::new(points).name("Design"));
+                        });
+                }
+                DesignView::Stress => {
+                    let curve = design.taper.stress_curve();
+                    if curve.is_empty() {
+                        ui.label(
+                            egui::RichText::new(
+                                "No stress curve — this design is missing a required input \
+                                 (line length/cast, impact factor, bamboo density, tip weight).",
+                            )
+                            .weak(),
+                        );
+                        ui.add_space(4.0);
+                    }
+                    let points: PlotPoints = curve.into_iter().collect();
+                    Plot::new("design_stress")
+                        .x_axis_label("Station (in from tip)")
+                        .y_axis_label("Stress (psi)")
+                        .height(ui.available_height() * 0.7)
+                        .show(ui, |plot_ui| {
+                            plot_ui.line(Line::new(points).name("Design"));
+                        });
+                }
+                DesignView::DeltaChart => {
+                    let deltas = design.taper.dimension_deltas();
+                    let bars: Vec<Bar> = deltas
+                        .iter()
+                        .map(|d| Bar::new(d.station, d.delta))
+                        .collect();
+                    let line_points: PlotPoints =
+                        deltas.iter().map(|d| [d.station, d.delta]).collect();
+                    let ferrule_locations: Vec<f64> =
+                        design.taper.ferrules().iter().map(|f| f.location).collect();
+                    Plot::new("design_delta")
+                        .x_axis_label("Station (in from tip)")
+                        .y_axis_label("Dimension change (in)")
+                        .height(ui.available_height() * 0.7)
+                        .show(ui, |plot_ui| {
+                            plot_ui.bar_chart(BarChart::new(bars).name("Δ dimension").width(4.0));
+                            plot_ui.line(Line::new(line_points).name("Δ dimension"));
+                            for loc in ferrule_locations {
+                                plot_ui.vline(
+                                    VLine::new(loc)
+                                        .name("Ferrule")
+                                        .color(egui::Color32::from_rgb(200, 80, 80)),
+                                );
+                            }
+                        });
+                }
+                DesignView::MillSettings => {
+                    egui::ScrollArea::vertical()
+                        .id_salt("design_mill_settings_scroll")
+                        .max_height(ui.available_height() * 0.7)
+                        .show(ui, |ui| {
+                            mill_settings_grid(
+                                ui,
+                                "design_mill_settings",
+                                &design
+                                    .taper
+                                    .mill_settings(self.rough_oversize, self.finish_oversize),
+                            );
+                        });
+                }
+            }
+        }
+        if discard {
+            self.design = None;
+        }
+    }
+}
+
+/// The Station Editor tab body: scale/insert-station controls, ferrule
+/// slots, and an editable station/dimension grid.
+fn design_editor(ui: &mut egui::Ui, design: &mut DesignState) {
+    ui.horizontal(|ui| {
+        ui.label("Scale multiplier:");
+        ui.add(
+            egui::DragValue::new(&mut design.scale_multiplier)
+                .speed(0.01)
+                .range(0.1..=5.0),
+        );
+        ui.label("bias:");
+        ui.add(
+            egui::DragValue::new(&mut design.scale_bias)
+                .speed(0.001)
+                .fixed_decimals(4),
+        );
+        if ui.button("Apply scale").clicked() {
+            design.taper = design.taper.scaled(design.scale_multiplier, design.scale_bias);
+            design.scale_multiplier = 1.0;
+            design.scale_bias = 0.0;
+        }
+    });
+    ui.horizontal(|ui| {
+        ui.label("Insert station at:");
+        ui.add(
+            egui::DragValue::new(&mut design.new_station)
+                .speed(0.5)
+                .fixed_decimals(2),
+        );
+        if ui.button("Insert").clicked() {
+            design.taper.insert_station(design.new_station);
+        }
+    });
+    ui.horizontal(|ui| {
+        ui.label("Pieces:");
+        let mut pieces = design.taper.pieces.unwrap_or(1.0);
+        if ui
+            .add(egui::DragValue::new(&mut pieces).range(1.0..=6.0))
+            .changed()
+        {
+            design.taper.pieces = Some(pieces);
+        }
+    });
+
+    ui.add_space(4.0);
+    ui.label(egui::RichText::new("Ferrules (location 0 = none)").strong());
+    ferrule_row(ui, &mut design.taper, 1);
+    ferrule_row(ui, &mut design.taper, 2);
+    ferrule_row(ui, &mut design.taper, 3);
+
+    ui.add_space(8.0);
+    ui.label(egui::RichText::new("Stations").strong());
+    egui::ScrollArea::vertical()
+        .id_salt("design_editor_scroll")
+        .max_height(ui.available_height())
+        .show(ui, |ui| {
+            egui::Grid::new("design_editor_grid")
+                .striped(true)
+                .num_columns(2)
+                .show(ui, |ui| {
+                    for h in ["Station (in)", "Dimension (in)"] {
+                        ui.label(egui::RichText::new(h).strong());
+                    }
+                    ui.end_row();
+                    for (station, dimension) in design
+                        .taper
+                        .stations
+                        .iter_mut()
+                        .zip(design.taper.dimensions.iter_mut())
+                    {
+                        ui.add(egui::DragValue::new(station).speed(0.5).fixed_decimals(2));
+                        ui.add(
+                            egui::DragValue::new(dimension)
+                                .speed(0.001)
+                                .fixed_decimals(4),
+                        );
+                        ui.end_row();
+                    }
+                });
+        });
+}
+
+/// One editable ferrule slot: location, size, and a button to carve out an
+/// explicit profile point there via `Taper::insert_station`. Reads/writes the
+/// taper's fields by value around the UI closure (rather than holding field
+/// borrows) so `insert_station`'s `&mut self` can still be called at the end.
+fn ferrule_row(ui: &mut egui::Ui, taper: &mut Taper, index: usize) {
+    let (mut loc_val, mut size_val) = match index {
+        1 => (
+            taper.ferrule1_loc.unwrap_or(0.0),
+            taper.ferrule1_size.clone().unwrap_or_default(),
+        ),
+        2 => (
+            taper.ferrule2_loc.unwrap_or(0.0),
+            taper.ferrule2_size.clone().unwrap_or_default(),
+        ),
+        _ => (
+            taper.ferrule3_loc.unwrap_or(0.0),
+            taper.ferrule3_size.clone().unwrap_or_default(),
+        ),
+    };
+
+    let (mut loc_changed, mut size_changed, mut insert_clicked) = (false, false, false);
+    ui.horizontal(|ui| {
+        ui.label(format!("Ferrule {index}:"));
+        loc_changed = ui
+            .add(
+                egui::DragValue::new(&mut loc_val)
+                    .speed(0.5)
+                    .fixed_decimals(2),
+            )
+            .changed();
+        size_changed = ui.text_edit_singleline(&mut size_val).changed();
+        insert_clicked = loc_val != 0.0 && ui.button("Insert station here").clicked();
+    });
+
+    if loc_changed {
+        match index {
+            1 => taper.ferrule1_loc = Some(loc_val),
+            2 => taper.ferrule2_loc = Some(loc_val),
+            _ => taper.ferrule3_loc = Some(loc_val),
+        }
+    }
+    if size_changed {
+        match index {
+            1 => taper.ferrule1_size = Some(size_val),
+            2 => taper.ferrule2_size = Some(size_val),
+            _ => taper.ferrule3_size = Some(size_val),
+        }
+    }
+    if insert_clicked {
+        taper.insert_station(loc_val);
+    }
 }
 
 /// Distinct, sorted values from an iterator of f64.
@@ -312,6 +598,31 @@ impl eframe::App for App {
 
                 ui.separator();
 
+                ui.horizontal(|ui| {
+                    if ui
+                        .add_enabled(
+                            self.selected.len() == 1,
+                            egui::Button::new("New design from selection"),
+                        )
+                        .clicked()
+                    {
+                        self.design = Some(DesignState::new(&self.lib.models[self.selected[0]]));
+                    }
+                    // Seed preset for the decided first spey design target
+                    // (docs/SPEY_DESIGN.md): an 11' 5/6 4-piece switch spey.
+                    if let Some(seed) = self
+                        .lib
+                        .models
+                        .iter()
+                        .find(|m| m.name.as_deref() == Some("Zeitner T.M. 61105/6-4 Switch Spey"))
+                    {
+                        if ui.button("New: 11' 5/6 spey seed").clicked() {
+                            self.design = Some(DesignState::new(seed));
+                        }
+                    }
+                });
+                ui.separator();
+
                 let indices: Vec<usize> = self
                     .lib
                     .models
@@ -343,6 +654,11 @@ impl eframe::App for App {
 
         // Central panel: comparison table + overlaid taper plot.
         egui::CentralPanel::default().show(ctx, |ui| {
+            if self.design.is_some() {
+                self.design_panel(ui);
+                return;
+            }
+
             if self.selected.is_empty() {
                 ui.centered_and_justified(|ui| {
                     ui.label("Select one or more rods to overlay their tapers.");
@@ -383,6 +699,8 @@ impl eframe::App for App {
                 ui.selectable_value(&mut self.view, PanelView::Chart, "Chart");
                 ui.selectable_value(&mut self.view, PanelView::StationData, "Station Data");
                 ui.selectable_value(&mut self.view, PanelView::MillSettings, "Mill Settings");
+                ui.selectable_value(&mut self.view, PanelView::DeltaChart, "Dimension Changes");
+                ui.selectable_value(&mut self.view, PanelView::Stress, "Stress");
             });
             ui.add_space(4.0);
 
@@ -488,6 +806,89 @@ impl eframe::App for App {
                                 }
                             });
                     }
+                }
+                PanelView::DeltaChart => {
+                    if self.selected.len() != 1 {
+                        ui.label(
+                            "Select exactly one rod to view station-to-station dimension changes.",
+                        );
+                    } else {
+                        let t = &self.lib.models[self.selected[0]];
+                        let deltas = t.dimension_deltas();
+                        let bars: Vec<Bar> = deltas
+                            .iter()
+                            .map(|d| Bar::new(d.station, d.delta).name(format!("{:.2}\"", d.station)))
+                            .collect();
+                        let line_points: PlotPoints =
+                            deltas.iter().map(|d| [d.station, d.delta]).collect();
+                        let ferrule_locations: Vec<f64> =
+                            t.ferrules().iter().map(|f| f.location).collect();
+                        Plot::new("delta")
+                            .legend(Legend::default())
+                            .x_axis_label("Station (in from tip)")
+                            .y_axis_label("Dimension change (in)")
+                            .height(ui.available_height() * 0.7)
+                            .show(ui, |plot_ui| {
+                                plot_ui.bar_chart(BarChart::new(bars).name("Δ dimension").width(4.0));
+                                plot_ui.line(Line::new(line_points).name("Δ dimension"));
+                                for d in &deltas {
+                                    plot_ui.text(Text::new(
+                                        PlotPoint::new(d.station, d.delta),
+                                        format!("{:.3}", d.delta),
+                                    ));
+                                }
+                                for loc in ferrule_locations {
+                                    plot_ui.vline(
+                                        VLine::new(loc)
+                                            .name("Ferrule")
+                                            .color(egui::Color32::from_rgb(200, 80, 80)),
+                                    );
+                                }
+                            });
+                    }
+                }
+                PanelView::Stress => {
+                    // Overlaid Garrison stress curves, same idiom as the
+                    // Chart tab. Rods missing a required input (line
+                    // weight/length/cast, impact factor, bamboo density, tip
+                    // weight) contribute no line rather than erroring — flag
+                    // them explicitly so an empty plot doesn't look broken.
+                    let missing: Vec<&str> = self
+                        .selected
+                        .iter()
+                        .map(|&i| &self.lib.models[i])
+                        .filter(|t| t.stress_curve().is_empty())
+                        .map(|t| t.name.as_deref().unwrap_or("(unnamed)"))
+                        .collect();
+                    if !missing.is_empty() {
+                        ui.label(
+                            egui::RichText::new(format!(
+                                "No stress curve for: {} — this source library doesn't carry the \
+                                 physics inputs (line length/cast, impact factor, bamboo density, \
+                                 tip weight) the model needs. Only RodDNA-sourced records have them.",
+                                missing.join(", ")
+                            ))
+                            .weak(),
+                        );
+                        ui.add_space(4.0);
+                    }
+                    Plot::new("stress")
+                        .legend(Legend::default())
+                        .x_axis_label("Station (in from tip)")
+                        .y_axis_label("Stress (psi)")
+                        .height(ui.available_height() * 0.7)
+                        .show(ui, |plot_ui| {
+                            for &i in &self.selected {
+                                let t = &self.lib.models[i];
+                                let curve = t.stress_curve();
+                                if curve.is_empty() {
+                                    continue;
+                                }
+                                let name = t.name.clone().unwrap_or_else(|| format!("model {i}"));
+                                let points: PlotPoints = curve.into_iter().collect();
+                                plot_ui.line(Line::new(points).name(name));
+                            }
+                        });
                 }
             }
 
