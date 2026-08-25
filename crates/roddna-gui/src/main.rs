@@ -300,6 +300,7 @@ impl App {
                 ui.label("Name:");
                 ui.text_edit_singleline(design.taper.name.get_or_insert_with(String::new));
             });
+            export_buttons(ui, &design.taper);
             ui.separator();
 
             ui.horizontal(|ui| {
@@ -549,6 +550,75 @@ fn fmt_len(inches: Option<f64>) -> String {
 /// Format inches as a 64ths-of-an-inch fraction, e.g. 0.208 -> "13.3/64".
 fn format_64ths(inches: f64) -> String {
     format!("{:.1}/64", inches * 64.0)
+}
+
+/// A filesystem/URL-safe stem for an export filename, derived from the
+/// taper's name (or a fallback for unnamed tapers).
+fn export_filename_stem(taper: &Taper) -> String {
+    let name = taper.name.as_deref().unwrap_or("taper");
+    let stem: String = name
+        .chars()
+        .map(|c| if c.is_alphanumeric() { c } else { '_' })
+        .collect();
+    if stem.is_empty() {
+        "taper".to_string()
+    } else {
+        stem
+    }
+}
+
+/// Saves `contents` to disk via a native save-file dialog. Silently does
+/// nothing if the user cancels the dialog.
+#[cfg(not(target_arch = "wasm32"))]
+fn save_export(filename: &str, contents: &str) {
+    if let Some(path) = rfd::FileDialog::new().set_file_name(filename).save_file() {
+        if let Err(e) = std::fs::write(&path, contents) {
+            eprintln!("failed to write {path:?}: {e}");
+        }
+    }
+}
+
+/// Triggers a browser download of `contents` via a Blob + temporary anchor
+/// click, the standard way to save a file client-side with no backend.
+#[cfg(target_arch = "wasm32")]
+fn save_export(filename: &str, contents: &str) {
+    use eframe::wasm_bindgen::{JsCast, JsValue};
+    use web_sys::{Blob, BlobPropertyBag, HtmlAnchorElement, Url};
+
+    let parts = js_sys::Array::new();
+    parts.push(&JsValue::from_str(contents));
+    let opts = BlobPropertyBag::new();
+    opts.set_type("text/plain");
+    let Ok(blob) = Blob::new_with_str_sequence_and_options(&parts, &opts) else {
+        return;
+    };
+    let Ok(url) = Url::create_object_url_with_blob(&blob) else {
+        return;
+    };
+    if let Some(document) = web_sys::window().and_then(|w| w.document()) {
+        if let Ok(el) = document.create_element("a") {
+            if let Ok(anchor) = el.dyn_into::<HtmlAnchorElement>() {
+                anchor.set_href(&url);
+                anchor.set_download(filename);
+                anchor.click();
+            }
+        }
+    }
+    let _ = Url::revoke_object_url(&url);
+}
+
+/// Export buttons for a taper (library rod or design-mode edit), shared by
+/// both the browse detail view and the design panel.
+fn export_buttons(ui: &mut egui::Ui, taper: &Taper) {
+    let stem = export_filename_stem(taper);
+    ui.horizontal(|ui| {
+        if ui.button("Export CSV").clicked() {
+            save_export(&format!("{stem}.csv"), &taper.to_csv());
+        }
+        if ui.button("Export station file").clicked() {
+            save_export(&format!("{stem}_stations.txt"), &taper.to_station_file());
+        }
+    });
 }
 
 impl eframe::App for App {
@@ -1022,6 +1092,8 @@ impl eframe::App for App {
                         }
                         self.ferrules_section(ui, taper);
                         self.casting_notes(ui, taper);
+                        ui.separator();
+                        export_buttons(ui, taper);
                     });
             }
         });
