@@ -59,9 +59,9 @@ fn main() {
         if let Some(el) = document.get_element_by_id("loading_text") {
             match result {
                 Ok(_) => el.remove(),
-                Err(e) => el.set_inner_html(&format!(
-                    "<p style='color:#b00'>Failed to start: {e:?}</p>"
-                )),
+                Err(e) => {
+                    el.set_inner_html(&format!("<p style='color:#b00'>Failed to start: {e:?}</p>"))
+                }
             }
         }
     });
@@ -263,7 +263,12 @@ impl eframe::App for App {
                     });
 
                 ui.horizontal(|ui| {
-                    combo_opt(ui, "Line wt", &mut self.line_weight_filter, &self.line_weights);
+                    combo_opt(
+                        ui,
+                        "Line wt",
+                        &mut self.line_weight_filter,
+                        &self.line_weights,
+                    );
                     combo_opt(ui, "Pieces", &mut self.pieces_filter, &self.piece_counts);
                 });
 
@@ -278,7 +283,11 @@ impl eframe::App for App {
                     .map(|(i, _)| i)
                     .collect();
 
-                ui.label(format!("{} of {} rods", indices.len(), self.lib.models.len()));
+                ui.label(format!(
+                    "{} of {} rods",
+                    indices.len(),
+                    self.lib.models.len()
+                ));
 
                 egui::ScrollArea::vertical().show(ui, |ui| {
                     for i in indices {
@@ -364,6 +373,7 @@ impl eframe::App for App {
                     } else {
                         let t = &self.lib.models[self.selected[0]];
                         egui::ScrollArea::vertical()
+                            .id_salt("station_data_scroll")
                             .max_height(ui.available_height() * 0.7)
                             .show(ui, |ui| {
                                 egui::Grid::new("station_data")
@@ -404,6 +414,7 @@ impl eframe::App for App {
                         });
                         ui.add_space(4.0);
                         egui::ScrollArea::vertical()
+                            .id_salt("mill_settings_scroll")
                             .max_height(ui.available_height() * 0.7)
                             .show(ui, |ui| {
                                 egui::Grid::new("mill_settings")
@@ -423,9 +434,10 @@ impl eframe::App for App {
                                             ui.label(egui::RichText::new(h).strong());
                                         }
                                         ui.end_row();
-                                        for m in
-                                            t.mill_settings(self.rough_oversize, self.finish_oversize)
-                                        {
+                                        for m in t.mill_settings(
+                                            self.rough_oversize,
+                                            self.finish_oversize,
+                                        ) {
                                             ui.label(format!("{:.2}", m.station));
                                             ui.label(format!("#{}", m.anvil_number));
                                             ui.label(format!("{:.4}", m.dimension));
@@ -445,16 +457,18 @@ impl eframe::App for App {
             // Notes + casting feedback only make sense for a single rod.
             if self.selected.len() == 1 {
                 let taper = &self.lib.models[self.selected[0]];
-                egui::ScrollArea::vertical().show(ui, |ui| {
-                    if let Some(notes) = taper.notes.as_deref() {
-                        if !notes.is_empty() {
-                            ui.separator();
-                            ui.label(egui::RichText::new("Notes").strong());
-                            ui.label(notes);
+                egui::ScrollArea::vertical()
+                    .id_salt("notes_scroll")
+                    .show(ui, |ui| {
+                        if let Some(notes) = taper.notes.as_deref() {
+                            if !notes.is_empty() {
+                                ui.separator();
+                                ui.label(egui::RichText::new("Notes").strong());
+                                ui.label(notes);
+                            }
                         }
-                    }
-                    self.casting_notes(ui, taper);
-                });
+                        self.casting_notes(ui, taper);
+                    });
             }
         });
     }
