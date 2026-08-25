@@ -1129,7 +1129,7 @@ fn mill_settings_grid(ui: &mut egui::Ui, grid_id: &str, settings: &[roddna_core:
                 "Station",
                 "Anvil #",
                 "Dimension",
-                "Half",
+                "Strip Depth",
                 "Rough Oversize",
                 "Finish Oversize",
                 "Finish+Enamel",
@@ -1142,7 +1142,7 @@ fn mill_settings_grid(ui: &mut egui::Ui, grid_id: &str, settings: &[roddna_core:
                 ui.label(format!("{:.2}", m.station));
                 ui.label(format!("#{}", m.anvil_number));
                 ui.label(format!("{:.4}", m.dimension));
-                ui.label(format!("{:.4}", m.half_dimension));
+                ui.label(format!("{:.4}", m.strip_depth));
                 ui.label(format!("{:.4}", m.rough_oversize));
                 ui.label(format!("{:.4}", m.finish_oversize));
                 ui.label(format!("{:.4}", m.finish_enamel));

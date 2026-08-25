@@ -29,7 +29,7 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
 | Versioned releases + artifacts | ❌ | ✅ | Conventional Commits → release-please, native + WASM builds |
 | Customers / vendors / rods DBs | ✅ | ⛔ | Business-management side; not a goal |
 | Network / chat / registration | ✅ | ⛔ | Obsolete; not a goal |
-| Morgan Hand Mill (MHM) settings | ✅ | ✅ | caneDNA computes MHM dial settings natively (adjustable rough/finish oversize allowances) rather than replicating RodDNA's printed report format |
+| Morgan Hand Mill (MHM) settings | ✅ | ✅ | caneDNA computes MHM dial settings natively (adjustable rough/finish oversize allowances) rather than replicating RodDNA's printed report format. Strip depth is per-geometry (Hex/Quad/Penta), matching RodDNA's `PrintMHMSettings` — see roadmap #7 |
 | **Dimension-change (delta) chart** | ❌ | ✅ | hexrod.net-style bar+line chart of station-to-station dimension change every 5", with ferrule-location markers |
 
 ## Gap-driven roadmap (priority order)
@@ -90,15 +90,19 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
    dimension (bar chart, one bar per 5" span, with a connecting line and
    value labels), plus vertical markers for each `Taper::ferrules()` location
    — hexrod.net's "Dimension Changes Every 5 Inches" report is the reference.
-7. **Mine the decompiled RodDNA app for Mill-Settings ideas** — while
-   decompiling `RodDNA_v20.jar` (buried in `RodDNAInstaller.jar` →
-   `data/RodDNA_v20.zip` → `RodDNA.jar`, via `cfr-decompiler`) for #1's stress
-   formula, we saw `com/tusoni/RodDNA/models/` but didn't dig for Mill-Settings
-   logic beyond what `Taper::mill_settings`/`mill_sections` already replicate —
-   e.g. other allowance presets, printed-report layout worth matching, or
-   per-geometry (Quad/Penta) anvil conventions we haven't modeled.
-   Research-only: nothing here is committed (the decompiled sources live
-   outside the repo), this just tells us whether `roddna-gui`'s Mill Settings
-   tab is missing anything RodDNA's did.
+7. ✅ **Mine the decompiled RodDNA app for Mill-Settings ideas** — read
+   `com.tusoni.RodDNA.printing.PrintMHMSettings` (decompiled from
+   `RodDNA_v20.jar`). Finding: RodDNA's MHM "Strip Dim" column is the **same
+   per-geometry strip-depth conversion** its planing-form report uses (Hex
+   `dim/2`, Quad `dim·√2/2`, Penta `dim/1.809753`) — but caneDNA's
+   `settings_for_points` was using `dim/2` for **all** geometries, understating
+   the strip depth for the 60 Quad/Penta rods (~7% of the library). Fixed:
+   mill settings now reuse `PlaningFormGeometry::depth` (fall back to `dim/2`
+   for hepta/octa/rect/unspecified). Deliberately **not** ported: RodDNA has no
+   rough/finish-allowance concept (it uses bias·multiplier instead — caneDNA
+   keeps the richer Morgan-taper-sheet allowance model), and its JFreeReport
+   PDF layout (station-# countdown, extrapolated run-out rows) is presentation,
+   not a computation gap. Research-only otherwise: the decompiled sources live
+   outside the repo.
 
 These are reflected in the README roadmap.

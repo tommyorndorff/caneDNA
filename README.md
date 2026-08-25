@@ -162,10 +162,13 @@ feature matrix. Gap-driven order:
    Blob. A printable/PDF sheet remains a later item.
 6. _Done_ — **Dimension-change (delta) chart** — hexrod.net-style bar+line view of
    station-to-station dimension change with ferrule markers.
-7. **Mine decompiled RodDNA for Mill-Settings ideas** — check the RodDNA app
-   internals (decompiled for the stress-formula work in #1) for Morgan Hand
-   Mill logic beyond what `Taper::mill_settings`/`mill_sections` already
-   replicate.
+7. _Done_ — **Mined decompiled RodDNA for Mill-Settings ideas**: RodDNA's MHM
+   "Strip Dim" uses the same per-geometry strip-depth conversion as its
+   planing-form report, so `Taper::mill_settings`/`mill_sections` now compute
+   strip depth per geometry (Hex/Quad/Penta) instead of a flat `dimension/2`,
+   correcting the 60 Quad/Penta rods. RodDNA's bias·multiplier model and PDF
+   report layout were intentionally not adopted (caneDNA keeps its richer
+   rough/finish-allowance model).
 
 ### Design focus: trout-spey tapers
 
