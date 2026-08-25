@@ -148,7 +148,9 @@ feature matrix. Gap-driven order:
    deflected rod shape + stress-vs-station graphs from adjustable MOE/impact-factor inputs.
 2. **Taper design/edit mode** — edit stations, scale (multiplier/bias), add/split
    ferrule stations.
-3. **Planing-form settings** (60° form depths per geometry).
+3. _Done_ — **Planing-form settings** — `Taper::planing_form_depths()` reconstructs
+   RodDNA's per-geometry V-groove depth formula (Hex/Quad/Penta, recovered by
+   decompiling `RodDNA_v20.jar`).
 4. **Guide-spacing calculator.**
 5. **Export** — CSV + Hexrod-style station file; later a printable/PDF sheet.
 6. _Done_ — **Dimension-change (delta) chart** — hexrod.net-style bar+line view of
