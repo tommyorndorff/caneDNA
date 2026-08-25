@@ -331,6 +331,86 @@ impl Taper {
             .collect()
     }
 
+    /// Guide placements from a static-deflection calculator: marching from
+    /// the tip, each span is the longest run that keeps the rod's own
+    /// self-weight sag at midspan under `params.max_sag_in`, treating the
+    /// span as a simply-supported beam under uniform load (the standard
+    /// `5wL⁴/384EI` beam formula). Spacing grows toward the butt because the
+    /// rod gets stiffer there.
+    ///
+    /// This is an original caneDNA calculator, not a RodDNA port: investigating
+    /// RodDNA's own "guide spacing" feature (decompiling
+    /// `com.tusoni.RodDNA.models.ModelsDialog`/`GuidesXML`) found it's a
+    /// bundled lookup table keyed by piece count and floor-matched rod
+    /// length, not a physics calculation — nothing to port faithfully, and
+    /// the library's stored `guide_spacings` on 49 records can diverge from
+    /// even that table (apparent hand-edits), so they aren't a reliable
+    /// validation oracle either. This implementation is a genuine
+    /// static-deflection method instead.
+    ///
+    /// Simplifying assumptions (this is a design aid, not a precision
+    /// instrument):
+    /// - The cross-section is treated as an equivalent solid circular rod of
+    ///   the same inradius (`dimension / 2`) for its bending stiffness
+    ///   (`I = π/4 · r⁴`), rather than the exact hex/quad/penta section — a
+    ///   common simplification for guide-spacing rules of thumb.
+    /// - Cross-sectional area uses the same `0.866 · dimension²` hex-area
+    ///   coefficient `stress_curve` already applies to every geometry.
+    /// - `params.modulus_psi` (bamboo's modulus of elasticity) isn't a stored
+    ///   per-taper field — real cane varies roughly 3–6 million psi; the
+    ///   default is a commonly cited average, adjustable by the caller.
+    /// - `self.bamboo_density` is used when present, else the same 0.668
+    ///   lb/in³ fallback `stress_curve`'s validation set is built on.
+    ///
+    /// Stops at `action_length` (the working/flexing length, excluding the
+    /// handle) if present, else the profile's last station. Returns an empty
+    /// vec if the taper has no profile.
+    pub fn guide_spacing(&self, params: &GuideSpacingParams) -> Vec<GuidePlacement> {
+        let profile = self.profile();
+        if profile.len() < 2 {
+            return Vec::new();
+        }
+        let action_length = self
+            .action_length
+            .filter(|&l| l > 0.0)
+            .unwrap_or_else(|| profile.last().unwrap()[0]);
+        let density = self.bamboo_density.unwrap_or(0.668);
+
+        let mut placements = vec![GuidePlacement {
+            station: 0.0,
+            span_from_previous: 0.0,
+        }];
+        let mut position = 0.0;
+        // A generous cap on iterations, not a target: guards against a
+        // pathological taper (near-zero dimension) looping forever rather
+        // than limiting normal output, which typically needs 8-12 guides.
+        for _ in 0..500 {
+            if position >= action_length {
+                break;
+            }
+            let dimension = interpolate(&profile, position).unwrap_or(0.0);
+            let radius = dimension / 2.0;
+            let moment_of_inertia = std::f64::consts::PI / 4.0 * radius.powi(4);
+            let area = dimension * dimension * 0.866;
+            let unit_weight = area * density;
+            if moment_of_inertia <= 0.0 || unit_weight <= 0.0 {
+                break;
+            }
+            let span = (384.0 * params.modulus_psi * moment_of_inertia * params.max_sag_in
+                / (5.0 * unit_weight))
+                .powf(0.25);
+            // Floor avoids a degenerate near-zero step from an extreme
+            // input; cap prevents overshooting the working length.
+            let span = span.max(0.5).min(action_length - position);
+            position += span;
+            placements.push(GuidePlacement {
+                station: position,
+                span_from_previous: span,
+            });
+        }
+        placements
+    }
+
     /// Ferrule size/type/location info for each ferrule slot that's actually
     /// set. Unused slots are stored as `0.0` location / `"None"` size rather
     /// than `null`, so those placeholders are skipped rather than shown.
@@ -701,6 +781,34 @@ impl PlaningFormGeometry {
     }
 }
 
+/// Tunable inputs to `Taper::guide_spacing`'s static-deflection calculator.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct GuideSpacingParams {
+    /// Bamboo modulus of elasticity, psi. Real cane varies roughly
+    /// 3,000,000-6,000,000; the default is a commonly cited average.
+    pub modulus_psi: f64,
+    /// Maximum self-weight sag tolerated at midspan before a guide is
+    /// placed, in inches.
+    pub max_sag_in: f64,
+}
+
+impl Default for GuideSpacingParams {
+    fn default() -> Self {
+        Self {
+            modulus_psi: 4_000_000.0,
+            max_sag_in: 0.1,
+        }
+    }
+}
+
+/// One guide's position from `Taper::guide_spacing`. The first entry is
+/// always `station: 0.0` (the tip-top); `span_from_previous` is `0.0` for it.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct GuidePlacement {
+    pub station: f64,
+    pub span_from_previous: f64,
+}
+
 /// Ferrule size/type/location info for one ferrule on a taper.
 #[derive(Debug, Clone, PartialEq)]
 pub struct FerruleInfo {
@@ -1040,6 +1148,64 @@ mod tests {
         };
         // 0.2/2 + 0.01*2.0 == 0.12
         assert!((t.planing_form_depths()[0].depth - 0.12).abs() < 1e-9);
+    }
+
+    #[test]
+    fn guide_spacing_matches_hand_computed_span_for_constant_dimension() {
+        // A constant-dimension rod has constant stiffness, so the beam
+        // formula gives the same span at every step; hand-computed with
+        // params defaults (E=4e6 psi, max_sag=0.1") and density=0.668:
+        // r=0.1, I=pi/4*r^4, area=0.2^2*0.866, w=area*density,
+        // span=(384*E*I*0.1/(5*w))^0.25 ~= 17.9696".
+        let t = Taper {
+            stations: vec![0.0, 200.0],
+            dimensions: vec![0.2, 0.2],
+            action_length: Some(90.0),
+            bamboo_density: Some(0.668),
+            ..Default::default()
+        };
+        let placements = t.guide_spacing(&GuideSpacingParams::default());
+        assert_eq!(placements[0].station, 0.0);
+        assert_eq!(placements[0].span_from_previous, 0.0);
+        assert!(placements.len() > 2);
+        // All but the last span should match the hand-computed value; the
+        // last is clipped to whatever's left before action_length.
+        for p in &placements[1..placements.len() - 1] {
+            assert!((p.span_from_previous - 17.96963214235976).abs() < 1e-6);
+        }
+        assert!(placements.last().unwrap().station <= 90.0);
+    }
+
+    #[test]
+    fn guide_spacing_grows_toward_the_stiffer_butt() {
+        let t = Taper {
+            stations: vec![0.0, 30.0, 60.0, 90.0],
+            dimensions: vec![0.08, 0.15, 0.22, 0.3],
+            action_length: Some(90.0),
+            bamboo_density: Some(0.668),
+            ..Default::default()
+        };
+        let placements = t.guide_spacing(&GuideSpacingParams::default());
+        let spans: Vec<f64> = placements[1..]
+            .iter()
+            .map(|p| p.span_from_previous)
+            .collect();
+        assert!(spans.len() > 2, "expected more than two guide spans");
+        // Excludes the last span: it's clipped to whatever distance remains
+        // before action_length, which can be shorter than the natural span.
+        for w in spans[..spans.len() - 1].windows(2) {
+            assert!(
+                w[1] + 1e-9 >= w[0],
+                "spans should be non-decreasing toward the butt: {spans:?}"
+            );
+        }
+        assert!(placements.iter().all(|p| p.station <= 90.0 + 1e-9));
+    }
+
+    #[test]
+    fn guide_spacing_returns_empty_for_a_taper_with_no_profile() {
+        let t = Taper::default();
+        assert!(t.guide_spacing(&GuideSpacingParams::default()).is_empty());
     }
 
     #[test]

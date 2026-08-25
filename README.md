@@ -146,12 +146,17 @@ feature matrix. Gap-driven order:
    records that ship stored stresses. Foundation for taper design. Not yet done:
    extending to a full **casting deflection analysis** (hexrod.net-style):
    deflected rod shape + stress-vs-station graphs from adjustable MOE/impact-factor inputs.
-2. **Taper design/edit mode** — edit stations, scale (multiplier/bias), add/split
-   ferrule stations.
-3. _Done_ — **Planing-form settings** — `Taper::planing_form_depths()` reconstructs
-   RodDNA's per-geometry V-groove depth formula (Hex/Quad/Penta, recovered by
-   decompiling `RodDNA_v20.jar`).
-4. **Guide-spacing calculator.**
+2. _Done_ — **Taper design/edit mode** — an in-memory design session (GUI):
+   clone a seed taper, edit stations, apply scale (`Taper::scaled`), insert
+   ferrule stations (`Taper::insert_station`), with live-recomputed
+   Profile/Stress/Dimension Changes/Mill Settings.
+3. _Done_ — **Planing-form settings** — `Taper::planing_form_depths()`
+   reconstructs RodDNA's per-geometry V-groove depth formula (Hex/Quad/Penta,
+   recovered by decompiling `RodDNA_v20.jar`).
+4. _Done_ — **Guide-spacing calculator** — RodDNA's own feature turned out to
+   be a lookup table, not a formula, so `Taper::guide_spacing()` is an
+   original static-deflection calculator instead: spacing grows toward the
+   butt as the rod's self-weight sag under an adjustable threshold allows.
 5. **Export** — CSV + Hexrod-style station file; later a printable/PDF sheet.
 6. _Done_ — **Dimension-change (delta) chart** — hexrod.net-style bar+line view of
    station-to-station dimension change with ferrule markers.

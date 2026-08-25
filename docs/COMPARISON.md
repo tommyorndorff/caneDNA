@@ -18,7 +18,7 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
 | **Stress curves** (Garrison) | ✅ | ✅ | `Taper::stress_curve()` reconstructs RodDNA's own casting-load model (recovered by decompiling `RodDNA_v20.jar`); median ~6% relative error against the 58 records that ship stored stresses. A GUI "Stress" tab overlays it like the Chart tab |
 | Taper editing / transforms | ✅ | ❌ | RodDNA: linear taper, station&dimensions, dimensions-only, station multiplier/bias |
 | **Planing-form settings** (60° form depths) | ✅ | ✅ | `Taper::planing_form_depths()` reconstructs RodDNA's own per-geometry depth formula (Hex/Quad/Penta, recovered by decompiling `RodDNA_v20.jar`'s `PrintPlaningFormSettings`). A GUI "Planing Form" tab shows station/dimension/depth for the selected rod |
-| **Guide spacing** calc + report | ✅ | ❌ | Data carries guide fields; no calculator yet |
+| **Guide spacing** calc + report | 🟡 | ✅ | `Taper::guide_spacing()` is an original static-deflection calculator (RodDNA's own "guide spacing" turned out to be a lookup table, not a formula — see roadmap #4). A GUI "Guide Spacing" tab shows the computed placements next to any stored `guide_spacings` for comparison |
 | Ferrule sizing / placement | ✅ | 🟡 | Fields captured & shown; no sizing logic |
 | Multi-geometry (Hex/Penta/Quad/Rect) | ✅ | 🟡 | Data carries `const_type`; plotting is flat-to-flat (geometry-agnostic). Stress/planing will need geometry |
 | Reports / print / PDF export | ✅ | ❌ | RodDNA uses iText/JFreeReport; caneDNA has no taper export yet |
@@ -48,8 +48,12 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
    curvature, driven by adjustable modulus-of-elasticity and impact-factor
    inputs, visualized as a deflected rod shape) — a natural follow-up once
    design mode (#2) needs it.
-2. **Taper design/edit mode** — edit stations, apply scale (multiplier/bias), and
-   add/split ferrule stations. Enables designing new tapers (see `SPEY_DESIGN.md`).
+2. ✅ **Taper design/edit mode** — an in-memory `DesignState` session (GUI): clone
+   a seed taper (or start from the decided spey target), edit stations, apply
+   scale (`Taper::scaled`), and insert ferrule stations (`Taper::insert_station`)
+   with live-recomputed Profile/Stress/Dimension Changes/Mill Settings tabs.
+   Nothing persists past the session — export (#5) is how a design leaves the
+   app. Enables designing new tapers (see `SPEY_DESIGN.md`).
 3. ✅ **Planing-form settings** — `Taper::planing_form_depths()` reconstructs
    RodDNA's per-geometry V-groove depth formula, recovered by decompiling
    `PrintPlaningFormSettings` from `RodDNA_v20.jar`: Hex is the inradius
@@ -61,7 +65,17 @@ Legend: ✅ have · 🟡 partial · ❌ gap · ⛔ intentionally out of scope
    stress calc). No stored ground truth exists to validate against, unlike
    stress curves — tests check the formula transcription, not real builder
    data. A GUI "Planing Form" tab shows station/dimension/depth.
-4. **Guide-spacing calculator** — from length/line/# guides, with a static-deflection option.
+4. ✅ **Guide-spacing calculator** — investigating RodDNA's own "guide spacing"
+   feature (decompiling `ModelsDialog`/`GuidesXML`) found it's a bundled lookup
+   table keyed by piece count and floor-matched rod length, not a formula —
+   and the library's stored `guide_spacings` on 49 records can diverge from
+   even that table (apparent hand-edits), so there's nothing reliable to port
+   or validate against. `Taper::guide_spacing()` is instead an original
+   static-deflection calculator: marching from the tip, each span is the
+   longest run that keeps the rod's own self-weight sag under an adjustable
+   threshold (standard simply-supported-beam formula, treating the local
+   cross-section as an equivalent solid circle). A GUI "Guide Spacing" tab
+   shows the computed placements next to any stored `guide_spacings`.
 5. **Export** — CSV + a Hexrod-style station file; later a printable/PDF sheet.
 6. ✅ **Dimension-change (delta) chart** — a view alongside Chart/Station
    Data/Mill Settings showing the station-to-station change in flat-to-flat

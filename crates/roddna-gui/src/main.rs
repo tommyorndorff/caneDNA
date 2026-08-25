@@ -6,7 +6,7 @@
 
 use eframe::egui;
 use egui_plot::{Bar, BarChart, Legend, Line, Plot, PlotPoint, PlotPoints, Text, VLine};
-use roddna_core::{CastingKb, Library, Taper};
+use roddna_core::{CastingKb, GuideSpacingParams, Library, Taper};
 
 // Bundle the data into the binary so the app is a single self-contained file.
 const TAPERS_JSON: &str = include_str!("../../../data/tapers.json");
@@ -76,6 +76,7 @@ enum PanelView {
     DeltaChart,
     Stress,
     PlaningForm,
+    GuideSpacing,
 }
 
 /// Which view is active while editing a taper in design mode.
@@ -133,6 +134,7 @@ struct App {
     rough_oversize: f64,
     finish_oversize: f64,
     split_by_piece: bool,
+    guide_spacing_params: GuideSpacingParams,
     /// Active taper design/edit session, if any. When set, the central panel
     /// shows the design UI instead of the browse/compare view.
     design: Option<DesignState>,
@@ -160,6 +162,7 @@ impl App {
             rough_oversize: 0.07,
             finish_oversize: 0.03,
             split_by_piece: false,
+            guide_spacing_params: GuideSpacingParams::default(),
             design: None,
         }
     }
@@ -703,6 +706,7 @@ impl eframe::App for App {
                 ui.selectable_value(&mut self.view, PanelView::DeltaChart, "Dimension Changes");
                 ui.selectable_value(&mut self.view, PanelView::Stress, "Stress");
                 ui.selectable_value(&mut self.view, PanelView::PlaningForm, "Planing Form");
+                ui.selectable_value(&mut self.view, PanelView::GuideSpacing, "Guide Spacing");
             });
             ui.add_space(4.0);
 
@@ -928,6 +932,76 @@ impl eframe::App for App {
                                             }
                                         });
                                 });
+                        }
+                    }
+                }
+                PanelView::GuideSpacing => {
+                    if self.selected.len() != 1 {
+                        ui.label("Select exactly one rod to view guide spacing.");
+                    } else {
+                        let t = &self.lib.models[self.selected[0]];
+                        ui.horizontal(|ui| {
+                            ui.label("Modulus (psi):");
+                            ui.add(
+                                egui::DragValue::new(&mut self.guide_spacing_params.modulus_psi)
+                                    .speed(50_000.0)
+                                    .range(1_000_000.0..=8_000_000.0),
+                            );
+                            ui.label("Max sag (in):");
+                            ui.add(
+                                egui::DragValue::new(&mut self.guide_spacing_params.max_sag_in)
+                                    .speed(0.005)
+                                    .range(0.01..=1.0)
+                                    .fixed_decimals(3),
+                            );
+                        });
+                        ui.label(
+                            egui::RichText::new(
+                                "Static-deflection calculator (an original caneDNA tool, not a \
+                                 RodDNA port — see Taper::guide_spacing's doc comment): each span \
+                                 is the longest run that keeps the rod's own self-weight sag under \
+                                 the limit above, so spacing grows toward the stiffer butt.",
+                            )
+                            .weak()
+                            .small(),
+                        );
+                        ui.add_space(4.0);
+                        let placements = t.guide_spacing(&self.guide_spacing_params);
+                        if placements.is_empty() {
+                            ui.label("No guide spacing — this rod has no taper profile.");
+                        } else {
+                            egui::ScrollArea::vertical()
+                                .id_salt("guide_spacing_scroll")
+                                .max_height(ui.available_height() * 0.7)
+                                .show(ui, |ui| {
+                                    egui::Grid::new("guide_spacing")
+                                        .striped(true)
+                                        .num_columns(3)
+                                        .show(ui, |ui| {
+                                            for h in ["Guide #", "Station (in)", "Span from previous (in)"]
+                                            {
+                                                ui.label(egui::RichText::new(h).strong());
+                                            }
+                                            ui.end_row();
+                                            for (i, p) in placements.iter().enumerate() {
+                                                ui.label(format!("{i}"));
+                                                ui.label(format!("{:.2}", p.station));
+                                                ui.label(format!("{:.2}", p.span_from_previous));
+                                                ui.end_row();
+                                            }
+                                        });
+                                });
+                            if !t.guide_spacings.is_empty() {
+                                ui.add_space(6.0);
+                                ui.label(
+                                    egui::RichText::new(format!(
+                                        "This record's own stored guide spacings: {:?}",
+                                        t.guide_spacings
+                                    ))
+                                    .weak()
+                                    .small(),
+                                );
+                            }
                         }
                     }
                 }
