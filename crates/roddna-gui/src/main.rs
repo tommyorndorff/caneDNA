@@ -9,7 +9,7 @@ use egui_plot::{Bar, BarChart, Legend, Line, Plot, PlotPoint, PlotPoints, Text, 
 use roddna_core::{
     CastingKb, DeflectionParams, GuideSpacingParams, Library, ModalParams, SolveParams, Taper,
 };
-use roddna_core::{ActionClass, DesignRequest};
+use roddna_core::{parse_design_request, ActionClass, DesignRequest};
 
 // Bundle the data into the binary so the app is a single self-contained file.
 const TAPERS_JSON: &str = include_str!("../../../data/tapers.json");
@@ -267,6 +267,12 @@ struct App {
     assist_len_in: f64,
     assist_pieces: f64,
     assist_action: ActionClass,
+    /// Free-text design description (offline intent parser feeds the form).
+    assist_text: String,
+    /// Seed-name filter inferred from `assist_text` (e.g. "spey"), if any.
+    assist_seed: Option<String>,
+    /// Parser feedback shown under the text box (what was understood / errors).
+    assist_msg: Option<String>,
     /// Active taper design/edit session, if any. When set, the central panel
     /// shows the design UI instead of the browse/compare view.
     design: Option<DesignState>,
@@ -305,7 +311,70 @@ impl App {
             assist_len_in: 6.0,
             assist_pieces: 2.0,
             assist_action: ActionClass::Medium,
+            assist_text: String::new(),
+            assist_seed: None,
+            assist_msg: None,
             design: None,
+        }
+    }
+
+    /// Parse the free-text description, fill the form fields, and (on success)
+    /// run the design straight into design mode. Feedback goes to `assist_msg`.
+    fn generate_from_text(&mut self) {
+        let text = self.assist_text.clone();
+        let Some(p) = parse_design_request(&text) else {
+            self.assist_seed = None;
+            self.assist_msg = Some(
+                "Couldn't read that. Try e.g. \"a soft 5-wt 7'6\\\" 2-piece\" \
+                 or \"trout spey for dries and wets\"."
+                    .to_string(),
+            );
+            return;
+        };
+
+        // Mirror the parse into the manual controls so it's editable.
+        self.assist_line_weight = p.request.line_weight;
+        self.assist_len_ft = (p.request.length_in / 12.0).floor();
+        self.assist_len_in = p.request.length_in - self.assist_len_ft * 12.0;
+        self.assist_pieces = p.request.pieces;
+        self.assist_action = p.request.action;
+        self.assist_seed = p.seed_contains.clone();
+
+        let ft = (p.request.length_in / 12.0).floor() as i64;
+        let rem = p.request.length_in - (ft as f64) * 12.0;
+        let len = if rem.abs() < 0.05 {
+            format!("{ft}'")
+        } else {
+            format!("{ft}'{rem:.0}\"")
+        };
+        let mut msg = format!(
+            "Understood: {:.0}-wt, {len}, {:.0}-piece, {}",
+            p.request.line_weight,
+            p.request.pieces,
+            p.request.action.label()
+        );
+        if let Some(seed) = &p.seed_contains {
+            msg.push_str(&format!("; seeds: {seed}"));
+        }
+        if !p.notes.is_empty() {
+            msg.push_str(&format!(" ({})", p.notes.join(", ")));
+        }
+
+        match self
+            .lib
+            .design_filtered(&p.request, p.seed_contains.as_deref(), &self.modal_params)
+        {
+            Some(result) => {
+                let mut ds = DesignState::new(&result.taper);
+                ds.seed_name = result.seed_name;
+                ds.rationale = Some(result.rationale);
+                self.design = Some(ds);
+                self.assist_msg = Some(msg);
+            }
+            None => {
+                msg.push_str(" — but no matching seed was found. Adjust and try Design →.");
+                self.assist_msg = Some(msg);
+            }
         }
     }
 
@@ -952,6 +1021,33 @@ impl eframe::App for App {
                 egui::CollapsingHeader::new("Design assistant")
                     .default_open(false)
                     .show(ui, |ui| {
+                        // Free-text intent: an offline parser (roddna-core) fills
+                        // the form below and runs the design in one step. No
+                        // network — works the same native and on the web build.
+                        ui.label(
+                            egui::RichText::new("Describe the rod you want")
+                                .color(palette::MUTED),
+                        );
+                        ui.add(
+                            egui::TextEdit::multiline(&mut self.assist_text)
+                                .desired_rows(2)
+                                .desired_width(f32::INFINITY)
+                                .hint_text(
+                                    "e.g. a trout spey for dries and wets, not streamers",
+                                ),
+                        );
+                        if ui.button("Generate from description").clicked() {
+                            self.generate_from_text();
+                        }
+                        if let Some(msg) = &self.assist_msg {
+                            ui.add_space(2.0);
+                            ui.label(egui::RichText::new(msg).small().color(palette::STEEL));
+                        }
+                        ui.add_space(4.0);
+                        ui.separator();
+                        ui.label(
+                            egui::RichText::new("…or set it by hand").color(palette::MUTED),
+                        );
                         egui::Grid::new("assist_grid").num_columns(2).show(ui, |ui| {
                             ui.label("Line wt:");
                             ui.add(
@@ -995,7 +1091,11 @@ impl eframe::App for App {
                                 pieces: self.assist_pieces,
                                 action: self.assist_action,
                             };
-                            if let Some(result) = self.lib.design(&req, &self.modal_params) {
+                            let seed = self.assist_seed.clone();
+                            if let Some(result) =
+                                self.lib
+                                    .design_filtered(&req, seed.as_deref(), &self.modal_params)
+                            {
                                 let mut ds = DesignState::new(&result.taper);
                                 ds.seed_name = result.seed_name;
                                 ds.rationale = Some(result.rationale);

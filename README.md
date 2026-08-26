@@ -156,8 +156,11 @@ for the full A→D roadmap. Landed so far:
   **Action** tab.
 - **D — design assistant** (`Library::design()`): from a spec (line wt, length,
   pieces, action) pick the closest library seed, adapt it, and explain the
-  result — the deterministic engine an LLM drives, with a GUI **Design
-  assistant** form standing in today.
+  result. The GUI **Design assistant** has a **free-text box** — type "a trout
+  spey for dries and wets, not streamers" and an offline intent parser
+  (`parse_design_request()`) fills the form and generates the taper, seeding
+  from the right family (`Library::design_filtered()`). Works on the web build
+  with no backend.
 
 ### RodDNA parity gaps → priorities
 
