@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/tommyorndorff/caneDNA/compare/v0.6.0...v0.7.0) (2026-08-26)
+
+
+### Features
+
+* stage D design assistant (+ re-land stage C onto main) ([#24](https://github.com/tommyorndorff/caneDNA/issues/24)) ([20c89c3](https://github.com/tommyorndorff/caneDNA/commit/20c89c3fab3cff84bc9d9924b7af61bba9b000c5))
+
 ## [0.6.0](https://github.com/tommyorndorff/caneDNA/compare/v0.5.0...v0.6.0) (2026-08-26)
 
 
