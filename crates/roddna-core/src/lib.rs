@@ -94,6 +94,15 @@ impl Taper {
     /// Trailing zero-dimension points are dropped: some imported sources pad
     /// fixed-size station arrays with `0.0` past the rod's real taper length,
     /// which would otherwise plot as a spurious plunge to zero.
+    ///
+    /// Trailing *repeated-dimension* padding (a `0.286, 0.286, 0.286` tail) is
+    /// deliberately **kept** here: the RodDNA-sourced records ship a stored
+    /// `stresses` array computed over exactly these padded stations, so A1
+    /// ([`stress_curve`](Self::stress_curve)) must see them to stay aligned
+    /// with that reference. The physics engines that measure the *real* rod
+    /// length (modal, deflection) strip it instead — see [`depadded`].
+    ///
+    /// [`depadded`]: Self::depadded
     pub fn profile(&self) -> Vec<[f64; 2]> {
         let mut points: Vec<[f64; 2]> = self
             .stations
@@ -105,6 +114,45 @@ impl Taper {
             points.pop();
         }
         points
+    }
+
+    /// A clone with trailing fixed-width **padding** trimmed off the station
+    /// arrays, so the profile ends at the rod's real taper length.
+    ///
+    /// Many imported sources pad past the last real station by repeating the
+    /// last dimension (e.g. `…, 0.256, 0.286, 0.286, 0.286`); left in, those
+    /// phantom inches inflate the integration length of the dynamic engines
+    /// (modal frequency, deflected shape) and make two nominally identical rods
+    /// look different. A trailing run of equal dimensions is treated as padding
+    /// **only when the taper was still increasing into it** (the point before
+    /// the run is strictly smaller) — that distinguishes real padding-at-the-max
+    /// from a genuinely uniform or intentionally cylindrical section, which is
+    /// left untouched. Trailing zeros are dropped either way.
+    ///
+    /// A1 stress deliberately does **not** use this (see [`profile`]); the new
+    /// A2/A2b engines do.
+    ///
+    /// [`profile`]: Self::profile
+    pub fn depadded(&self) -> Taper {
+        let prof = self.profile(); // trailing zeros already removed
+        let mut keep = prof.len();
+        if keep >= 2 {
+            let v = prof[keep - 1][1];
+            // Walk back over the trailing run of equal dimensions.
+            let mut k = keep - 1;
+            while k > 0 && (prof[k - 1][1] - v).abs() < 1e-9 {
+                k -= 1;
+            }
+            // Strip it only if the taper grew into the flat (padding at the
+            // max), keeping the first point of the run.
+            if k > 0 && prof[k - 1][1] < v - 1e-9 {
+                keep = k + 1;
+            }
+        }
+        let mut t = self.clone();
+        t.stations.truncate(keep);
+        t.dimensions.truncate(keep);
+        t
     }
 
     /// A clone with every dimension linearly rescaled: `d' = d * multiplier +
@@ -791,10 +839,12 @@ impl Taper {
     /// `modal_analysis`, there's no stored ground truth to validate against —
     /// it's the same validated moment field divided by a physical `EI`.
     pub fn casting_deflection(&self, params: &DeflectionParams) -> Vec<DeflectionStation> {
-        let Some(m) = self.casting_moments(Some(params.impact_factor)) else {
+        // Measure the real rod: drop fixed-width padding first (see `depadded`).
+        let this = self.depadded();
+        let Some(m) = this.casting_moments(Some(params.impact_factor)) else {
             return Vec::new();
         };
-        let (_factor, sides) = geometry_factor(self.const_type.as_deref());
+        let (_factor, sides) = geometry_factor(this.const_type.as_deref());
         let e = params.youngs_modulus_psi;
 
         // Per-inch curvature (1/in). M is in oz·in; /16 -> lbf·in so that
@@ -934,7 +984,9 @@ impl Taper {
     /// library (unlike A1's `stresses`), so this is validated by construction
     /// against the analytic prismatic-beam solution, not against real records.
     pub fn modal_analysis(&self, params: &ModalParams) -> Option<ModalAnalysis> {
-        let profile = self.profile();
+        // Measure the real rod: drop fixed-width padding first (see `depadded`).
+        let this = self.depadded();
+        let profile = this.profile();
         if profile.len() < 2 {
             return None;
         }
@@ -944,12 +996,12 @@ impl Taper {
         if length <= 0.0 {
             return None;
         }
-        let (_factor, sides) = geometry_factor(self.const_type.as_deref());
+        let (_factor, sides) = geometry_factor(this.const_type.as_deref());
 
         // Specific weight (oz/in^3) -> mass density (lbf·s²/in per in³).
         let specific_weight_oz = params
             .specific_weight_oz_in3
-            .or(self.bamboo_density)
+            .or(this.bamboo_density)
             .unwrap_or(DEFAULT_BAMBOO_SPECIFIC_WEIGHT_OZ);
         let mass_density = (specific_weight_oz / OZ_PER_LB) / GRAVITY_IN_S2;
         let youngs = params.youngs_modulus_psi;
@@ -999,7 +1051,7 @@ impl Taper {
         }
 
         // Tip point mass (line-top guide + tip section) at the free end.
-        let tip_mass = (self.tip_weight.unwrap_or(0.0) / OZ_PER_LB) / GRAVITY_IN_S2;
+        let tip_mass = (this.tip_weight.unwrap_or(0.0) / OZ_PER_LB) / GRAVITY_IN_S2;
         let (psi_tip, _) = shape(length);
         denom += tip_mass * psi_tip * psi_tip;
 
@@ -1020,7 +1072,7 @@ impl Taper {
             period_ms: 1000.0 / frequency_hz,
             effective_mass_oz: effective_mass * GRAVITY_IN_S2 * OZ_PER_LB,
             effective_stiffness_lb_in: effective_stiffness,
-            tip_mass_oz: self.tip_weight.unwrap_or(0.0),
+            tip_mass_oz: this.tip_weight.unwrap_or(0.0),
             active_length_in: length,
         })
     }
@@ -2255,6 +2307,45 @@ mod tests {
             ..params.clone()
         });
         assert!(hard[0].vertical_in > tip.vertical_in, "harder cast deflects more");
+    }
+
+    #[test]
+    fn depadded_trims_padding_but_keeps_real_flats() {
+        // Taper that grows then is padded with a repeated max value: the
+        // padding is dropped, keeping the first point of the flat run.
+        let padded = Taper {
+            stations: vec![0.0, 5.0, 10.0, 15.0, 20.0],
+            dimensions: vec![0.10, 0.15, 0.20, 0.20, 0.20],
+            ..Default::default()
+        };
+        let p = padded.depadded();
+        assert_eq!(p.dimensions, vec![0.10, 0.15, 0.20]);
+        assert_eq!(p.stations, vec![0.0, 5.0, 10.0]);
+
+        // A genuinely uniform "rod" never grew into the flat, so nothing is
+        // stripped — otherwise the prismatic-beam modal check would collapse.
+        let uniform = Taper {
+            stations: vec![0.0, 5.0, 10.0, 15.0],
+            dimensions: vec![0.20, 0.20, 0.20, 0.20],
+            ..Default::default()
+        };
+        assert_eq!(uniform.depadded().dimensions.len(), 4);
+
+        // A strictly increasing taper (no trailing flat) is untouched.
+        let growing = Taper {
+            stations: vec![0.0, 5.0, 10.0],
+            dimensions: vec![0.10, 0.15, 0.20],
+            ..Default::default()
+        };
+        assert_eq!(growing.depadded().dimensions.len(), 3);
+
+        // Trailing zeros are still dropped.
+        let zeros = Taper {
+            stations: vec![0.0, 5.0, 10.0, 15.0],
+            dimensions: vec![0.10, 0.15, 0.20, 0.0],
+            ..Default::default()
+        };
+        assert_eq!(zeros.depadded().dimensions, vec![0.10, 0.15, 0.20]);
     }
 
     #[test]
