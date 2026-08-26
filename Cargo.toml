@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/roddna-core", "crates/roddna-gui"]
+members = ["crates/roddna-core", "crates/roddna-gui", "crates/roddna-mcp"]
 
 [workspace.package]
 version = "0.7.0" # x-release-please-version

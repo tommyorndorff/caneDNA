@@ -2582,6 +2582,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "roddna-mcp"
+version = "0.7.0"
+dependencies = [
+ "roddna-core",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "rustc-hash"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
