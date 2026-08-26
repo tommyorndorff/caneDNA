@@ -9,7 +9,7 @@ use egui_plot::{Bar, BarChart, Legend, Line, Plot, PlotPoint, PlotPoints, Text, 
 use roddna_core::{
     CastingKb, DeflectionParams, GuideSpacingParams, Library, ModalParams, SolveParams, Taper,
 };
-use roddna_core::ActionClass;
+use roddna_core::{ActionClass, DesignRequest};
 
 // Bundle the data into the binary so the app is a single self-contained file.
 const TAPERS_JSON: &str = include_str!("../../../data/tapers.json");
@@ -111,6 +111,9 @@ struct DesignState {
     new_station: f64,
     /// Target stress (psi) for the "solve to flat stress" control (stage B).
     solve_target_psi: f64,
+    /// Design-assistant rationale (stage D), shown atop the editor when this
+    /// session was created by `Library::design`.
+    rationale: Option<String>,
 }
 
 impl DesignState {
@@ -123,6 +126,7 @@ impl DesignState {
             scale_bias: 0.0,
             new_station: 0.0,
             solve_target_psi: 180_000.0,
+            rationale: None,
         }
     }
 }
@@ -153,6 +157,12 @@ struct App {
     modal_params: ModalParams,
     /// Modulus / load inputs for the A2b deflection analysis (Deflection tab).
     deflection_params: DeflectionParams,
+    /// Design-assistant (stage D) form inputs.
+    assist_line_weight: f64,
+    assist_len_ft: f64,
+    assist_len_in: f64,
+    assist_pieces: f64,
+    assist_action: ActionClass,
     /// Active taper design/edit session, if any. When set, the central panel
     /// shows the design UI instead of the browse/compare view.
     design: Option<DesignState>,
@@ -186,6 +196,11 @@ impl App {
             guide_spacing_params: GuideSpacingParams::default(),
             modal_params: ModalParams::default(),
             deflection_params: DeflectionParams::default(),
+            assist_line_weight: 5.0,
+            assist_len_ft: 7.0,
+            assist_len_in: 6.0,
+            assist_pieces: 2.0,
+            assist_action: ActionClass::Medium,
             design: None,
         }
     }
@@ -327,6 +342,9 @@ impl App {
                 ui.label("Name:");
                 ui.text_edit_singleline(design.taper.name.get_or_insert_with(String::new));
             });
+            if let Some(rationale) = &design.rationale {
+                ui.label(egui::RichText::new(format!("🛈 {rationale}")).weak());
+            }
             export_buttons(ui, &design.taper);
             ui.separator();
 
@@ -812,6 +830,64 @@ impl eframe::App for App {
                         }
                     }
                 });
+
+                // Stage D: design a taper from a spec. Picks the closest
+                // library seed, adapts it, and opens it in design mode.
+                egui::CollapsingHeader::new("Design assistant")
+                    .default_open(false)
+                    .show(ui, |ui| {
+                        egui::Grid::new("assist_grid").num_columns(2).show(ui, |ui| {
+                            ui.label("Line wt:");
+                            ui.add(
+                                egui::DragValue::new(&mut self.assist_line_weight)
+                                    .range(1.0..=14.0),
+                            );
+                            ui.end_row();
+                            ui.label("Length:");
+                            ui.horizontal(|ui| {
+                                ui.add(
+                                    egui::DragValue::new(&mut self.assist_len_ft)
+                                        .range(5.0..=15.0),
+                                );
+                                ui.label("ft");
+                                ui.add(
+                                    egui::DragValue::new(&mut self.assist_len_in)
+                                        .range(0.0..=11.5),
+                                );
+                                ui.label("in");
+                            });
+                            ui.end_row();
+                            ui.label("Pieces:");
+                            ui.add(egui::DragValue::new(&mut self.assist_pieces).range(1.0..=6.0));
+                            ui.end_row();
+                            ui.label("Action:");
+                            egui::ComboBox::from_id_salt("assist_action")
+                                .selected_text(self.assist_action.label())
+                                .show_ui(ui, |ui| {
+                                    for a in
+                                        [ActionClass::Fast, ActionClass::Medium, ActionClass::Full]
+                                    {
+                                        ui.selectable_value(&mut self.assist_action, a, a.label());
+                                    }
+                                });
+                            ui.end_row();
+                        });
+                        if ui.button("Design →").clicked() {
+                            let req = DesignRequest {
+                                line_weight: self.assist_line_weight,
+                                length_in: self.assist_len_ft * 12.0 + self.assist_len_in,
+                                pieces: self.assist_pieces,
+                                action: self.assist_action,
+                            };
+                            if let Some(result) = self.lib.design(&req, &self.modal_params) {
+                                let mut ds = DesignState::new(&result.taper);
+                                ds.seed_name = result.seed_name;
+                                ds.rationale = Some(result.rationale);
+                                self.design = Some(ds);
+                            }
+                        }
+                    });
+
                 ui.separator();
 
                 let indices: Vec<usize> = self

@@ -104,11 +104,27 @@ feedback, not ground truth. GUI: an "Action" tab.
 Later: per-station action along the rod, line-rating inference, and tightening
 the calibration if/when model-level (not maker-level) KB coverage improves.
 
-### D — LLM-first design assistant
+### D — LLM-first design assistant — ✅ first cut done
 
-Natural-language taper design on top of A–C: "design me a medium-action 5-wt
-7'6" 2-piece" → seed selection, inverse solve, physics check, explanation. The
-engines (A/B) do the math; the model drives them and explains the result.
+`Library::design(&DesignRequest, …)` turns a spec — line weight, length, piece
+count, action — into a taper. Rather than synthesize from nothing, it does what
+a rodmaker does: **pick the closest library taper as a seed and adapt it.**
+Seeds are scored on line-weight match (dominant), action fit (peak-stress
+location vs. the requested class's calibrated centre — Fast 0.13 / Medium 0.32
+/ Full 0.53, from C), length closeness and pieces; only rods with the stress
+inputs are eligible. The winner is rescaled to the requested length (shape
+preserved), its line weight / pieces / ferrules set, and the result carries the
+adapted taper, the achieved `ActionProfile`, and a plain-language rationale.
+
+**This is the engine, not the words.** It's the deterministic tool an LLM would
+call: the model parses "a soft 5-wt 7-footer" into a `DesignRequest` and
+narrates the `DesignResult`; a GUI "Design assistant" form stands in for that
+today, opening the result straight into design mode (B's solver + per-station
+edits) to refine. Wiring an actual language model on top — via MCP or an
+embedded model — is the remaining, separable step.
+
+Later: solve directly to a target action (needs B extended beyond flat-stress),
+grain-window objectives for spey, and multi-seed blending.
 
 ## Status snapshot
 
@@ -119,4 +135,4 @@ engines (A/B) do the math; the model drives them and explains the result.
 | A2b | Casting deflection analysis | ✅ done |
 | B  | Inverse-design optimizer | ✅ done (flat-stress) |
 | C  | KB action model | ✅ done (first cut) |
-| D  | LLM design assistant | ⬜ planned |
+| D  | LLM design assistant | ✅ done (seed-driven engine) |

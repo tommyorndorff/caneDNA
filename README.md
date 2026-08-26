@@ -154,6 +154,10 @@ for the full A→D roadmap. Landed so far:
   (fast / medium / full-flex) from where its stress curve peaks, thresholds
   calibrated on the casting KB, with KB feedback shown alongside — GUI
   **Action** tab.
+- **D — design assistant** (`Library::design()`): from a spec (line wt, length,
+  pieces, action) pick the closest library seed, adapt it, and explain the
+  result — the deterministic engine an LLM drives, with a GUI **Design
+  assistant** form standing in today.
 
 ### RodDNA parity gaps → priorities
 

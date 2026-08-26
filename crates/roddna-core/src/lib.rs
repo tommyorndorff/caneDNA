@@ -1296,6 +1296,17 @@ impl ActionClass {
             ActionClass::Full => "Full-flex (slow/parabolic)",
         }
     }
+
+    /// Representative peak-stress fraction for this class, used as the target
+    /// when designing to an action (stage D). Anchored on the KB calibration
+    /// (fast ~0.13, slow ~0.53) with Medium at the band midpoint.
+    pub fn target_fraction(self) -> f64 {
+        match self {
+            ActionClass::Fast => 0.13,
+            ActionClass::Medium => 0.32,
+            ActionClass::Full => 0.53,
+        }
+    }
 }
 
 impl std::fmt::Display for ActionClass {
@@ -1319,6 +1330,33 @@ pub struct ActionProfile {
     /// Fundamental frequency from A2, for recovery-speed context (does not
     /// drive `class`). `None` if the modal analysis couldn't run.
     pub frequency_hz: Option<f64>,
+}
+
+/// A natural-language-style design spec (stage D). The structured form an LLM
+/// (or the GUI form) fills in from a request like "a soft 5-wt 7'6\" 2-piece".
+#[derive(Debug, Clone, PartialEq)]
+pub struct DesignRequest {
+    pub line_weight: f64,
+    /// Overall length in inches (e.g. 90.0 == 7'6").
+    pub length_in: f64,
+    pub pieces: f64,
+    pub action: ActionClass,
+}
+
+/// Result of [`Library::design`] (stage D): a taper adapted from the best-fit
+/// library seed, what it achieves, and why.
+#[derive(Debug, Clone)]
+pub struct DesignResult {
+    /// The adapted taper — ready to open in design mode and refine.
+    pub taper: Taper,
+    /// The library rod it was seeded from.
+    pub seed_name: String,
+    /// Index of the seed in `Library::models`.
+    pub seed_index: usize,
+    /// The adapted taper's action profile.
+    pub achieved: ActionProfile,
+    /// Plain-language explanation of the seed choice and result.
+    pub rationale: String,
 }
 
 /// Tunable inputs for [`Taper::solve_to_stress`] (stage B).
@@ -1702,6 +1740,117 @@ impl Library {
         v.dedup();
         v
     }
+
+    /// **D — design a taper from a natural spec.** Given a target line weight,
+    /// length, piece count and action, pick the closest library taper as a
+    /// seed, adapt it to the request, and report what it achieves — the
+    /// deterministic core an LLM assistant (or the GUI form) drives.
+    ///
+    /// Rather than synthesize a taper from nothing, this does what a rodmaker
+    /// does: **start from a known-good taper near the target and adjust.**
+    /// Seeds are scored on line-weight match (dominant), action fit (via
+    /// [`Taper::action_profile`]'s peak-stress location vs. the requested
+    /// class's calibrated centre), length closeness, and piece count; only
+    /// rods carrying the stress-model inputs are eligible (so the result has a
+    /// real action profile). The winner is cloned, its line weight set, its
+    /// station axis rescaled to the requested length (preserving taper shape),
+    /// and its ferrules/length scaled to match. The returned
+    /// [`DesignResult`] carries the adapted taper, the achieved action, and a
+    /// plain-language rationale.
+    ///
+    /// This is the engine, not the words: an LLM turns "a soft 5-wt 7-footer"
+    /// into a [`DesignRequest`] and narrates the [`DesignResult`]; the GUI form
+    /// stands in for that today. Returns `None` if no eligible seed exists.
+    pub fn design(&self, req: &DesignRequest, modal: &ModalParams) -> Option<DesignResult> {
+        let target_fraction = req.action.target_fraction();
+        // Score every eligible seed; lower is better.
+        let (idx, _score, seed_profile) = self
+            .models
+            .iter()
+            .enumerate()
+            .filter_map(|(i, t)| {
+                let ap = t.action_profile(modal)?;
+                let lw = t.line_weight?;
+                let len = t.depadded().profile().last()?[0];
+                if len <= 0.0 {
+                    return None;
+                }
+                let pieces = t.pieces.unwrap_or(1.0);
+                let score = (lw - req.line_weight).abs() * 10.0
+                    + (ap.peak_fraction - target_fraction).abs() * 5.0
+                    + (len - req.length_in).abs() / 12.0
+                    + if (pieces - req.pieces).abs() < 0.5 { 0.0 } else { 1.0 };
+                Some((i, score, ap))
+            })
+            .min_by(|a, b| a.1.partial_cmp(&b.1).unwrap())?;
+
+        let seed = &self.models[idx];
+        let seed_name = seed.name.clone().unwrap_or_else(|| "(unnamed)".to_string());
+        let seed_len = seed.depadded().profile().last().unwrap()[0];
+
+        // Adapt the seed to the request: rescale the station axis to the target
+        // length (shape preserved), set line weight / pieces, scale ferrules.
+        let factor = if seed_len > 0.0 {
+            req.length_in / seed_len
+        } else {
+            1.0
+        };
+        let mut taper = seed.clone();
+        taper.line_weight = Some(req.line_weight);
+        taper.pieces = Some(req.pieces);
+        taper.length = Some(req.length_in);
+        for s in &mut taper.stations {
+            *s *= factor;
+        }
+        for loc in [
+            &mut taper.ferrule1_loc,
+            &mut taper.ferrule2_loc,
+            &mut taper.ferrule3_loc,
+        ]
+        .into_iter()
+        .flatten()
+        {
+            *loc *= factor;
+        }
+
+        let achieved = taper.action_profile(modal)?;
+        let seed_lw = seed
+            .line_weight
+            .map(|w| format!("{w:.0}-wt"))
+            .unwrap_or_else(|| "?-wt".into());
+        let seed_ft = fmt_len_in(seed_len);
+        let seed_act = seed_profile.class.label();
+        let req_ft = fmt_len_in(req.length_in);
+        let req_lw = format!("{:.0}-wt", req.line_weight);
+        let pieces = req.pieces as i64;
+        let ach = achieved.class.label();
+        let pct = achieved.peak_fraction * 100.0;
+        let freq = achieved
+            .frequency_hz
+            .map(|f| format!(", ~{f:.1} Hz"))
+            .unwrap_or_default();
+        let rationale = format!(
+            "Seed: {seed_name} ({seed_lw}, {seed_ft}, seed action {seed_act}). \
+             Adapted to {req_ft}, {req_lw}, {pieces}-piece. \
+             Achieved {ach} — peak stress {pct:.0}% from the tip{freq}. \
+             Nearest library match; refine in design mode."
+        );
+
+        Some(DesignResult {
+            taper,
+            seed_name,
+            seed_index: idx,
+            achieved,
+            rationale,
+        })
+    }
+}
+
+/// Format inches as feet+inches, e.g. 90.0 -> "7'6\"".
+fn fmt_len_in(inches: f64) -> String {
+    let ft = (inches / 12.0).floor() as i64;
+    let rem = inches - (ft as f64) * 12.0;
+    format!("{ft}'{rem:.0}\"")
 }
 
 /// A single cited casting-feedback snippet from the RMA archive.
@@ -2428,6 +2577,49 @@ mod tests {
             ..params.clone()
         });
         assert!(hard[0].vertical_in > tip.vertical_in, "harder cast deflects more");
+    }
+
+    #[test]
+    fn design_adapts_a_seed_to_the_request() {
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../data/tapers.json");
+        let lib = Library::from_json(&std::fs::read_to_string(path).unwrap()).unwrap();
+        let modal = ModalParams::default();
+
+        let req = DesignRequest {
+            line_weight: 5.0,
+            length_in: 90.0, // 7'6"
+            pieces: 2.0,
+            action: ActionClass::Fast,
+        };
+        let r = lib.design(&req, &modal).expect("a design");
+
+        // The request is honored on the adapted taper.
+        assert_eq!(r.taper.line_weight, Some(5.0));
+        assert_eq!(r.taper.pieces, Some(2.0));
+        // Rescaled to the requested length (within rounding of the 1" grid).
+        let len = r.taper.depadded().profile().last().unwrap()[0];
+        assert!((len - 90.0).abs() < 1.0, "length {len} ~ 90");
+        // Result carries a real action profile and a non-empty rationale.
+        assert!(!r.rationale.is_empty());
+        assert!(r.taper.stress_curve().len() > 2);
+
+        // Asking for a faster action picks a tip-ier seed than asking for full.
+        let fast = lib.design(&req, &modal).unwrap();
+        let full = lib
+            .design(
+                &DesignRequest {
+                    action: ActionClass::Full,
+                    ..req.clone()
+                },
+                &modal,
+            )
+            .unwrap();
+        assert!(
+            fast.achieved.peak_fraction <= full.achieved.peak_fraction,
+            "fast {} should peak no further than full {}",
+            fast.achieved.peak_fraction,
+            full.achieved.peak_fraction
+        );
     }
 
     #[test]
