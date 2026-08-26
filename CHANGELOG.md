@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.0](https://github.com/tommyorndorff/caneDNA/compare/v0.5.0...v0.6.0) (2026-08-26)
+
+
+### Features
+
+* design-engine roadmap + A2 modal & A2b deflection engines ([#21](https://github.com/tommyorndorff/caneDNA/issues/21)) ([9229c03](https://github.com/tommyorndorff/caneDNA/commit/9229c03f5d4106e12180b31775b3961ad8249588))
+* stage B inverse design (solve to flat stress) + padding fix ([#22](https://github.com/tommyorndorff/caneDNA/issues/22)) ([0e54e39](https://github.com/tommyorndorff/caneDNA/commit/0e54e3920d7de7382bb8e0fc71e77bf3b0cb0c46))
+
 ## [0.5.0](https://github.com/tommyorndorff/caneDNA/compare/v0.4.0...v0.5.0) (2026-08-25)
 
 
