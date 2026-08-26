@@ -116,12 +116,22 @@ inputs are eligible. The winner is rescaled to the requested length (shape
 preserved), its line weight / pieces / ferrules set, and the result carries the
 adapted taper, the achieved `ActionProfile`, and a plain-language rationale.
 
-**This is the engine, not the words.** It's the deterministic tool an LLM would
-call: the model parses "a soft 5-wt 7-footer" into a `DesignRequest` and
-narrates the `DesignResult`; a GUI "Design assistant" form stands in for that
-today, opening the result straight into design mode (B's solver + per-station
-edits) to refine. Wiring an actual language model on top — via MCP or an
-embedded model — is the remaining, separable step.
+**This is the engine, not the words.** It's the deterministic tool a language
+layer calls: something parses "a soft 5-wt 7-footer" into a `DesignRequest` and
+narrates the `DesignResult`.
+
+**In-app language front-end — ✅ done (offline).** `parse_design_request()` in
+`roddna-core` is a dependency-free intent parser over the bounded vocabulary of
+rod design — line weight, length, piece count, action feel, and the spey/switch
+family — returning a `ParsedRequest` (the request + an inferred `seed_contains`
+filter + human-readable notes on what was recognised vs. defaulted). The GUI
+"Design assistant" now has a free-text box: you type "a trout spey for dries and
+wets, not streamers", it fills the form, and `Library::design_filtered()` seeds
+the design only from spey tapers. Negation is handled ("not streamers" doesn't
+vote the rod fast). Being offline, it ships to the WASM web build with no
+backend — a visitor to the live site can design by description. A richer natural-
+language path (an actual LLM, via the `roddna-mcp` server) complements it for
+free-form phrasing the keyword parser doesn't cover.
 
 Later: solve directly to a target action (needs B extended beyond flat-stress),
 grain-window objectives for spey, and multi-seed blending.

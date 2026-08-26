@@ -1359,6 +1359,276 @@ pub struct DesignResult {
     pub rationale: String,
 }
 
+/// A [`DesignRequest`] recovered from free text by [`parse_design_request`],
+/// plus how the text was interpreted. This is the offline, no-network stand-in
+/// for the LLM front-end (stage D): it turns "a soft 5-wt 7'6\" 2-piece" or "a
+/// trout spey for dries and wets, not streamers" into a structured request the
+/// GUI can run and show back to the user.
+#[derive(Debug, Clone, PartialEq)]
+pub struct ParsedRequest {
+    /// The structured request to feed [`Library::design_filtered`].
+    pub request: DesignRequest,
+    /// Seed-name filter inferred from the text (e.g. `"spey"`), or `None`.
+    pub seed_contains: Option<String>,
+    /// Human-readable notes on what was recognised vs. defaulted, for the UI.
+    pub notes: Vec<String>,
+}
+
+/// Parse a plain-language rod description into a [`ParsedRequest`].
+///
+/// Deterministic, dependency-free keyword parsing over the small, well-bounded
+/// vocabulary of rod design — line weight, length, piece count, action feel,
+/// and the spey/switch family. Unrecognised fields fall back to sensible
+/// defaults (recorded in `notes`); `None` is returned only when the text has no
+/// usable signal at all. Case-insensitive.
+pub fn parse_design_request(text: &str) -> Option<ParsedRequest> {
+    let t = text.to_lowercase();
+    if t.trim().is_empty() {
+        return None;
+    }
+    let mut notes: Vec<String> = Vec::new();
+
+    // Seed family: an explicit "spey"/"switch" makes this a two-handed request,
+    // which also drives the default length below.
+    let is_spey = t.contains("spey") || t.contains("switch");
+    let seed_contains = if is_spey { Some("spey".to_string()) } else { None };
+
+    let line_weight = find_line_weight(&t);
+    let length_in = find_length_in(&t);
+    let pieces = find_pieces(&t);
+    let action = find_action(&t);
+
+    // A request needs at least one recognisable design signal.
+    if line_weight.is_none()
+        && length_in.is_none()
+        && pieces.is_none()
+        && action.is_none()
+        && !is_spey
+    {
+        return None;
+    }
+
+    let line_weight = line_weight.unwrap_or_else(|| {
+        let d = if is_spey { 3.0 } else { 5.0 };
+        notes.push(format!("assumed {d:.0}-wt (not stated)"));
+        d
+    });
+    let length_in = length_in.unwrap_or_else(|| {
+        let d = if is_spey { 132.0 } else { 90.0 };
+        notes.push(format!("assumed {} (not stated)", fmt_len_in(d)));
+        d
+    });
+    let pieces = pieces.unwrap_or_else(|| {
+        let d = if is_spey { 4.0 } else { 2.0 };
+        notes.push(format!("assumed {d:.0}-piece (not stated)"));
+        d
+    });
+    let action = action.unwrap_or_else(|| {
+        notes.push("assumed medium action (not stated)".to_string());
+        ActionClass::Medium
+    });
+
+    if is_spey {
+        notes.push("seeding from spey tapers".to_string());
+    }
+
+    Some(ParsedRequest {
+        request: DesignRequest {
+            line_weight,
+            length_in,
+            pieces,
+            action,
+        },
+        seed_contains,
+        notes,
+    })
+}
+
+/// Leading number at the start of `s` (digits + optional single decimal).
+fn parse_leading_number(s: &str) -> Option<f64> {
+    let mut end = 0;
+    let mut seen_dot = false;
+    for (i, c) in s.char_indices() {
+        if c.is_ascii_digit() {
+            end = i + 1;
+        } else if c == '.' && !seen_dot {
+            seen_dot = true;
+            end = i + 1;
+        } else {
+            break;
+        }
+    }
+    s[..end].parse().ok()
+}
+
+/// AFTM line weight, from "5wt" / "5 wt" / "5-weight" / "#5" / "line weight 5".
+fn find_line_weight(t: &str) -> Option<f64> {
+    // "#5"
+    if let Some(pos) = t.find('#') {
+        if let Some(n) = parse_leading_number(&t[pos + 1..]) {
+            if (1.0..=14.0).contains(&n) {
+                return Some(n);
+            }
+        }
+    }
+    // A number attached to (or just before) "wt"/"weight".
+    for marker in ["weight", "wt"] {
+        let mut from = 0;
+        while let Some(rel) = t[from..].find(marker) {
+            let idx = from + rel;
+            // Walk back over an optional separator, then read the number that
+            // ends right there (e.g. "5", "5-", "5 ").
+            let before = t[..idx].trim_end_matches(['-', ' ']);
+            if let Some(n) = trailing_number(before) {
+                if (1.0..=14.0).contains(&n) {
+                    return Some(n);
+                }
+            }
+            from = idx + marker.len();
+        }
+    }
+    None
+}
+
+/// The number that ends the string `s` (reads digits/decimal right-to-left).
+fn trailing_number(s: &str) -> Option<f64> {
+    let bytes = s.as_bytes();
+    let mut start = bytes.len();
+    let mut seen_dot = false;
+    while start > 0 {
+        let c = bytes[start - 1];
+        if c.is_ascii_digit() {
+            start -= 1;
+        } else if c == b'.' && !seen_dot {
+            seen_dot = true;
+            start -= 1;
+        } else {
+            break;
+        }
+    }
+    if start == bytes.len() {
+        return None;
+    }
+    s[start..].trim_matches('.').parse().ok()
+}
+
+/// Overall length in inches, from feet'inches" or "N foot/feet/ft" forms.
+fn find_length_in(t: &str) -> Option<f64> {
+    // Apostrophe form: 7'6" / 7' / 7'6 / 7.5'
+    if let Some(pos) = t.find('\'') {
+        if let Some(ft) = trailing_number(&t[..pos]) {
+            let rest = &t[pos + 1..];
+            let inches = parse_leading_number(rest.trim_start()).unwrap_or(0.0);
+            let inches = if inches < 12.0 { inches } else { 0.0 };
+            return Some(ft * 12.0 + inches);
+        }
+    }
+    // Word form: "7 foot", "7ft", "7 feet", "8-foot", optionally "6 in".
+    for marker in ["foot", "feet", "ft"] {
+        if let Some(rel) = t.find(marker) {
+            let before = t[..rel].trim_end_matches(['-', ' ']);
+            if let Some(ft) = trailing_number(before) {
+                // Optional trailing inches: "...foot 6" or "...ft 6 in".
+                let after = t[rel + marker.len()..].trim_start_matches([' ', '-']);
+                let inches = parse_leading_number(after).unwrap_or(0.0);
+                let inches = if inches < 12.0 { inches } else { 0.0 };
+                return Some(ft * 12.0 + inches);
+            }
+        }
+    }
+    None
+}
+
+/// Section count, from "2-piece" / "2 piece" / "3pc" / "travel"(=4).
+fn find_pieces(t: &str) -> Option<f64> {
+    for marker in ["pieces", "piece", "pcs", "pc"] {
+        if let Some(rel) = t.find(marker) {
+            let before = t[..rel].trim_end_matches(['-', ' ']);
+            if let Some(n) = trailing_number(before) {
+                if (1.0..=8.0).contains(&n) {
+                    return Some(n);
+                }
+            }
+        }
+    }
+    if t.contains("travel") || t.contains("pack rod") || t.contains("packable") {
+        return Some(4.0);
+    }
+    None
+}
+
+/// Action class from feel words, honouring simple negation ("not streamers").
+fn find_action(t: &str) -> Option<ActionClass> {
+    let full = [
+        "full-flex",
+        "full flex",
+        "parabolic",
+        "slow",
+        "soft",
+        "delicate",
+        "dry fly",
+        "dries",
+        "dry-fly",
+        "wet fly",
+        "wets",
+        "presentation",
+        "spey",
+    ];
+    let fast = [
+        "fast",
+        "tip action",
+        "tippy",
+        "streamer",
+        "distance",
+        "powerful",
+        "crisp",
+        "quick",
+    ];
+    let medium = ["medium", "moderate", "progressive", "all-around", "all around", "versatile"];
+
+    let full_n = count_unnegated(t, &full);
+    let fast_n = count_unnegated(t, &fast);
+    let medium_n = count_unnegated(t, &medium);
+
+    if full_n == 0 && fast_n == 0 && medium_n == 0 {
+        return None;
+    }
+    // Highest vote wins; ties favour the middle.
+    let max = full_n.max(fast_n).max(medium_n);
+    if fast_n == max && fast_n > full_n && fast_n > medium_n {
+        Some(ActionClass::Fast)
+    } else if full_n == max && full_n > fast_n && full_n > medium_n {
+        Some(ActionClass::Full)
+    } else {
+        Some(ActionClass::Medium)
+    }
+}
+
+/// Count occurrences of any needle NOT immediately preceded by a negation
+/// ("not", "no", "without", "isn't") within a few words — so "not for
+/// streamers" doesn't vote the rod fast.
+fn count_unnegated(t: &str, needles: &[&str]) -> usize {
+    let mut count = 0;
+    for needle in needles {
+        let mut from = 0;
+        while let Some(rel) = t[from..].find(needle) {
+            let idx = from + rel;
+            if !negated_before(&t[..idx]) {
+                count += 1;
+            }
+            from = idx + needle.len();
+        }
+    }
+    count
+}
+
+/// True if the last few words before this point carry a negation.
+fn negated_before(prefix: &str) -> bool {
+    let tail: Vec<&str> = prefix.split_whitespace().rev().take(4).collect();
+    tail.iter()
+        .any(|w| matches!(w.trim_matches(|c: char| !c.is_alphanumeric()), "not" | "no" | "without" | "isn't" | "never" | "avoid"))
+}
+
 /// Tunable inputs for [`Taper::solve_to_stress`] (stage B).
 #[derive(Debug, Clone, PartialEq)]
 pub struct SolveParams {
@@ -1843,6 +2113,39 @@ impl Library {
             achieved,
             rationale,
         })
+    }
+
+    /// [`Library::design`], but restrict the seed pool to rods whose name
+    /// contains `seed_contains` (case-insensitive) — how a "like the spey rods"
+    /// request stays seeded from the right family without changing
+    /// [`DesignRequest`]. `None`/empty filter behaves exactly like `design`.
+    /// Returns `None` if the filter matches no rod.
+    pub fn design_filtered(
+        &self,
+        req: &DesignRequest,
+        seed_contains: Option<&str>,
+        modal: &ModalParams,
+    ) -> Option<DesignResult> {
+        match seed_contains {
+            Some(sub) if !sub.trim().is_empty() => {
+                let needle = sub.to_lowercase();
+                let models: Vec<Taper> = self
+                    .models
+                    .iter()
+                    .filter(|t| t.name.as_deref().unwrap_or("").to_lowercase().contains(&needle))
+                    .cloned()
+                    .collect();
+                if models.is_empty() {
+                    return None;
+                }
+                let view = Library {
+                    meta: self.meta.clone(),
+                    models,
+                };
+                view.design(req, modal)
+            }
+            _ => self.design(req, modal),
+        }
     }
 }
 
@@ -2620,6 +2923,85 @@ mod tests {
             fast.achieved.peak_fraction,
             full.achieved.peak_fraction
         );
+    }
+
+    #[test]
+    fn parse_reads_a_plain_english_spec() {
+        let p = parse_design_request("a soft 5-wt 7'6\" 2-piece").expect("parsed");
+        assert_eq!(p.request.line_weight, 5.0);
+        assert_eq!(p.request.length_in, 90.0);
+        assert_eq!(p.request.pieces, 2.0);
+        assert_eq!(p.request.action, ActionClass::Full); // "soft"
+        assert_eq!(p.seed_contains, None);
+    }
+
+    #[test]
+    fn parse_handles_the_trout_spey_example() {
+        // The motivating request: dries+wets (=full), streamers negated, spey family.
+        let p = parse_design_request(
+            "using the spey rods as an example, a trout spey for dries and wets, not for casting streamers",
+        )
+        .expect("parsed");
+        assert_eq!(p.request.action, ActionClass::Full);
+        assert_eq!(p.seed_contains.as_deref(), Some("spey"));
+        // Two-handed defaults kick in when unstated.
+        assert_eq!(p.request.length_in, 132.0);
+        assert_eq!(p.request.pieces, 4.0);
+    }
+
+    #[test]
+    fn parse_negation_keeps_streamers_from_voting_fast() {
+        let fast = parse_design_request("a fast 5wt for streamers").unwrap();
+        assert_eq!(fast.request.action, ActionClass::Fast);
+        let not = parse_design_request("a 5wt, delicate, not for streamers").unwrap();
+        assert_eq!(not.request.action, ActionClass::Full);
+    }
+
+    #[test]
+    fn parse_variants_of_length_and_weight() {
+        assert_eq!(
+            parse_design_request("8 foot 3 in #6").unwrap().request.length_in,
+            99.0
+        );
+        assert_eq!(
+            parse_design_request("7ft 5 weight").unwrap().request.line_weight,
+            5.0
+        );
+        assert_eq!(
+            parse_design_request("8'6 travel rod").unwrap().request.pieces,
+            4.0
+        );
+    }
+
+    #[test]
+    fn parse_returns_none_for_noise() {
+        assert!(parse_design_request("").is_none());
+        assert!(parse_design_request("hello there").is_none());
+    }
+
+    #[test]
+    fn design_filtered_restricts_the_seed_pool() {
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../data/tapers.json");
+        let lib = Library::from_json(&std::fs::read_to_string(path).unwrap()).unwrap();
+        let modal = ModalParams::default();
+        let req = DesignRequest {
+            line_weight: 3.0,
+            length_in: 132.0,
+            pieces: 4.0,
+            action: ActionClass::Full,
+        };
+        let r = lib
+            .design_filtered(&req, Some("spey"), &modal)
+            .expect("a spey-seeded design");
+        assert!(
+            r.seed_name.to_lowercase().contains("spey"),
+            "seed {} should be a spey taper",
+            r.seed_name
+        );
+        // A filter that matches nothing yields None (not a silent fallback).
+        assert!(lib
+            .design_filtered(&req, Some("no-such-maker-xyz"), &modal)
+            .is_none());
     }
 
     #[test]
