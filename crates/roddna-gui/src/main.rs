@@ -9,6 +9,7 @@ use egui_plot::{Bar, BarChart, Legend, Line, Plot, PlotPoint, PlotPoints, Text, 
 use roddna_core::{
     CastingKb, DeflectionParams, GuideSpacingParams, Library, ModalParams, SolveParams, Taper,
 };
+use roddna_core::{ActionClass, DesignRequest};
 
 // Bundle the data into the binary so the app is a single self-contained file.
 const TAPERS_JSON: &str = include_str!("../../../data/tapers.json");
@@ -79,6 +80,7 @@ enum PanelView {
     Stress,
     Modal,
     Deflection,
+    Action,
     PlaningForm,
     GuideSpacing,
     AnvilLayout,
@@ -109,6 +111,9 @@ struct DesignState {
     new_station: f64,
     /// Target stress (psi) for the "solve to flat stress" control (stage B).
     solve_target_psi: f64,
+    /// Design-assistant rationale (stage D), shown atop the editor when this
+    /// session was created by `Library::design`.
+    rationale: Option<String>,
 }
 
 impl DesignState {
@@ -121,6 +126,7 @@ impl DesignState {
             scale_bias: 0.0,
             new_station: 0.0,
             solve_target_psi: 180_000.0,
+            rationale: None,
         }
     }
 }
@@ -151,6 +157,12 @@ struct App {
     modal_params: ModalParams,
     /// Modulus / load inputs for the A2b deflection analysis (Deflection tab).
     deflection_params: DeflectionParams,
+    /// Design-assistant (stage D) form inputs.
+    assist_line_weight: f64,
+    assist_len_ft: f64,
+    assist_len_in: f64,
+    assist_pieces: f64,
+    assist_action: ActionClass,
     /// Active taper design/edit session, if any. When set, the central panel
     /// shows the design UI instead of the browse/compare view.
     design: Option<DesignState>,
@@ -184,6 +196,11 @@ impl App {
             guide_spacing_params: GuideSpacingParams::default(),
             modal_params: ModalParams::default(),
             deflection_params: DeflectionParams::default(),
+            assist_line_weight: 5.0,
+            assist_len_ft: 7.0,
+            assist_len_in: 6.0,
+            assist_pieces: 2.0,
+            assist_action: ActionClass::Medium,
             design: None,
         }
     }
@@ -325,6 +342,9 @@ impl App {
                 ui.label("Name:");
                 ui.text_edit_singleline(design.taper.name.get_or_insert_with(String::new));
             });
+            if let Some(rationale) = &design.rationale {
+                ui.label(egui::RichText::new(format!("🛈 {rationale}")).weak());
+            }
             export_buttons(ui, &design.taper);
             ui.separator();
 
@@ -609,6 +629,35 @@ fn distinct(iter: impl Iterator<Item = f64>) -> Vec<f64> {
     v
 }
 
+/// Colored action-class chip: fast (warm) → full-flex (cool).
+fn action_colored(class: ActionClass) -> egui::RichText {
+    let color = match class {
+        ActionClass::Fast => egui::Color32::from_rgb(0xE0, 0x6C, 0x3B),
+        ActionClass::Medium => egui::Color32::from_rgb(0xC9, 0xA2, 0x27),
+        ActionClass::Full => egui::Color32::from_rgb(0x3B, 0x8C, 0xC0),
+    };
+    egui::RichText::new(class.label()).color(color).strong()
+}
+
+/// The KB's top action tags for a taper (maker/model), e.g.
+/// "parabolic·26, progressive·1 (Payne Parabolic)", or a dash if none.
+fn kb_action_summary(kb: &CastingKb, taper: &Taper) -> String {
+    let Some((label, casting)) = kb.for_taper(taper) else {
+        return "—".into();
+    };
+    if casting.action_counts.is_empty() {
+        return "—".into();
+    }
+    let mut tags: Vec<(&String, &u64)> = casting.action_counts.iter().collect();
+    tags.sort_by(|a, b| b.1.cmp(a.1));
+    let top: Vec<String> = tags
+        .iter()
+        .take(3)
+        .map(|(k, c)| format!("{k}·{c}"))
+        .collect();
+    format!("{} ({})", top.join(", "), label)
+}
+
 fn fmt_len(inches: Option<f64>) -> String {
     match inches {
         Some(i) => {
@@ -781,6 +830,64 @@ impl eframe::App for App {
                         }
                     }
                 });
+
+                // Stage D: design a taper from a spec. Picks the closest
+                // library seed, adapts it, and opens it in design mode.
+                egui::CollapsingHeader::new("Design assistant")
+                    .default_open(false)
+                    .show(ui, |ui| {
+                        egui::Grid::new("assist_grid").num_columns(2).show(ui, |ui| {
+                            ui.label("Line wt:");
+                            ui.add(
+                                egui::DragValue::new(&mut self.assist_line_weight)
+                                    .range(1.0..=14.0),
+                            );
+                            ui.end_row();
+                            ui.label("Length:");
+                            ui.horizontal(|ui| {
+                                ui.add(
+                                    egui::DragValue::new(&mut self.assist_len_ft)
+                                        .range(5.0..=15.0),
+                                );
+                                ui.label("ft");
+                                ui.add(
+                                    egui::DragValue::new(&mut self.assist_len_in)
+                                        .range(0.0..=11.5),
+                                );
+                                ui.label("in");
+                            });
+                            ui.end_row();
+                            ui.label("Pieces:");
+                            ui.add(egui::DragValue::new(&mut self.assist_pieces).range(1.0..=6.0));
+                            ui.end_row();
+                            ui.label("Action:");
+                            egui::ComboBox::from_id_salt("assist_action")
+                                .selected_text(self.assist_action.label())
+                                .show_ui(ui, |ui| {
+                                    for a in
+                                        [ActionClass::Fast, ActionClass::Medium, ActionClass::Full]
+                                    {
+                                        ui.selectable_value(&mut self.assist_action, a, a.label());
+                                    }
+                                });
+                            ui.end_row();
+                        });
+                        if ui.button("Design →").clicked() {
+                            let req = DesignRequest {
+                                line_weight: self.assist_line_weight,
+                                length_in: self.assist_len_ft * 12.0 + self.assist_len_in,
+                                pieces: self.assist_pieces,
+                                action: self.assist_action,
+                            };
+                            if let Some(result) = self.lib.design(&req, &self.modal_params) {
+                                let mut ds = DesignState::new(&result.taper);
+                                ds.seed_name = result.seed_name;
+                                ds.rationale = Some(result.rationale);
+                                self.design = Some(ds);
+                            }
+                        }
+                    });
+
                 ui.separator();
 
                 let indices: Vec<usize> = self
@@ -863,6 +970,7 @@ impl eframe::App for App {
                 ui.selectable_value(&mut self.view, PanelView::Stress, "Stress");
                 ui.selectable_value(&mut self.view, PanelView::Modal, "Modal");
                 ui.selectable_value(&mut self.view, PanelView::Deflection, "Deflection");
+                ui.selectable_value(&mut self.view, PanelView::Action, "Action");
                 ui.selectable_value(&mut self.view, PanelView::PlaningForm, "Planing Form");
                 ui.selectable_value(&mut self.view, PanelView::GuideSpacing, "Guide Spacing");
                 ui.selectable_value(&mut self.view, PanelView::AnvilLayout, "Anvil Layout");
@@ -1225,6 +1333,81 @@ impl eframe::App for App {
                         )
                         .weak(),
                     );
+                }
+                PanelView::Action => {
+                    // Stage C: physics-derived action class (from where the
+                    // stress curve peaks) with the KB's crowd feedback beside
+                    // it for corroboration — not as ground truth.
+                    if self.selected.is_empty() {
+                        ui.label("Select one or more rods to classify their action.");
+                    } else {
+                        egui::ScrollArea::vertical()
+                            .id_salt("action_scroll")
+                            .max_height(ui.available_height() * 0.7)
+                            .show(ui, |ui| {
+                                egui::Grid::new("action")
+                                    .striped(true)
+                                    .num_columns(5)
+                                    .show(ui, |ui| {
+                                        for h in [
+                                            "Rod",
+                                            "Action (physics)",
+                                            "Peak stress @",
+                                            "Freq (Hz)",
+                                            "KB feedback (maker/model)",
+                                        ] {
+                                            ui.label(egui::RichText::new(h).strong());
+                                        }
+                                        ui.end_row();
+                                        for &i in &self.selected {
+                                            let t = &self.lib.models[i];
+                                            let name = t
+                                                .name
+                                                .clone()
+                                                .unwrap_or_else(|| format!("model {i}"));
+                                            match t.action_profile(&self.modal_params) {
+                                                Some(ap) => {
+                                                    ui.label(name);
+                                                    ui.label(action_colored(ap.class));
+                                                    ui.label(format!(
+                                                        "{:.0}\" ({:.0}% from tip)",
+                                                        ap.peak_station_in,
+                                                        ap.peak_fraction * 100.0
+                                                    ));
+                                                    ui.label(
+                                                        ap.frequency_hz
+                                                            .map(|f| format!("{f:.2}"))
+                                                            .unwrap_or_else(|| "—".into()),
+                                                    );
+                                                    ui.label(kb_action_summary(&self.kb, t));
+                                                }
+                                                None => {
+                                                    ui.label(name);
+                                                    ui.label(
+                                                        egui::RichText::new("no stress inputs")
+                                                            .weak(),
+                                                    );
+                                                    ui.label("");
+                                                    ui.label("");
+                                                    ui.label(kb_action_summary(&self.kb, t));
+                                                }
+                                            }
+                                            ui.end_row();
+                                        }
+                                    });
+                            });
+                        ui.add_space(6.0);
+                        ui.label(
+                            egui::RichText::new(
+                                "Action class is where the Garrison stress curve peaks (tip = \
+                                 fast, mid/butt = full-flex), thresholds calibrated on the KB's \
+                                 fast/slow split — see docs/DESIGN_ENGINE.md, stage C. KB feedback \
+                                 is crowd description of the maker/model, shown for corroboration, \
+                                 not as ground truth.",
+                            )
+                            .weak(),
+                        );
+                    }
                 }
                 PanelView::PlaningForm => {
                     if self.selected.len() != 1 {

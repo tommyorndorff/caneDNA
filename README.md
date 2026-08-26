@@ -147,6 +147,17 @@ for the full A→D roadmap. Landed so far:
 - **A2b — casting deflection** (`Taper::casting_deflection()`): the static
   deflected rod shape under casting load (hexrod.net-style per-station angle /
   curvature / horizontal-vertical deflection) — GUI **Deflection** tab.
+- **B — inverse design** (`Taper::solve_to_stress()`): reshape a taper so its
+  stress curve is flat at a target psi (the Garrison "flatten the stress" move),
+  a fixed-point solver — "Solve to flat stress" in design mode.
+- **C — action model** (`Taper::action_profile()`): classify a rod's action
+  (fast / medium / full-flex) from where its stress curve peaks, thresholds
+  calibrated on the casting KB, with KB feedback shown alongside — GUI
+  **Action** tab.
+- **D — design assistant** (`Library::design()`): from a spec (line wt, length,
+  pieces, action) pick the closest library seed, adapt it, and explain the
+  result — the deterministic engine an LLM drives, with a GUI **Design
+  assistant** form standing in today.
 
 ### RodDNA parity gaps → priorities
 
