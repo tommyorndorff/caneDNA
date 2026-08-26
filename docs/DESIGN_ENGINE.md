@@ -81,13 +81,28 @@ Later extensions once the first cut lands: clone-another-rod's-stress target,
 optional smoothness/tip-pin constraints, and frequency/grain-window objectives
 (the trout-spey case, where "does it load in its head range" matters most).
 
-### C — KB action model (calibrate to real rods)
+### C — KB action model (calibrate to real rods) — ✅ first cut done
 
-Link the physics outputs (A1/A2) to how rods are actually described —
-"fast/medium/full flex," line ratings, caster feedback — using the casting KB
-(`data/kb/`). Best data coverage is 5-wt trout rods, so that's the calibration
-anchor. Turns raw Hz / psi numbers into an action vocabulary the inverse
-designer (B) and the assistant (D) can target.
+`Taper::action_profile()` turns the raw physics into the caster's vocabulary —
+**fast / medium / full-flex** — from *where the Garrison stress curve peaks*
+(the classic action tell: tip peak = fast, mid/butt peak = full/parabolic),
+measured on the de-padded taper as a fraction of length.
+
+**What the KB actually supports.** The intent was to calibrate physics against
+the casting KB's action tags. Investigating the 316 library rods that carry
+both physics inputs and a KB tag showed the tags are mostly **maker-reputation
+level**, not per-taper: `parabolic`/`delicate` dominate and don't track
+geometry. So the KB is *not* a training target. But the clean speed terms do
+separate on the peak-stress metric — rods the KB calls **fast** peak at a
+median ~0.13 of length from the tip, **slow** at ~0.53 — and that split
+calibrates the `Fast < 0.25 ≤ Medium < 0.40 ≤ Full` thresholds. Frequency (A2)
+and a peakiness ratio were tested and did *not* separate the classes, so they're
+reported as context only. The KB's own tags are surfaced beside the physics
+class (via `CastingKb::for_taper`) as corroboration, honestly labelled as crowd
+feedback, not ground truth. GUI: an "Action" tab.
+
+Later: per-station action along the rod, line-rating inference, and tightening
+the calibration if/when model-level (not maker-level) KB coverage improves.
 
 ### D — LLM-first design assistant
 
@@ -102,6 +117,6 @@ engines (A/B) do the math; the model drives them and explains the result.
 | A1 | Static stress curve | ✅ done |
 | A2 | Modal / dynamic engine | ✅ done |
 | A2b | Casting deflection analysis | ✅ done |
-| B  | Inverse-design optimizer | ⬜ planned |
-| C  | KB action model | ⬜ planned |
+| B  | Inverse-design optimizer | ✅ done (flat-stress) |
+| C  | KB action model | ✅ done (first cut) |
 | D  | LLM design assistant | ⬜ planned |

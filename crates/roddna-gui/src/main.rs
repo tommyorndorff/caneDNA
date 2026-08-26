@@ -9,6 +9,7 @@ use egui_plot::{Bar, BarChart, Legend, Line, Plot, PlotPoint, PlotPoints, Text, 
 use roddna_core::{
     CastingKb, DeflectionParams, GuideSpacingParams, Library, ModalParams, SolveParams, Taper,
 };
+use roddna_core::ActionClass;
 
 // Bundle the data into the binary so the app is a single self-contained file.
 const TAPERS_JSON: &str = include_str!("../../../data/tapers.json");
@@ -79,6 +80,7 @@ enum PanelView {
     Stress,
     Modal,
     Deflection,
+    Action,
     PlaningForm,
     GuideSpacing,
     AnvilLayout,
@@ -609,6 +611,35 @@ fn distinct(iter: impl Iterator<Item = f64>) -> Vec<f64> {
     v
 }
 
+/// Colored action-class chip: fast (warm) → full-flex (cool).
+fn action_colored(class: ActionClass) -> egui::RichText {
+    let color = match class {
+        ActionClass::Fast => egui::Color32::from_rgb(0xE0, 0x6C, 0x3B),
+        ActionClass::Medium => egui::Color32::from_rgb(0xC9, 0xA2, 0x27),
+        ActionClass::Full => egui::Color32::from_rgb(0x3B, 0x8C, 0xC0),
+    };
+    egui::RichText::new(class.label()).color(color).strong()
+}
+
+/// The KB's top action tags for a taper (maker/model), e.g.
+/// "parabolic·26, progressive·1 (Payne Parabolic)", or a dash if none.
+fn kb_action_summary(kb: &CastingKb, taper: &Taper) -> String {
+    let Some((label, casting)) = kb.for_taper(taper) else {
+        return "—".into();
+    };
+    if casting.action_counts.is_empty() {
+        return "—".into();
+    }
+    let mut tags: Vec<(&String, &u64)> = casting.action_counts.iter().collect();
+    tags.sort_by(|a, b| b.1.cmp(a.1));
+    let top: Vec<String> = tags
+        .iter()
+        .take(3)
+        .map(|(k, c)| format!("{k}·{c}"))
+        .collect();
+    format!("{} ({})", top.join(", "), label)
+}
+
 fn fmt_len(inches: Option<f64>) -> String {
     match inches {
         Some(i) => {
@@ -863,6 +894,7 @@ impl eframe::App for App {
                 ui.selectable_value(&mut self.view, PanelView::Stress, "Stress");
                 ui.selectable_value(&mut self.view, PanelView::Modal, "Modal");
                 ui.selectable_value(&mut self.view, PanelView::Deflection, "Deflection");
+                ui.selectable_value(&mut self.view, PanelView::Action, "Action");
                 ui.selectable_value(&mut self.view, PanelView::PlaningForm, "Planing Form");
                 ui.selectable_value(&mut self.view, PanelView::GuideSpacing, "Guide Spacing");
                 ui.selectable_value(&mut self.view, PanelView::AnvilLayout, "Anvil Layout");
@@ -1225,6 +1257,81 @@ impl eframe::App for App {
                         )
                         .weak(),
                     );
+                }
+                PanelView::Action => {
+                    // Stage C: physics-derived action class (from where the
+                    // stress curve peaks) with the KB's crowd feedback beside
+                    // it for corroboration — not as ground truth.
+                    if self.selected.is_empty() {
+                        ui.label("Select one or more rods to classify their action.");
+                    } else {
+                        egui::ScrollArea::vertical()
+                            .id_salt("action_scroll")
+                            .max_height(ui.available_height() * 0.7)
+                            .show(ui, |ui| {
+                                egui::Grid::new("action")
+                                    .striped(true)
+                                    .num_columns(5)
+                                    .show(ui, |ui| {
+                                        for h in [
+                                            "Rod",
+                                            "Action (physics)",
+                                            "Peak stress @",
+                                            "Freq (Hz)",
+                                            "KB feedback (maker/model)",
+                                        ] {
+                                            ui.label(egui::RichText::new(h).strong());
+                                        }
+                                        ui.end_row();
+                                        for &i in &self.selected {
+                                            let t = &self.lib.models[i];
+                                            let name = t
+                                                .name
+                                                .clone()
+                                                .unwrap_or_else(|| format!("model {i}"));
+                                            match t.action_profile(&self.modal_params) {
+                                                Some(ap) => {
+                                                    ui.label(name);
+                                                    ui.label(action_colored(ap.class));
+                                                    ui.label(format!(
+                                                        "{:.0}\" ({:.0}% from tip)",
+                                                        ap.peak_station_in,
+                                                        ap.peak_fraction * 100.0
+                                                    ));
+                                                    ui.label(
+                                                        ap.frequency_hz
+                                                            .map(|f| format!("{f:.2}"))
+                                                            .unwrap_or_else(|| "—".into()),
+                                                    );
+                                                    ui.label(kb_action_summary(&self.kb, t));
+                                                }
+                                                None => {
+                                                    ui.label(name);
+                                                    ui.label(
+                                                        egui::RichText::new("no stress inputs")
+                                                            .weak(),
+                                                    );
+                                                    ui.label("");
+                                                    ui.label("");
+                                                    ui.label(kb_action_summary(&self.kb, t));
+                                                }
+                                            }
+                                            ui.end_row();
+                                        }
+                                    });
+                            });
+                        ui.add_space(6.0);
+                        ui.label(
+                            egui::RichText::new(
+                                "Action class is where the Garrison stress curve peaks (tip = \
+                                 fast, mid/butt = full-flex), thresholds calibrated on the KB's \
+                                 fast/slow split — see docs/DESIGN_ENGINE.md, stage C. KB feedback \
+                                 is crowd description of the maker/model, shown for corroboration, \
+                                 not as ground truth.",
+                            )
+                            .weak(),
+                        );
+                    }
                 }
                 PanelView::PlaningForm => {
                     if self.selected.len() != 1 {
