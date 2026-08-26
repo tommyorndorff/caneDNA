@@ -16,6 +16,11 @@ on:
       - "crates/**"
       - "data/tapers.json"
       - ".github/workflows/deploy-web.yml"
+      # The version shown in-app is compiled from the workspace version, which
+      # release-please bumps in the root Cargo.toml — without these, a release
+      # commit doesn't touch crates/** and the live site stays a version behind.
+      - "Cargo.toml"
+      - "Cargo.lock"
   workflow_dispatch:
 
 jobs:

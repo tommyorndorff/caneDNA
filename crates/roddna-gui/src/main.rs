@@ -15,6 +15,104 @@ use roddna_core::{ActionClass, DesignRequest};
 const TAPERS_JSON: &str = include_str!("../../../data/tapers.json");
 const CASTING_JSON: &str = include_str!("../../../data/kb/casting_kb.json");
 
+const CHANGELOG_URL: &str = "https://github.com/tommyorndorff/caneDNA/blob/main/CHANGELOG.md";
+
+// Palette — "the bench at dusk": warm charcoal, flamed-cane honey, nickel-silver
+// steel. Two accents (warm primary + cool structure) keep it off the usual
+// single-accent look, and the dark ground makes the overlaid taper plots glow.
+mod palette {
+    use eframe::egui::Color32;
+    pub const INK: Color32 = Color32::from_rgb(0xE8, 0xE2, 0xD6); // warm parchment text
+    pub const MUTED: Color32 = Color32::from_rgb(0x9A, 0x95, 0x8B);
+    pub const BG: Color32 = Color32::from_rgb(0x1B, 0x1E, 0x22); // central / window
+    pub const PANEL: Color32 = Color32::from_rgb(0x23, 0x27, 0x2C); // side panel
+    pub const CARD: Color32 = Color32::from_rgb(0x2B, 0x30, 0x36); // widgets
+    pub const CARD_HOVER: Color32 = Color32::from_rgb(0x35, 0x3B, 0x42);
+    pub const HAIRLINE: Color32 = Color32::from_rgb(0x3A, 0x3F, 0x45);
+    pub const HONEY: Color32 = Color32::from_rgb(0xD9, 0xA4, 0x41); // flamed cane
+    pub const STEEL: Color32 = Color32::from_rgb(0x7F, 0xB0, 0xC4); // nickel silver
+}
+
+/// Apply the caneDNA theme: warm-charcoal dark visuals, two-tone accents,
+/// roomier spacing, and a readable type scale. Called once at startup.
+fn apply_theme(ctx: &egui::Context) {
+    use egui::{Color32, FontFamily, FontId, Rounding, Stroke, TextStyle};
+    use palette::*;
+
+    let mut style = (*ctx.style()).clone();
+    let mut v = egui::Visuals::dark();
+    let r = Rounding::same(6.0);
+
+    v.panel_fill = PANEL;
+    v.window_fill = BG;
+    v.extreme_bg_color = BG; // text edits, scroll troughs, plot ground
+    v.faint_bg_color = Color32::from_rgb(0x25, 0x29, 0x2E); // striping
+    v.window_stroke = Stroke::new(1.0, HAIRLINE);
+    v.window_rounding = Rounding::same(8.0);
+    v.hyperlink_color = STEEL;
+    v.selection.bg_fill = Color32::from_rgba_unmultiplied(0xD9, 0xA4, 0x41, 0x3D);
+    v.selection.stroke = Stroke::new(1.0, HONEY);
+
+    // Resting widgets / default text.
+    v.widgets.noninteractive.bg_fill = PANEL;
+    v.widgets.noninteractive.bg_stroke = Stroke::new(1.0, HAIRLINE);
+    v.widgets.noninteractive.fg_stroke = Stroke::new(1.0, INK);
+    v.widgets.noninteractive.rounding = r;
+
+    v.widgets.inactive.bg_fill = CARD;
+    v.widgets.inactive.weak_bg_fill = CARD;
+    v.widgets.inactive.bg_stroke = Stroke::new(1.0, HAIRLINE);
+    v.widgets.inactive.fg_stroke = Stroke::new(1.0, INK);
+    v.widgets.inactive.rounding = r;
+
+    v.widgets.hovered.bg_fill = CARD_HOVER;
+    v.widgets.hovered.weak_bg_fill = CARD_HOVER;
+    v.widgets.hovered.bg_stroke = Stroke::new(1.0, STEEL);
+    v.widgets.hovered.fg_stroke = Stroke::new(1.2, INK);
+    v.widgets.hovered.rounding = r;
+
+    // Pressed / on — the flamed-cane accent.
+    v.widgets.active.bg_fill = HONEY;
+    v.widgets.active.weak_bg_fill = CARD_HOVER;
+    v.widgets.active.bg_stroke = Stroke::new(1.0, HONEY);
+    v.widgets.active.fg_stroke = Stroke::new(1.3, BG);
+    v.widgets.active.rounding = r;
+
+    v.widgets.open.bg_fill = CARD;
+    v.widgets.open.bg_stroke = Stroke::new(1.0, HAIRLINE);
+    v.widgets.open.rounding = r;
+
+    style.visuals = v;
+    style.text_styles = [
+        (TextStyle::Heading, FontId::new(19.0, FontFamily::Proportional)),
+        (TextStyle::Body, FontId::new(14.5, FontFamily::Proportional)),
+        (TextStyle::Button, FontId::new(14.0, FontFamily::Proportional)),
+        (TextStyle::Small, FontId::new(11.5, FontFamily::Proportional)),
+        (TextStyle::Monospace, FontId::new(13.0, FontFamily::Monospace)),
+    ]
+    .into();
+    style.spacing.item_spacing = egui::vec2(8.0, 7.0);
+    style.spacing.button_padding = egui::vec2(9.0, 4.0);
+    style.spacing.window_margin = egui::Margin::same(10.0);
+
+    ctx.set_style(style);
+}
+
+/// The two-tone "caneDNA" wordmark as a single tight label — honey "cane",
+/// steel "DNA". The app's signature mark.
+fn wordmark(size: f32) -> egui::text::LayoutJob {
+    use egui::{FontId, TextFormat};
+    let mut job = egui::text::LayoutJob::default();
+    let fmt = |color| TextFormat {
+        font_id: FontId::proportional(size),
+        color,
+        ..Default::default()
+    };
+    job.append("cane", 0.0, fmt(palette::HONEY));
+    job.append("DNA", 0.0, fmt(palette::STEEL));
+    job
+}
+
 /// Native desktop entry point.
 #[cfg(not(target_arch = "wasm32"))]
 fn main() -> eframe::Result<()> {
@@ -27,7 +125,10 @@ fn main() -> eframe::Result<()> {
     eframe::run_native(
         "canedna",
         native_options,
-        Box::new(|_cc| Ok(Box::new(App::new()))),
+        Box::new(|cc| {
+            apply_theme(&cc.egui_ctx);
+            Ok(Box::new(App::new()))
+        }),
     )
 }
 
@@ -54,7 +155,10 @@ fn main() {
             .start(
                 canvas,
                 web_options,
-                Box::new(|_cc| Ok(Box::new(App::new()))),
+                Box::new(|cc| {
+                    apply_theme(&cc.egui_ctx);
+                    Ok(Box::new(App::new()))
+                }),
             )
             .await;
 
@@ -750,23 +854,35 @@ impl eframe::App for App {
             .resizable(true)
             .default_width(360.0)
             .show(ctx, |ui| {
-                ui.add_space(4.0);
+                ui.add_space(8.0);
                 ui.horizontal(|ui| {
-                    ui.heading("Tapers");
+                    ui.add(egui::Label::new(wordmark(26.0)).selectable(false));
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                        if ui.button("Clear").clicked() {
-                            self.selected.clear();
-                        }
-                        ui.label(format!("{} selected", self.selected.len()));
+                        ui.hyperlink_to(
+                            egui::RichText::new(format!("v{}", env!("CARGO_PKG_VERSION")))
+                                .monospace()
+                                .small()
+                                .color(palette::STEEL),
+                            CHANGELOG_URL,
+                        );
                     });
                 });
-                ui.hyperlink_to(
-                    format!("v{}", env!("CARGO_PKG_VERSION")),
-                    "https://github.com/tommyorndorff/caneDNA/blob/main/CHANGELOG.md",
+                ui.label(
+                    egui::RichText::new("Bamboo rod taper explorer")
+                        .small()
+                        .color(palette::MUTED),
                 );
+                ui.add_space(8.0);
+                ui.separator();
+                ui.add_space(2.0);
+
                 ui.horizontal(|ui| {
-                    ui.label("Search:");
-                    ui.text_edit_singleline(&mut self.search);
+                    ui.label("Search");
+                    ui.add(
+                        egui::TextEdit::singleline(&mut self.search)
+                            .hint_text("name…")
+                            .desired_width(f32::INFINITY),
+                    );
                 });
 
                 egui::ComboBox::from_label("Type")
@@ -899,11 +1015,32 @@ impl eframe::App for App {
                     .map(|(i, _)| i)
                     .collect();
 
-                ui.label(format!(
-                    "{} of {} rods",
-                    indices.len(),
-                    self.lib.models.len()
-                ));
+                ui.add_space(2.0);
+                ui.horizontal(|ui| {
+                    ui.label(
+                        egui::RichText::new(format!(
+                            "{} of {} rods",
+                            indices.len(),
+                            self.lib.models.len()
+                        ))
+                        .monospace()
+                        .small()
+                        .color(palette::MUTED),
+                    );
+                    ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                        if !self.selected.is_empty() {
+                            if ui.small_button("Clear").clicked() {
+                                self.selected.clear();
+                            }
+                            ui.label(
+                                egui::RichText::new(format!("{} selected", self.selected.len()))
+                                    .small()
+                                    .color(palette::HONEY),
+                            );
+                        }
+                    });
+                });
+                ui.add_space(2.0);
 
                 egui::ScrollArea::vertical().show(ui, |ui| {
                     for i in indices {
@@ -928,7 +1065,20 @@ impl eframe::App for App {
 
             if self.selected.is_empty() {
                 ui.centered_and_justified(|ui| {
-                    ui.label("Select one or more rods to overlay their tapers.");
+                    ui.vertical_centered(|ui| {
+                        ui.add(egui::Label::new(wordmark(40.0)).selectable(false));
+                        ui.add_space(10.0);
+                        ui.label(
+                            egui::RichText::new("Pick a taper to see its profile.")
+                                .size(15.0)
+                                .color(palette::INK),
+                        );
+                        ui.label(
+                            egui::RichText::new("Select several to overlay and compare.")
+                                .size(15.0)
+                                .color(palette::MUTED),
+                        );
+                    });
                 });
                 return;
             }
@@ -992,7 +1142,7 @@ impl eframe::App for App {
                                 let t = &self.lib.models[i];
                                 let name = t.name.clone().unwrap_or_else(|| format!("model {i}"));
                                 let points: PlotPoints = t.profile().into_iter().collect();
-                                plot_ui.line(Line::new(points).name(name));
+                                plot_ui.line(Line::new(points).name(name).width(2.0));
                             }
                         });
                 }
