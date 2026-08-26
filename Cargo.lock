@@ -2560,7 +2560,7 @@ dependencies = [
 
 [[package]]
 name = "roddna-core"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -2568,7 +2568,7 @@ dependencies = [
 
 [[package]]
 name = "roddna-gui"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "eframe",
  "egui",
