@@ -953,6 +953,66 @@ impl Taper {
         Some(out)
     }
 
+    /// **C — action classification.** Turns the physics engines' raw numbers
+    /// into the vocabulary casters actually use — *fast / medium / full-flex* —
+    /// by locating where along the rod the Garrison stress curve peaks.
+    ///
+    /// The location of peak bending stress is the classic action tell: a
+    /// **tip/fast** rod concentrates its work near the tip, a **full/slow**
+    /// (parabolic) rod carries it deep toward the butt. Measured as
+    /// `peak_fraction` — the peak station as a fraction of the rod's real
+    /// length (0 = tip, 1 = butt) — on the de-padded taper, so fixed-width
+    /// padding can't skew it (see [`depadded`](Self::depadded)).
+    ///
+    /// The `Fast < 0.25 ≤ Medium < 0.40 ≤ Full` thresholds are **calibrated
+    /// against the casting KB**, not invented: across the library rods that
+    /// carry both physics inputs and a KB action tag, those the KB calls
+    /// *fast* peak at a median ~0.13 and those it calls *slow* at ~0.53, a
+    /// clean separation. The KB's other tags (*parabolic*, *delicate*, …) turn
+    /// out to track a maker's reputation more than an individual taper's
+    /// geometry, so they are **not** used as a training target — surface them
+    /// beside this index as corroboration via [`CastingKb::for_taper`], not as
+    /// ground truth.
+    ///
+    /// `frequency_hz` (from [`modal_analysis`](Self::modal_analysis)) is
+    /// reported for recovery-speed context but does not drive the label — it's
+    /// confounded by rod length and line weight and didn't separate the KB
+    /// classes on its own. Returns `None` if the taper lacks the stress
+    /// model's inputs.
+    pub fn action_profile(&self, modal: &ModalParams) -> Option<ActionProfile> {
+        let this = self.depadded();
+        let curve = this.stress_curve();
+        if curve.len() < 2 {
+            return None;
+        }
+        let length = curve.last().unwrap()[0];
+        if length <= 0.0 {
+            return None;
+        }
+        // Peak bending stress and where it sits. Skip the tip-most station:
+        // its tiny cubed dimension makes stress numerically wild there (the
+        // artifact `stress_curve` documents), which could spoof a peak at ~0.
+        let (peak_station, peak_stress) = curve
+            .iter()
+            .skip(1)
+            .fold((curve[0][0], curve[0][1]), |(bs, bv), &[s, v]| {
+                if v > bv {
+                    (s, v)
+                } else {
+                    (bs, bv)
+                }
+            });
+        let peak_fraction = (peak_station / length).clamp(0.0, 1.0);
+        let class = ActionClass::from_peak_fraction(peak_fraction);
+        Some(ActionProfile {
+            class,
+            peak_fraction,
+            peak_station_in: peak_station,
+            peak_stress_psi: peak_stress,
+            frequency_hz: this.modal_analysis(modal).map(|m| m.frequency_hz),
+        })
+    }
+
     /// **A2 — dynamic / modal analysis.** Estimates the rod's fundamental
     /// bending frequency (and the effective tip-referred mass/stiffness that
     /// go with it) by treating the rod as a variable-cross-section
@@ -1198,6 +1258,67 @@ pub struct DeflectionStation {
     pub vertical_in: f64,
     /// Casting bending moment at this station, oz·in.
     pub moment_oz_in: f64,
+}
+
+/// A rod's casting action on the tip→full-flex axis (see
+/// [`Taper::action_profile`], stage C).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ActionClass {
+    /// Tip/fast action — bending stress peaks near the tip.
+    Fast,
+    /// Medium / progressive action.
+    Medium,
+    /// Full-flex / slow (parabolic) — stress carries deep toward the butt.
+    Full,
+}
+
+/// Peak-stress-fraction boundaries between action classes, calibrated on the
+/// casting KB's fast (~0.13) vs slow (~0.53) split (see `action_profile`).
+const ACTION_FAST_MAX_FRACTION: f64 = 0.25;
+const ACTION_FULL_MIN_FRACTION: f64 = 0.40;
+
+impl ActionClass {
+    fn from_peak_fraction(f: f64) -> ActionClass {
+        if f < ACTION_FAST_MAX_FRACTION {
+            ActionClass::Fast
+        } else if f < ACTION_FULL_MIN_FRACTION {
+            ActionClass::Medium
+        } else {
+            ActionClass::Full
+        }
+    }
+
+    /// Short human label.
+    pub fn label(self) -> &'static str {
+        match self {
+            ActionClass::Fast => "Fast (tip action)",
+            ActionClass::Medium => "Medium (progressive)",
+            ActionClass::Full => "Full-flex (slow/parabolic)",
+        }
+    }
+}
+
+impl std::fmt::Display for ActionClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.label())
+    }
+}
+
+/// Result of [`Taper::action_profile`] (stage C): a physics-derived action
+/// classification plus the metrics behind it.
+#[derive(Debug, Clone, PartialEq)]
+pub struct ActionProfile {
+    /// Fast / Medium / Full, from where the stress curve peaks.
+    pub class: ActionClass,
+    /// Peak-stress location as a fraction of rod length (0 = tip, 1 = butt).
+    pub peak_fraction: f64,
+    /// Station (inches from tip) of peak bending stress.
+    pub peak_station_in: f64,
+    /// Peak bending stress, psi.
+    pub peak_stress_psi: f64,
+    /// Fundamental frequency from A2, for recovery-speed context (does not
+    /// drive `class`). `None` if the modal analysis couldn't run.
+    pub frequency_hz: Option<f64>,
 }
 
 /// Tunable inputs for [`Taper::solve_to_stress`] (stage B).
@@ -2307,6 +2428,84 @@ mod tests {
             ..params.clone()
         });
         assert!(hard[0].vertical_in > tip.vertical_in, "harder cast deflects more");
+    }
+
+    #[test]
+    fn action_profile_separates_kb_fast_from_slow() {
+        // Calibration check: the peak-stress-fraction metric must place rods
+        // the casting KB calls "fast" nearer the tip than those it calls
+        // "slow". This is the empirical basis for the class thresholds.
+        let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../data/tapers.json");
+        let text = std::fs::read_to_string(path).expect("read tapers.json");
+        let lib = Library::from_json(&text).expect("parse library");
+        let kb_path = concat!(env!("CARGO_MANIFEST_DIR"), "/../../data/kb/casting_kb.json");
+        let kb = CastingKb::from_json(&std::fs::read_to_string(kb_path).unwrap()).unwrap();
+        let modal = ModalParams::default();
+
+        let mut fast = Vec::new();
+        let mut slow = Vec::new();
+        for m in &lib.models {
+            let Some((_, casting)) = kb.for_taper(m) else {
+                continue;
+            };
+            let Some(dom) = casting
+                .action_counts
+                .iter()
+                .max_by_key(|(_, &c)| c)
+                .map(|(k, _)| k.as_str())
+            else {
+                continue;
+            };
+            let Some(ap) = m.action_profile(&modal) else {
+                continue;
+            };
+            match dom {
+                "fast" => fast.push(ap.peak_fraction),
+                "slow" => slow.push(ap.peak_fraction),
+                _ => {}
+            }
+        }
+        assert!(fast.len() >= 5 && slow.len() >= 5, "enough calibration rods");
+        let mean = |v: &[f64]| v.iter().sum::<f64>() / v.len() as f64;
+        assert!(
+            mean(&fast) < mean(&slow),
+            "KB-fast rods should peak nearer the tip: fast {} vs slow {}",
+            mean(&fast),
+            mean(&slow)
+        );
+    }
+
+    #[test]
+    fn action_profile_classifies_extremes() {
+        let modal = ModalParams::default();
+        let base = || Taper {
+            const_type: Some("Hex".into()),
+            line_weight: Some(5.0),
+            line_length: Some(90.0),
+            line_cast: Some(30.0),
+            tip_impact_factor: Some(4.0),
+            bamboo_density: Some(0.668),
+            tip_weight: Some(0.018),
+            stations: (0..=15).map(|i| i as f64 * 5.0).collect(),
+            ..Default::default()
+        };
+        // Tip-action: fine tip, quickly thick butt (stress peaks near tip).
+        let mut fast = base();
+        fast.dimensions = (0..=15).map(|i| 0.05 + 0.30 * (i as f64 / 15.0).powi(2)).collect();
+        let fa = fast.action_profile(&modal).expect("fast solved");
+        // Full-flex: fuller through the middle so stress carries toward butt.
+        let mut full = base();
+        full.dimensions = (0..=15).map(|i| 0.09 + 0.12 * (i as f64 / 15.0)).collect();
+        let fu = full.action_profile(&modal).expect("full solved");
+        assert!(
+            fa.peak_fraction < fu.peak_fraction,
+            "fast {} should peak nearer tip than full {}",
+            fa.peak_fraction,
+            fu.peak_fraction
+        );
+        assert_eq!(ActionClass::from_peak_fraction(0.10), ActionClass::Fast);
+        assert_eq!(ActionClass::from_peak_fraction(0.30), ActionClass::Medium);
+        assert_eq!(ActionClass::from_peak_fraction(0.55), ActionClass::Full);
     }
 
     #[test]
