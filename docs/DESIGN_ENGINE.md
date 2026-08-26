@@ -118,20 +118,27 @@ adapted taper, the achieved `ActionProfile`, and a plain-language rationale.
 
 **This is the engine, not the words.** It's the deterministic tool a language
 layer calls: something parses "a soft 5-wt 7-footer" into a `DesignRequest` and
-narrates the `DesignResult`.
+narrates the `DesignResult`. Two complementary front-ends now sit on top, both
+using an optional `seed_contains` filter (via `Library::design_filtered()`) so a
+"like the spey rods" request stays seeded from spey tapers — without changing the
+core `DesignRequest`:
 
-**In-app language front-end — ✅ done (offline).** `parse_design_request()` in
-`roddna-core` is a dependency-free intent parser over the bounded vocabulary of
-rod design — line weight, length, piece count, action feel, and the spey/switch
-family — returning a `ParsedRequest` (the request + an inferred `seed_contains`
-filter + human-readable notes on what was recognised vs. defaulted). The GUI
-"Design assistant" now has a free-text box: you type "a trout spey for dries and
-wets, not streamers", it fills the form, and `Library::design_filtered()` seeds
-the design only from spey tapers. Negation is handled ("not streamers" doesn't
-vote the rod fast). Being offline, it ships to the WASM web build with no
-backend — a visitor to the live site can design by description. A richer natural-
-language path (an actual LLM, via the `roddna-mcp` server) complements it for
-free-form phrasing the keyword parser doesn't cover.
+**In-app, offline — ✅ done.** `parse_design_request()` in `roddna-core` is a
+dependency-free intent parser over the bounded vocabulary of rod design — line
+weight, length, piece count, action feel, and the spey/switch family — returning
+a `ParsedRequest` (the request + inferred `seed_contains` + human-readable notes
+on what was recognised vs. defaulted). The GUI "Design assistant" has a free-text
+box: type "a trout spey for dries and wets, not streamers" and it fills the form
+and generates the taper. Negation is handled ("not streamers" doesn't vote the
+rod fast). Being offline, it ships to the WASM web build with no backend — a
+visitor to the live site can design by description.
+
+**Conversational, via MCP — ✅ done.** The `roddna-mcp` crate is an MCP stdio
+server exposing this engine as tools (`design_rod`, `list_tapers`), so an
+assistant (Claude Desktop / Code / claude.ai) parses a free-form request into the
+tool arguments and narrates the result. This handles phrasing the keyword parser
+doesn't cover, at the cost of needing a local MCP client (it doesn't reach the
+deployed website). See the README "Design assistant (MCP)" section.
 
 Later: solve directly to a target action (needs B extended beyond flat-stress),
 grain-window objectives for spey, and multi-seed blending.

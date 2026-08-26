@@ -1,0 +1,22 @@
+[package]
+name = "roddna-mcp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+# A Model Context Protocol (MCP) stdio server that exposes the caneDNA design
+# engine as callable tools, so an MCP-speaking assistant (Claude Desktop, Claude
+# Code, claude.ai) can turn a plain-language request — "a soft 5-wt 7-footer",
+# "a trout spey for dries and wets" — into a real taper. The natural-language
+# understanding lives in the assistant; the rod generation stays this crate's
+# deterministic call into `roddna-core`.
+
+[[bin]]
+name = "roddna-mcp"
+path = "src/main.rs"
+
+[dependencies]
+roddna-core = { path = "../roddna-core" }
+serde = { workspace = true }
+serde_json = { workspace = true }

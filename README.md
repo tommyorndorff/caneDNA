@@ -30,6 +30,7 @@ crates/
     index.html         web entry (Trunk)
     Trunk.toml         web build config
     _headers           Cloudflare Pages caching / MIME
+  roddna-mcp/          MCP server — design tapers from plain language via an AI assistant
 .github/workflows/
   deploy-web.yml       build WASM + deploy to Cloudflare Pages on push to main
 ```
@@ -123,6 +124,60 @@ python3 scripts/import_hexrod.py --all        # or --maker Cattanach
 python3 scripts/import_taper_sheets.py
 python3 scripts/build_library.py              # merge + dedupe -> data/tapers.json
 ```
+
+## Design assistant (MCP)
+
+caneDNA ships an [MCP](https://modelcontextprotocol.io) server (`roddna-mcp`) so
+an AI assistant that speaks the protocol — Claude Desktop, Claude Code,
+claude.ai — can turn a plain-language request into a real taper. You describe
+what you want in chat; the assistant parses it and calls the **same deterministic
+design engine** the GUI uses, then narrates the result. The language
+understanding lives in the model; the rod generation stays in caneDNA.
+
+It exposes two tools:
+
+- **`design_rod`** — a spec (line weight, length, pieces, action, and an optional
+  seed filter) becomes an adapted taper: the closest-fitting library rod is
+  rescaled and retuned to the request, returned station-by-station with its
+  achieved action and a rationale.
+- **`list_tapers`** — browse or search the embedded library (874 attributed
+  tapers) to ground a choice or pick a seed.
+
+The library is embedded at compile time, so the server is a single
+self-contained binary — no runtime data files, no network.
+
+**Build it:**
+
+```sh
+cargo build --release -p roddna-mcp     # -> target/release/roddna-mcp
+```
+
+**Register it with Claude Code:**
+
+```sh
+claude mcp add canedna -- /absolute/path/to/target/release/roddna-mcp
+```
+
+**Or with Claude Desktop** — add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "canedna": {
+      "command": "/absolute/path/to/target/release/roddna-mcp"
+    }
+  }
+}
+```
+
+**Then just ask**, e.g.:
+
+> Using the spey rods as an example, design me a trout spey for dries and wets,
+> not for casting streamers.
+
+The assistant will `list_tapers` for spey seeds, then `design_rod` with
+`action: "full"` and `seed_contains: "spey"`, and hand back a taper you can open
+in caneDNA's design mode to refine.
 
 ## Roadmap (next)
 
