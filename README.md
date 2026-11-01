@@ -37,7 +37,7 @@ crates/
 
 ## Data
 
-**874 rod models** merged from four sources (see Data Sources below), covering
+**876 rod models** merged from five sources (see Data Sources below), covering
 Fly / Dry-Fly / Spey / Spinning / Casting rods in Hex / Penta / Quad / Rectangular
 construction. Each record carries length, line weight, ferrule specs, notes, the
 `dimensions` taper (flat-to-flat cross-section, in inches, at each station), and a
@@ -61,6 +61,7 @@ import date). Please preserve attribution if you reuse this data.
 | [David Ray's Taper Library (Hexrod)](https://www.hexrod.net/Tapers/drtapers/index.html) | compiled by David Ray | **Unspecified** — hobbyist compilation, attributed pending clarification | `drtapers.xlsx` |
 | 2019 Bamboo Taper Sheets | Tom W. Morgan (© 2005) | See workbook copyright notice | Tip/butt section sheets; raw sections kept under `provenance.sections` |
 | [Bamboo Rod Building with Bob Clay](https://courses.anchoredoutdoors.com/courses/bamboo-rod-building-with-bob-clay) | Bob Clay | Course material; used for reference/education | Single example "universal" 12' taper from the course |
+| [Rodmakers list (RMA) archive via hexrod.net](https://www.hexrod.net/Tapers/More_rodmakers_tapers/index.html) | Robert Holder (Ibantik Spinner 6' UL); "Gary" (P.H. Young Spinmaster 7'2") | **Unspecified** — public mailing-list posts, attributed per poster; remove on request | Two hand-transcribed spinning tapers (`scripts/import_rma_spinning.py`); hex/quad not stated in the posts |
 
 > Note: the Hexrod library has no stated license. It is included here with
 > attribution while permission/licensing is confirmed with the source.
@@ -140,7 +141,7 @@ It exposes two tools:
   seed filter) becomes an adapted taper: the closest-fitting library rod is
   rescaled and retuned to the request, returned station-by-station with its
   achieved action and a rationale.
-- **`list_tapers`** — browse or search the embedded library (874 attributed
+- **`list_tapers`** — browse or search the embedded library (876 attributed
   tapers) to ground a choice or pick a seed.
 
 The library is embedded at compile time, so the server is a single

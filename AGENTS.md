@@ -33,6 +33,7 @@ data/
   kb/casting_kb.json           casting knowledge base from the RMA archive (generated)
 scripts/
   convert_tapers.py            RodDNA XML       -> data/sources/roddna.json
+  import_rma_spinning.py       RMA list posts   -> data/sources/rma_spinning.json (hand-transcribed)
   import_hexrod.py             drtapers.xlsx    -> data/sources/hexrod.json
   import_taper_sheets.py       taper-sheets xlsx-> data/sources/taper_sheets.json
   build_library.py             merge + dedupe   -> data/tapers.json
@@ -54,7 +55,7 @@ docs/
   test. `roddna-gui` is the eframe/egui UI and depends on core.
 - **The library is a build artifact.** Python importers each read one source into
   `data/sources/<name>.json`; `build_library.py` merges them into
-  `data/tapers.json` (currently **873 models** from 3 sources). The GUI embeds
+  `data/tapers.json` (currently **876 models** from 5 sources). The GUI embeds
   that file at compile time via `include_str!`, so the app — native or web — needs
   no runtime data files or backend.
 - **Dedup is dimension-aware.** `build_library.py` collapses two records only when
