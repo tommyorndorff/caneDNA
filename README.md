@@ -61,7 +61,7 @@ import date). Please preserve attribution if you reuse this data.
 | [David Ray's Taper Library (Hexrod)](https://www.hexrod.net/Tapers/drtapers/index.html) | compiled by David Ray | **Unspecified** — hobbyist compilation, attributed pending clarification | `drtapers.xlsx` |
 | 2019 Bamboo Taper Sheets | Tom W. Morgan (© 2005) | See workbook copyright notice | Tip/butt section sheets; raw sections kept under `provenance.sections` |
 | [Bamboo Rod Building with Bob Clay](https://courses.anchoredoutdoors.com/courses/bamboo-rod-building-with-bob-clay) | Bob Clay | Course material; used for reference/education | Single example "universal" 12' taper from the course |
-| [Rodmakers list (RMA) archive via hexrod.net](https://www.hexrod.net/Tapers/More_rodmakers_tapers/index.html) | Robert Holder (Ibantik Spinner 6' UL); "Gary" (P.H. Young Spinmaster 7'2") | **Unspecified** — public mailing-list posts, attributed per poster; remove on request | Two hand-transcribed spinning tapers (`scripts/import_rma_spinning.py`); hex/quad not stated in the posts |
+| [Rodmakers list (RMA) archive (mirrored on hexrod.net)](https://www.hexrod.net/Tapers/More_rodmakers_tapers/index.html) | Robert Holder (Ibantik Spinner 6' UL); "Gary" (P.H. Young Spinmaster 7'2") | **Unspecified** — public mailing-list posts, attributed per poster; remove on request | Two hand-transcribed spinning tapers (`scripts/import_rma_spinning.py`); hex/quad not stated in the posts |
 
 > Note: the Hexrod library has no stated license. It is included here with
 > attribution while permission/licensing is confirmed with the source.

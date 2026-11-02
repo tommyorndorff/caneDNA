@@ -21,8 +21,9 @@ build_library.py merge instead of hand-editing data/tapers.json.
 
 Only values stated in the posts are recorded. Neither post says hex vs. quad,
 so `const_type` is left unset. Neither states a line weight or lure rating, so
-the casting-load fields are unset too (stress/modal engines treat the rod as
-not stress-capable rather than guessing).
+the casting-load fields are unset too: the stress, deflection and action
+engines return nothing for these rods rather than guessing. Note modal_analysis
+still runs and assumes a hex section when const_type is unset.
 
 Output: data/sources/rma_spinning.json
 Run build_library.py afterwards to merge into tapers.json.
@@ -34,7 +35,10 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "sources" / "rma_spinning.json"
 
 IMPORT_DATE = "2026-11-01"
-SOURCE = "Rodmakers list (RMA) archive via hexrod.net"
+# Deliberately not mentioning "hexrod" in the source name: Taper::source_group()
+# matches that substring and would file these under David Ray's Hexrod library.
+# The hexrod.net mirror URLs live in each record's provenance.source_url.
+SOURCE = "Rodmakers list (RMA) archive"
 LICENSE = (
     "Posted to the public Rodmakers mailing list; no license stated. "
     "Attribution to the original poster preserved; remove on request."
