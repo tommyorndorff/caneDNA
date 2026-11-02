@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.8.0](https://github.com/tommyorndorff/caneDNA/compare/v0.7.0...v0.8.0) (2026-11-02)
+
+
+### Features
+
+* design a taper from a plain-language description in the app ([#29](https://github.com/tommyorndorff/caneDNA/issues/29)) ([6a2efe8](https://github.com/tommyorndorff/caneDNA/commit/6a2efe8ba19d4ff057c992333f5e387bf51e6b11))
+* **gui:** distinctive theme + fix release redeploys ([#26](https://github.com/tommyorndorff/caneDNA/issues/26)) ([efbb20c](https://github.com/tommyorndorff/caneDNA/commit/efbb20ca67a663eaed28ffc544590428e97d121e))
+* import Holder Ibantik Spinner and P.H. Young Spinmaster spinning tapers ([#30](https://github.com/tommyorndorff/caneDNA/issues/30)) ([11fba82](https://github.com/tommyorndorff/caneDNA/commit/11fba824c95e9d3dd8d82cb376c8bcf87f1b7e25))
+* MCP server to design tapers from plain language ([#28](https://github.com/tommyorndorff/caneDNA/issues/28)) ([9682be5](https://github.com/tommyorndorff/caneDNA/commit/9682be53fd1688fc8b8e4c7e073a283d7e418429))
+
 ## [0.7.0](https://github.com/tommyorndorff/caneDNA/compare/v0.6.0...v0.7.0) (2026-08-26)
 
 
