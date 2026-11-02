@@ -6,14 +6,15 @@
       "Bob Clay Bamboo Rod Building Course (Anchored Outdoors)",
       "David Ray's Taper Library (Hexrod)",
       "RodDNA v1.4 update",
-      "RodDNA v2.0"
+      "RodDNA v2.0",
+      "Rodmakers list (RMA) archive"
     ],
     "units": {
       "length": "inches",
       "dimensions": "inches (flat-to-flat cross-section)",
       "stations": "inches from tip"
     },
-    "count": 874
+    "count": 876
   },
   "models": [
     {
@@ -32088,6 +32089,133 @@
         "imported": "2026-08-22",
         "source_id": 442,
         "orig_name": "Winston Hollow Built"
+      }
+    },
+    {
+      "name": "Holder Ibantik Spinner 6' UL",
+      "type": "Spinning-Rod",
+      "length": 72.0,
+      "action_length": 70.0,
+      "pieces": 2,
+      "ferrule1_size": "11/64",
+      "ferrule1_loc": 36.0,
+      "station_increment": 5,
+      "notes": "Ultralight spinning rod built by Robert Holder for his father, posted in reply to a request for a 5.5-6' rod for 4 lb line and 1/8 oz lures. The tip section came from a broken fly-rod tip; the butt was built to match. Taper stops at 70\"; the post gives no handle length. Geometry (hex vs. quad) and measuring convention (over varnish or not) are not stated. Note the +0.025\" step from 35\" to 40\" is as posted. Guides from the tip: 4, 9, 16.5, 27, 40 in. (sizes 10, 12, 16, 20, 25 as listed, units not stated).",
+      "dimensions": [
+        0.09,
+        0.104,
+        0.116,
+        0.132,
+        0.137,
+        0.151,
+        0.168,
+        0.17,
+        0.195,
+        0.205,
+        0.221,
+        0.228,
+        0.231,
+        0.233,
+        0.235
+      ],
+      "stations": [
+        0.0,
+        5.0,
+        10.0,
+        15.0,
+        20.0,
+        25.0,
+        30.0,
+        35.0,
+        40.0,
+        45.0,
+        50.0,
+        55.0,
+        60.0,
+        65.0,
+        70.0
+      ],
+      "stresses": [],
+      "guide_spacings": [],
+      "guide_sizes": [],
+      "provenance": {
+        "source": "Rodmakers list (RMA) archive",
+        "author": "Robert Holder",
+        "source_url": "https://www.hexrod.net/Tapers/More_rodmakers_tapers/399.html",
+        "collection": "More rodmakers tapers #399 (Re: Which Spinning Taper?, 2002-10-01)",
+        "license": "Posted to the public Rodmakers mailing list; no license stated. Attribution to the original poster preserved; remove on request.",
+        "imported": "2026-11-01",
+        "guides_from_tip_in": [
+          4,
+          9,
+          16.5,
+          27,
+          40
+        ],
+        "guide_sizes_as_posted": [
+          10,
+          12,
+          16,
+          20,
+          25
+        ]
+      }
+    },
+    {
+      "name": "P.H. Young Spinmaster 7'2\"",
+      "type": "Spinning-Rod",
+      "length": 86.0,
+      "action_length": 74.0,
+      "pieces": 2,
+      "ferrule1_size": "13/64",
+      "station_increment": 5,
+      "notes": "Paul H. Young Spinmaster, 7'2\", 3.35 oz, lightly flamed, 12 1/8\" sliding-ring handle, stepped 13/64 ferrule, semi-parabolic action; loads through the handle and \"throws a nice 5wt\" per the poster. Measured and miked from a vintage rod by the poster (\"Gary\"). The ferrule sits between the 40\" and 46\" stations (exact location not given, so none is recorded and mill sections are approximate). Stations end at 74\", where the handle begins. Geometry (hex vs. quad) is not stated. Guide spacing from the tip was posted as 5.x, 12 1/8, 19.x, 28 5/8, 37.x with some fractions garbled in the archive, so it is not recorded.",
+      "dimensions": [
+        0.082,
+        0.091,
+        0.106,
+        0.126,
+        0.143,
+        0.157,
+        0.176,
+        0.192,
+        0.207,
+        0.208,
+        0.211,
+        0.216,
+        0.226,
+        0.246,
+        0.255,
+        0.259
+      ],
+      "stations": [
+        0.0,
+        5.0,
+        10.0,
+        15.0,
+        20.0,
+        25.0,
+        30.0,
+        35.0,
+        40.0,
+        46.0,
+        50.0,
+        55.0,
+        60.0,
+        65.0,
+        70.0,
+        74.0
+      ],
+      "stresses": [],
+      "guide_spacings": [],
+      "guide_sizes": [],
+      "provenance": {
+        "source": "Rodmakers list (RMA) archive",
+        "author": "\"Gary\" (surname not given), measurements of a P.H. Young rod",
+        "source_url": "https://www.hexrod.net/Tapers/More_rodmakers_tapers/156.html",
+        "collection": "More rodmakers tapers #156 (Paul Young Spinning Rod Tapers, 2001-03-01)",
+        "license": "Posted to the public Rodmakers mailing list; no license stated. Attribution to the original poster preserved; remove on request.",
+        "imported": "2026-11-01"
       }
     },
     {
